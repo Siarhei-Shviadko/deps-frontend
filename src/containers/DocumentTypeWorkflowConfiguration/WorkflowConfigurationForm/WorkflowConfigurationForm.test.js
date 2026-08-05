@@ -1,20 +1,45 @@
 
+import { mockShallowComponent } from '@/mocks/mockComponent'
 import { mockEnv } from '@/mocks/mockEnv'
 import { mockReactHookForm } from '@/mocks/mockReactHookForm'
-import { screen } from '@testing-library/react'
+import { screen, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { useFormContext, useWatch } from 'react-hook-form'
+import { fetchOCREngines } from '@/actions/engines'
 import { WORKFLOW_FORM_FIELD_CODES } from '@/containers/DocumentTypeWorkflowConfiguration/constants'
+import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownParsingFeature } from '@/enums/KnownParsingFeature'
 import { ReviewPolicy } from '@/enums/ReviewPolicy'
 import { Localization, localize } from '@/localization/i18n'
 import { ExtendedDocumentType } from '@/models/ExtendedDocumentType'
 import { WorkflowConfiguration } from '@/models/WorkflowConfiguration'
 import { documentTypeStateSelector } from '@/selectors/documentType'
+import { ocrEnginesSelector } from '@/selectors/engines'
+import { areEnginesFetchingSelector } from '@/selectors/requests'
 import { render } from '@/utils/rendererRTL'
 import { WorkflowConfigurationForm } from './WorkflowConfigurationForm'
 
 jest.mock('@/utils/env', () => mockEnv)
 jest.mock('@/selectors/documentType')
+jest.mock('@/selectors/engines')
+jest.mock('@/selectors/requests')
 
 jest.mock('react-hook-form', () => mockReactHookForm)
+
+jest.mock('react-redux', () => ({
+  ...jest.requireActual('react-redux'),
+  useDispatch: jest.fn(() => mockDispatch),
+}))
+
+jest.mock('@/actions/engines', () => ({
+  fetchOCREngines: jest.fn(),
+}))
+
+jest.mock('@/containers/ParsingFeaturesSwitch', () => mockShallowComponent('ParsingFeaturesSwitch'))
+
+jest.mock('@/components/Select', () => ({
+  CustomSelect: () => <div data-testid="custom-select" />,
+}))
 
 jest.mock('@/components/Form/ReactHookForm', () => ({
   ...jest.requireActual('@/components/Form/ReactHookForm'),
@@ -23,10 +48,19 @@ jest.mock('@/components/Form/ReactHookForm', () => ({
     <div data-testid={`form-item-${props.field?.code}`}>
       {props.label}
       {props.field?.hint && <span data-testid={`hint-${props.field?.code}`}>{props.field.hint}</span>}
+      {
+        props.field?.render?.({
+          value: props.field.defaultValue,
+          onChange: jest.fn(),
+        })
+      }
       Form Item
     </div>
   ),
 }))
+
+const mockSetValue = jest.fn()
+const mockDispatch = jest.fn()
 
 const mockDocumentType = new ExtendedDocumentType({
   code: 'test-doc-type',
@@ -35,12 +69,23 @@ const mockDocumentType = new ExtendedDocumentType({
     needsExtraction: true,
     needsReview: ReviewPolicy.ALWAYS_REVIEW,
     needsValidation: false,
+    parsingFeatures: [KnownParsingFeature.TEXT],
+    needsOutputExporting: false,
   }),
 })
 
 beforeEach(() => {
   jest.clearAllMocks()
   documentTypeStateSelector.mockReturnValue(mockDocumentType)
+  ocrEnginesSelector.mockReturnValue([])
+  areEnginesFetchingSelector.mockReturnValue(false)
+  useFormContext.mockImplementation(() => ({
+    control: {},
+    setValue: mockSetValue,
+    getValues: jest.fn(),
+    formState: {},
+    reset: jest.fn(),
+  }))
 })
 
 const defaultProps = {
@@ -52,6 +97,40 @@ test('renders form element', () => {
   render(<WorkflowConfigurationForm {...defaultProps} />)
 
   expect(screen.getByTestId('form')).toBeInTheDocument()
+})
+
+test('renders engine field with hint', () => {
+  render(<WorkflowConfigurationForm {...defaultProps} />)
+
+  const field = screen.getByTestId(`form-item-${WORKFLOW_FORM_FIELD_CODES.ENGINE}`)
+  expect(field).toBeInTheDocument()
+  expect(field).toHaveTextContent(localize(Localization.ENGINE))
+
+  const hint = screen.getByTestId(`hint-${WORKFLOW_FORM_FIELD_CODES.ENGINE}`)
+  expect(hint).toHaveTextContent(localize(Localization.WORKFLOW_ENGINE_HINT))
+})
+
+test('renders parsing features field with hint and columnView prop', () => {
+  render(<WorkflowConfigurationForm {...defaultProps} />)
+
+  const field = screen.getByTestId(`form-item-${WORKFLOW_FORM_FIELD_CODES.PARSING_FEATURES}`)
+  expect(field).toBeInTheDocument()
+  expect(field).toHaveTextContent(localize(Localization.PARSING_FEATURES))
+
+  const hint = screen.getByTestId(`hint-${WORKFLOW_FORM_FIELD_CODES.PARSING_FEATURES}`)
+  expect(hint).toHaveTextContent(localize(Localization.WORKFLOW_PARSING_FEATURES_HINT))
+
+  const parsingFeaturesSwitch = screen.getByTestId('ParsingFeaturesSwitch')
+  expect(parsingFeaturesSwitch).toHaveAttribute('data-columnview', 'true')
+})
+
+test('passes selected engine to ParsingFeaturesSwitch when engine is set in form', () => {
+  useWatch.mockReturnValue(KnownOCREngine.TESSERACT)
+
+  render(<WorkflowConfigurationForm {...defaultProps} />)
+
+  const parsingFeaturesSwitch = screen.getByTestId('ParsingFeaturesSwitch')
+  expect(parsingFeaturesSwitch).toHaveAttribute('data-enginecode', KnownOCREngine.TESSERACT)
 })
 
 test('renders needs review field with hint', () => {
@@ -85,4 +164,32 @@ test('renders needs validation field with hint', () => {
 
   const hint = screen.getByTestId(`hint-${WORKFLOW_FORM_FIELD_CODES.NEEDS_VALIDATION}`)
   expect(hint).toHaveTextContent(localize(Localization.WORKFLOW_NEEDS_VALIDATION_HINT))
+})
+
+test('renders needs output exporting field with hint', () => {
+  render(<WorkflowConfigurationForm {...defaultProps} />)
+
+  const field = screen.getByTestId(`form-item-${WORKFLOW_FORM_FIELD_CODES.NEEDS_OUTPUT_EXPORTING}`)
+  expect(field).toBeInTheDocument()
+  expect(field).toHaveTextContent(localize(Localization.WORKFLOW_NEEDS_OUTPUT_EXPORTING))
+
+  const hint = screen.getByTestId(`hint-${WORKFLOW_FORM_FIELD_CODES.NEEDS_OUTPUT_EXPORTING}`)
+  expect(hint).toHaveTextContent(localize(Localization.WORKFLOW_NEEDS_OUTPUT_EXPORTING_HINT))
+})
+
+test('calls fetchOCREngines when form is rendered if engines are empty', () => {
+  render(<WorkflowConfigurationForm {...defaultProps} />)
+
+  expect(mockDispatch).toHaveBeenCalledWith(fetchOCREngines())
+})
+
+test('sets needs output exporting to true when output exporting switch is enabled', async () => {
+  render(<WorkflowConfigurationForm {...defaultProps} />)
+
+  const outputExportingField = screen.getByTestId(`form-item-${WORKFLOW_FORM_FIELD_CODES.NEEDS_OUTPUT_EXPORTING}`)
+  const outputExportingSwitch = within(outputExportingField).getByRole('switch')
+
+  await userEvent.click(outputExportingSwitch)
+
+  expect(mockSetValue).toHaveBeenCalledWith(WORKFLOW_FORM_FIELD_CODES.NEEDS_OUTPUT_EXPORTING, true)
 })

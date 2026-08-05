@@ -8,8 +8,10 @@ import { ComponentSize } from '@/enums/ComponentSize'
 import { Localization, localize } from '@/localization/i18n'
 import { Controls } from '../Controls'
 import {
+  BoundingBoxOverlay,
   PageNumberCorner,
   Thumbnail,
+  ThumbnailContainer,
   ThumbnailWrapper,
   IconButton,
   StyledInView,
@@ -92,10 +94,17 @@ export const PdfThumbnail = ({
       >
         {ThumbnailControls}
         <PageNumberCorner>{userPage.page + 1}</PageNumberCorner>
-        <Thumbnail
-          pageIndex={userPage.page}
-          width={THUMB_NAIL_WIDTH_PX}
-        />
+        <ThumbnailContainer>
+          <Thumbnail
+            pageIndex={userPage.page}
+            width={THUMB_NAIL_WIDTH_PX}
+          />
+          {
+            userPage.coordinates && (
+              <BoundingBoxOverlay $coords={userPage.coordinates} />
+            )
+          }
+        </ThumbnailContainer>
       </ThumbnailWrapper>
     </StyledInView>
   )

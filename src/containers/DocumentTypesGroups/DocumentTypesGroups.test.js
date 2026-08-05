@@ -96,13 +96,15 @@ test('render table with document types groups correctly', () => {
     groupNameColumn,
     groupDocTypesColumn,
     groupCreationDateColumn,
+    groupSplitterColumn,
   ] = columns
 
-  expect(columns).toHaveLength(5)
+  expect(columns).toHaveLength(6)
 
   expect(groupNameColumn).toHaveTextContent(localize(Localization.NAME))
   expect(groupDocTypesColumn).toHaveTextContent(localize(Localization.DOCUMENT_TYPES))
   expect(groupCreationDateColumn).toHaveTextContent(localize(Localization.CREATION_DATE))
+  expect(groupSplitterColumn).toHaveTextContent(localize(Localization.SPLITTER))
 
   mockDocTypesGroupsData.result.forEach((g) => {
     expect(screen.getByText(g.name)).toBeInTheDocument()

@@ -1,17 +1,25 @@
-
 import { mockEnv } from '@/mocks/mockEnv'
 import { screen, within } from '@testing-library/react'
-import React from 'react'
-import { DOCUMENT_LAYOUT_PARSING_TYPE } from '@/enums/DocumentLayoutType'
+import { DOCUMENT_LAYOUT_FEATURE, DOCUMENT_LAYOUT_PARSING_TYPE } from '@/enums/DocumentLayoutType'
+import { Localization, localize } from '@/localization/i18n'
 import {
   TableCellLayout,
   TableLayout,
 } from '@/models/DocumentLayout'
 import { Point } from '@/models/Point'
 import { render } from '@/utils/rendererRTL'
+import { usePaginatedLayout } from '../hooks'
 import { TableLayout as TableLayoutComponent } from './TableLayout'
 
 jest.mock('@/utils/env', () => mockEnv)
+
+jest.mock('@/components/Spin', () => ({
+  Spin: () => <div data-testid="spin" />,
+}))
+
+jest.mock('../hooks', () => ({
+  usePaginatedLayout: jest.fn(),
+}))
 
 const mockCell1 = new TableCellLayout({
   content: 'Cell 1 content',
@@ -87,17 +95,6 @@ const mergedTablesMapping = [
   },
 ]
 
-function MockInfiniteScrollLayout ({ setLayout, children }) {
-  React.useEffect(() => {
-    setLayout(mockData)
-  }, [setLayout])
-  return children
-}
-
-jest.mock('../InfiniteScrollLayout', () => ({
-  InfiniteScrollLayout: MockInfiniteScrollLayout,
-}))
-
 const mockTableLayoutFieldComponent = jest.fn(({ alignHeightByContent, parsingType, table }) => (
   <div
     data-align-height={alignHeightByContent}
@@ -118,14 +115,32 @@ jest.mock('./TableLayoutField', () => ({
   TableLayoutField: (...args) => mockTableLayoutFieldComponent(...args),
 }))
 
-test('should render correct layout for separate tables', () => {
-  render(
-    <TableLayoutComponent
-      mergedTables={[]}
-      parsingType={DOCUMENT_LAYOUT_PARSING_TYPE.TESSERACT}
-      total={1}
-    />,
-  )
+const defaultProps = {
+  batchIndex: 0,
+  mergedTables: [],
+  parsingType: DOCUMENT_LAYOUT_PARSING_TYPE.TESSERACT,
+}
+
+beforeEach(() => {
+  jest.clearAllMocks()
+  usePaginatedLayout.mockReturnValue({
+    layoutData: mockData,
+    isFetching: false,
+  })
+})
+
+test('calls usePaginatedLayout with correct parameters', () => {
+  render(<TableLayoutComponent {...defaultProps} />)
+
+  expect(usePaginatedLayout).toHaveBeenCalledWith({
+    batchIndex: 0,
+    parsingFeature: DOCUMENT_LAYOUT_FEATURE.TABLES,
+    parsingType: DOCUMENT_LAYOUT_PARSING_TYPE.TESSERACT,
+  })
+})
+
+test('renders correct layout for separate tables', () => {
+  render(<TableLayoutComponent {...defaultProps} />)
 
   const table1 = screen.getByTestId(mockTable1.id)
   const table2 = screen.getByTestId(mockTable2.id)
@@ -137,59 +152,77 @@ test('should render correct layout for separate tables', () => {
   expect(within(table2).queryByText(mockCell1.content)).not.toBeInTheDocument()
 })
 
-test('should render correct layout for merged tables', () => {
-  render(
-    <TableLayoutComponent
-      mergedTables={mergedTablesMapping}
-      parsingType={DOCUMENT_LAYOUT_PARSING_TYPE.TESSERACT}
-      total={1}
-    />,
+test('passes alignHeightByContent true for parent table', () => {
+  const props = {
+    ...defaultProps,
+    mergedTables: mergedTablesMapping,
+  }
+
+  render(<TableLayoutComponent {...props} />)
+
+  expect(mockTableLayoutFieldComponent).toHaveBeenNthCalledWith(
+    1,
+    expect.objectContaining({
+      alignHeightByContent: true,
+      parsingType: DOCUMENT_LAYOUT_PARSING_TYPE.TESSERACT,
+      table: expect.objectContaining({ id: mockTable1.id }),
+    }),
+    expect.anything(),
   )
-
-  const mergedTable = screen.getByTestId(mockTable1.id)
-  expect(mergedTable).toBeInTheDocument()
-  expect(within(mergedTable).getByText(mockCell1.content)).toBeInTheDocument()
-  expect(within(mergedTable).getByText(mockCell2.content)).toBeInTheDocument()
-})
-
-test('passes correct props to TableLayoutField for separate tables', () => {
-  render(
-    <TableLayoutComponent
-      mergedTables={[]}
-      parsingType={DOCUMENT_LAYOUT_PARSING_TYPE.TESSERACT}
-      total={1}
-    />,
+  expect(mockTableLayoutFieldComponent).toHaveBeenNthCalledWith(
+    2,
+    expect.objectContaining({
+      alignHeightByContent: false,
+      parsingType: DOCUMENT_LAYOUT_PARSING_TYPE.TESSERACT,
+      table: expect.objectContaining({ id: mockTable2.id }),
+    }),
+    expect.anything(),
   )
-
-  const firstCall = mockTableLayoutFieldComponent.mock.calls[0][0]
-  const secondCall = mockTableLayoutFieldComponent.mock.calls[1][0]
-
-  expect(firstCall.table.id).toBe(mockTable1.id)
-  expect(firstCall.alignHeightByContent).toBe(false)
-  expect(firstCall.parsingType).toBe(DOCUMENT_LAYOUT_PARSING_TYPE.TESSERACT)
-
-  expect(secondCall.table.id).toBe(mockTable2.id)
-  expect(secondCall.alignHeightByContent).toBe(false)
-  expect(secondCall.parsingType).toBe(DOCUMENT_LAYOUT_PARSING_TYPE.TESSERACT)
 })
 
 test('enriches table cells with page context', () => {
-  render(
-    <TableLayoutComponent
-      mergedTables={[]}
-      parsingType={DOCUMENT_LAYOUT_PARSING_TYPE.TESSERACT}
-      total={1}
-    />,
+  render(<TableLayoutComponent {...defaultProps} />)
+
+  expect(mockTableLayoutFieldComponent).toHaveBeenNthCalledWith(
+    1,
+    expect.objectContaining({
+      table: expect.objectContaining({
+        cells: [
+          expect.objectContaining({
+            page: 1,
+            initialPosition: {
+              pageId: 'page-1',
+              rowIndex: mockCell1.rowIndex,
+              columnIndex: mockCell1.columnIndex,
+              tableId: mockTable1.id,
+            },
+          }),
+        ],
+      }),
+    }),
+    expect.anything(),
   )
+})
 
-  const firstCall = mockTableLayoutFieldComponent.mock.calls[0][0]
-  const cell = firstCall.table.cells[0]
-
-  expect(cell.page).toBe(1)
-  expect(cell.initialPosition).toEqual({
-    pageId: 'page-1',
-    rowIndex: mockCell1.rowIndex,
-    columnIndex: mockCell1.columnIndex,
-    tableId: mockTable1.id,
+test('renders spinner when layout is fetching', () => {
+  usePaginatedLayout.mockReturnValueOnce({
+    layoutData: [],
+    isFetching: true,
   })
+
+  render(<TableLayoutComponent {...defaultProps} />)
+
+  expect(screen.getByTestId('spin')).toBeInTheDocument()
+  expect(screen.queryByTestId(mockTable1.id)).not.toBeInTheDocument()
+})
+
+test('renders no data message when layout data is empty', () => {
+  usePaginatedLayout.mockReturnValueOnce({
+    layoutData: [],
+    isFetching: false,
+  })
+
+  render(<TableLayoutComponent {...defaultProps} />)
+
+  expect(screen.getByText(localize(Localization.NO_DATA))).toBeInTheDocument()
 })

@@ -226,8 +226,28 @@ test('ManageDisplayModeFormSection receives correct props', () => {
     displayCharLimit: 10,
     fieldType: FieldType.STRING,
     isEditMode: true,
+    isMaskingModeDisabled: false,
     isReadOnlyField: false,
   })
+})
+
+test('ManageDisplayModeFormSection disables masking mode when field type is CHECKMARK', () => {
+  mockReactHookForm.useWatch.mockImplementation(({ name }) => {
+    if (name === FIELD_FORM_CODE.FIELD_TYPE) {
+      return FieldType.CHECKMARK
+    }
+
+    if (name === FIELD_FORM_CODE.MULTIPLICITY) {
+      return MULTIPLICITY.MULTIPLE
+    }
+
+    return undefined
+  })
+
+  render(<AddFieldForm {...defaultProps} />)
+
+  const props = MockManageDisplayModeFormSection.getProps()
+  expect(props.isMaskingModeDisabled).toBe(true)
 })
 
 test('ManageDisplayModeFormSection updates when field type changes', () => {

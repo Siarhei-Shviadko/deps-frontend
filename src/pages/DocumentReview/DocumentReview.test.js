@@ -99,6 +99,7 @@ describe('Container: DocumentReview', () => {
       mockDocument.documentType.code,
       [
         DocumentTypeExtras.EXTRACTION_FIELDS,
+        DocumentTypeExtras.WORKFLOW_CONFIGURATIONS,
         DocumentTypeExtras.PROFILES,
         DocumentTypeExtras.EXTRA_FIELDS,
         DocumentTypeExtras.LLM_EXTRACTORS,

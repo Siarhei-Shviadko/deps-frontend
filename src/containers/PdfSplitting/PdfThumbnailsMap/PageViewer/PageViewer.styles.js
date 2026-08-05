@@ -7,7 +7,7 @@ export const Header = styled.div`
 
   & > div:last-child {
     right: 31rem;
-    
+
     @media (max-width: 1250px) {
       right: 19rem;
     }
@@ -23,10 +23,6 @@ export const PageWrapper = styled.div`
   outline-offset: 1px;
   border-radius: 8px;
   box-shadow: 0 0.3rem 2rem 0 ${(props) => props.theme.color.shadow3};
-
-  & canvas {
-    margin-inline: auto;
-  }
 `
 
 export const PageNumberCorner = styled.div`

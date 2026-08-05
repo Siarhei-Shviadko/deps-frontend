@@ -11,6 +11,15 @@ import { PdfSegments } from './PdfSegments'
 jest.mock('@/utils/env', () => mockEnv)
 jest.mock('@/selectors/documentTypesListPage')
 
+jest.mock('@/containers/DocumentTypesGroupsSelect', () => ({
+  DocumentTypesGroupsSelect: ({ disabled }) => (
+    <div
+      data-disabled={disabled}
+      data-testid="DocumentTypesGroupsSelect"
+    />
+  ),
+}))
+
 jest.mock('uuid', () => ({
   v4: jest.fn(() => mockUUID),
 }))
@@ -206,7 +215,7 @@ test('calls setSegments when change document type for segment', async () => {
   const [documentType] = documentTypesSelector.getSelectorMockValue()
 
   const comboboxes = screen.getAllByRole('combobox')
-  const selectElement = comboboxes[1]
+  const selectElement = comboboxes[0]
   await userEvent.click(selectElement)
 
   const option = screen.getByText(documentType.name)
@@ -221,6 +230,18 @@ test('calls setSegments when change document type for segment', async () => {
     },
     mockSegments[1],
   ])
+})
+
+test('passes disabled prop to group select when disableDocumentTypeGroup is true', () => {
+  const props = {
+    onCancel: jest.fn(),
+    onSave: jest.fn(),
+    disableDocumentTypeGroup: true,
+  }
+
+  render(<PdfSegments {...props} />)
+
+  expect(screen.getByTestId('DocumentTypesGroupsSelect')).toHaveAttribute('data-disabled', 'true')
 })
 
 test('calls onSave when click on save btn', async () => {

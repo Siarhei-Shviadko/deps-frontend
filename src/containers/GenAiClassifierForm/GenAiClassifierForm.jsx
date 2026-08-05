@@ -16,6 +16,7 @@ import { CustomSelect, SelectOption } from '@/components/Select'
 import { GEN_AI_PROMPT_MAX_LENGTH } from '@/constants/common'
 import { FORBIDDEN_WHITE_SPACE_BEFORE_TEXT } from '@/constants/regexp'
 import { ExtractionLLMSelect } from '@/containers/ExtractionLLMSelect'
+import { GroupDocumentTypeSelect } from '@/containers/GroupDocumentTypeSelect'
 import { DocumentTypeExtras } from '@/enums/DocumentTypeExtras'
 import { Localization, localize } from '@/localization/i18n'
 import { genAiClassifierShape } from '@/models/DocumentTypesGroup'
@@ -25,7 +26,6 @@ import {
   areTypesFetchingSelector,
   isDocumentTypeFetchingSelector,
 } from '@/selectors/requests'
-import { GroupDocumentTypeSelect } from './GroupDocumentTypeSelect'
 
 const FIELD_CODE = {
   DOCUMENT_TYPE: 'documentType',

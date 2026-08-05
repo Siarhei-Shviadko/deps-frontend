@@ -53,6 +53,8 @@ const AddDocumentTypesToGroupButton = ({ group }) => {
     }
   }
 
+  const isLoading = isDocumentTypeAdding || isClassifierCreating
+
   return (
     <>
       <StyledButton
@@ -67,7 +69,7 @@ const AddDocumentTypesToGroupButton = ({ group }) => {
         addDocTypesToGroup={addDocTypesToGroup}
         closeDrawer={toggleDrawer}
         group={group}
-        isLoading={isDocumentTypeAdding || isClassifierCreating}
+        isLoading={isLoading}
         visible={isDrawerVisible}
       />
     </>

@@ -8,7 +8,7 @@ exports[`Component: ChatInput should render correct layout 1`] = `
     }
   }
   disabled={false}
-  maxLength={1000}
+  maxLength={10000}
   onChange={[Function]}
   onPressEnter={[Function]}
   placeholder="Type a Message"

@@ -1,6 +1,6 @@
 
 import { useMemo, useCallback } from 'react'
-import { useFormContext } from 'react-hook-form'
+import { useFormContext, useWatch } from 'react-hook-form'
 import { useSelector } from 'react-redux'
 import { CustomCollapse } from '@/components/Collapse/CustomCollapse'
 import { FormFieldType } from '@/components/Form'
@@ -67,6 +67,8 @@ export const WorkflowConfigurationSection = () => {
   const areEnginesFetching = useSelector(areEnginesFetchingSelector)
   const { setValue } = useFormContext()
 
+  const selectedEngine = useWatch({ name: FIELD_FORM_CODE.ENGINE })
+
   const handleNeedsValidationChange = useCallback((val) => {
     if (val) {
       setValue(FIELD_FORM_CODE.NEEDS_EXTRACTION, true)
@@ -97,7 +99,12 @@ export const WorkflowConfigurationSection = () => {
       code: FIELD_FORM_CODE.PARSING_FEATURES,
       label: renderParsingFeaturesLabel(),
       placeholder: localize(Localization.SELECT_PARSING_FEATURE),
-      render: ParsingFeaturesSwitch,
+      render: (props) => (
+        <ParsingFeaturesSwitch
+          {...props}
+          engineCode={selectedEngine}
+        />
+      ),
     },
     {
       code: FIELD_FORM_CODE.NEEDS_REVIEW,
@@ -133,6 +140,7 @@ export const WorkflowConfigurationSection = () => {
     engines,
     handleNeedsExtractionChange,
     handleNeedsValidationChange,
+    selectedEngine,
   ])
 
   const renderExpandButton = useCallback((panelProps, onClick) => (

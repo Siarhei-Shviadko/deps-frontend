@@ -10,11 +10,13 @@ import {
   LLMReference,
 } from '@/models/LLMExtractor'
 import { documentTypeStateSelector } from '@/selectors/documentType'
+import { isDocumentTypeFetchingSelector } from '@/selectors/requests'
 import { render } from '@/utils/rendererRTL'
 import { DocumentTypeLLMExtractorsList } from './DocumentTypeLLMExtractorsList'
 
 jest.mock('@/utils/env', () => mockEnv)
 jest.mock('@/selectors/documentType')
+jest.mock('@/selectors/requests')
 
 jest.mock('@/containers/AddLLMExtractorModalButton', () => ({
   AddLLMExtractorModalButton: () => <button data-testid='add-llm-extractor' />,
@@ -68,6 +70,31 @@ const mockDocumentType = new ExtendedDocumentType({
 beforeEach(() => {
   jest.clearAllMocks()
   documentTypeStateSelector.mockReturnValue(mockDocumentType)
+  isDocumentTypeFetchingSelector.mockReturnValue(false)
+})
+
+test('shows centered spinner when loading and llm extractors are not loaded yet', () => {
+  isDocumentTypeFetchingSelector.mockReturnValue(true)
+  documentTypeStateSelector.mockReturnValue({
+    ...mockDocumentType,
+    llmExtractors: [],
+  })
+
+  render(<DocumentTypeLLMExtractorsList />)
+
+  expect(screen.getByTestId('spin')).toBeInTheDocument()
+  expect(screen.queryByText(localize(Localization.TOTAL_NUMBER))).not.toBeInTheDocument()
+})
+
+test('shows llm extractors list when loading and extractors are already loaded', () => {
+  isDocumentTypeFetchingSelector.mockReturnValue(true)
+
+  render(<DocumentTypeLLMExtractorsList />)
+
+  expect(screen.getByText(localize(Localization.TOTAL_NUMBER))).toBeInTheDocument()
+  mockLLMExtractors.forEach((llmExtractor) => {
+    expect(screen.getByText(llmExtractor.name)).toBeInTheDocument()
+  })
 })
 
 test('shows LLM Extractors info panel', async () => {

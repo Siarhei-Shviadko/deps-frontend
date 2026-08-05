@@ -8,6 +8,7 @@ import {
   FormItem,
   RequiredValidator,
 } from '@/components/Form/ReactHookForm'
+import { KnownOCREngine } from '@/enums/KnownOCREngine'
 import { PrototypeViewType } from '@/enums/PrototypeViewType'
 import { Localization, localize } from '@/localization/i18n'
 import { Engine } from '@/models/Engine'
@@ -60,7 +61,7 @@ const PrototypeInfo = ({
       requiredMark: true,
       placeholder: localize(Localization.SELECT_ENGINE),
       type: FormFieldType.ENUM,
-      options: Engine.toAllEnginesOptions(engines),
+      options: Engine.toAllEnginesOptions(engines, [KnownOCREngine.TESSERACT]),
       rules: new RequiredValidator(),
     }, {
       code: FIELD_CODE.LANGUAGE,

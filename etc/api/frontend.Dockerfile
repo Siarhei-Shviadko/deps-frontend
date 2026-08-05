@@ -1,5 +1,5 @@
 ARG REPOSITORY_URL=""
-FROM ${REPOSITORY_URL}/base/node:20.19.4-alpine3.21 as build_node
+FROM ${REPOSITORY_URL:+$REPOSITORY_URL/base/}node:20.19.4-alpine3.21 as build_node
 
 WORKDIR /app
 
@@ -21,7 +21,7 @@ ENV ENABLE_SOURCE_MAP=$ENABLE_SOURCE_MAP
 
 RUN yarn build
 
-FROM ${REPOSITORY_URL}/base/nginx:1.28.0
+FROM ${REPOSITORY_URL:+$REPOSITORY_URL/base/}nginx:1.28.0
 
 WORKDIR /app
 

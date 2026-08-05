@@ -12,7 +12,6 @@ import {
 export const FileName = ({ fileData }) => {
   const bulkDocumentType = useWatch({ name: FIELD_FORM_CODE.DOCUMENT_TYPE })
   const bulkEngine = useWatch({ name: FIELD_FORM_CODE.ENGINE })
-  const bulkLLMType = useWatch({ name: FIELD_FORM_CODE.LLM_TYPE })
   const bulkParsingFeatures = useWatch({ name: FIELD_FORM_CODE.PARSING_FEATURES })
 
   if (!fileData.settings) {
@@ -26,7 +25,6 @@ export const FileName = ({ fileData }) => {
   const isBulkTheSame = (
     bulkDocumentType === fileData.settings.documentType &&
     bulkEngine === fileData.settings.engine &&
-    bulkLLMType === fileData.settings.llmType &&
     bulkParsingFeatures.length === fileData.settings.parsingFeatures.length &&
     bulkParsingFeatures.every((feature) => fileData.settings.parsingFeatures.includes(feature))
   )

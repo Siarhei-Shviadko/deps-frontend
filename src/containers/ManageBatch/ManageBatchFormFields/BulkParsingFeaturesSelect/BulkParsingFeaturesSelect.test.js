@@ -1,8 +1,10 @@
 
 import { mockEnv } from '@/mocks/mockEnv'
+import { mockReactHookForm } from '@/mocks/mockReactHookForm'
 import { mockReactRedux } from '@/mocks/mockReactRedux'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { useFormContext } from 'react-hook-form'
 import { FIELD_FORM_CODE } from '@/containers/ManageBatch/constants'
 import { KnownParsingFeature as MockKnownParsingFeature } from '@/enums/KnownParsingFeature'
 import { render } from '@/utils/rendererRTL'
@@ -10,6 +12,7 @@ import { BulkParsingFeaturesSelect } from './BulkParsingFeaturesSelect'
 
 jest.mock('@/utils/env', () => mockEnv)
 jest.mock('react-redux', () => mockReactRedux)
+jest.mock('react-hook-form', () => mockReactHookForm)
 
 jest.mock('@/containers/ParsingFeaturesSwitch', () => ({
   ParsingFeaturesSwitch: ({ onChange }) => (
@@ -39,15 +42,12 @@ jest.mock('@/containers/ParsingFeaturesSwitch', () => ({
 const mockSetValue = jest.fn()
 const mockGetValues = jest.fn()
 
-jest.mock('react-hook-form', () => ({
-  useFormContext: jest.fn(() => ({
-    setValue: mockSetValue,
-    getValues: mockGetValues,
-  })),
-}))
-
 beforeEach(() => {
   jest.clearAllMocks()
+  useFormContext.mockImplementation(() => ({
+    setValue: mockSetValue,
+    getValues: mockGetValues,
+  }))
 })
 
 test('renders ParsingFeaturesSwitch correctly', () => {

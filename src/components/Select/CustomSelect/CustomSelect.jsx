@@ -80,9 +80,12 @@ class CustomSelect extends PureComponent {
     ? option.renderOption()
     : option.text
 
+  getTooltipContainer = (trigger) =>
+    trigger.closest('.ant-select')?.parentNode || document.body
+
   renderTooltip = (option) => (
     <Tooltip
-      getPopupContainer={this.props.getTooltipContainer ?? this.getContainer}
+      getPopupContainer={this.props.getTooltipContainer ?? this.getTooltipContainer}
       placement={option.tooltip?.placement}
       title={option.tooltip?.title}
     >

@@ -12,6 +12,7 @@ import { selectionSelector } from '@/selectors/navigation'
 import { ENV } from '@/utils/env'
 import { navigationMap } from '@/utils/navigationMap'
 import { SetClassifiersDrawerButton } from '../SetClassifiersDrawerButton'
+import { SetSplittersDrawerButton } from '../SetSplittersDrawerButton'
 import { Controls, HeaderExtraWrapper } from './DocumentTypesGroupHeader.styles'
 
 const DocumentTypesGroupHeader = ({ group }) => {
@@ -20,6 +21,13 @@ const DocumentTypesGroupHeader = ({ group }) => {
 
   const documentTypesWithClassifiers = group.genAiClassifiers.map((c) => c.documentTypeId)
   const isSetClassifierButtonVisible = group.documentTypeIds.some((dt) => !documentTypesWithClassifiers.includes(dt))
+
+  const documentTypesWithSplitters = group.splitters
+    .filter((s) => s.documentTypeId)
+    .map((s) => s.documentTypeId)
+  const isSetSplitterButtonVisible = group.documentTypeIds.some(
+    (dt) => !documentTypesWithSplitters.includes(dt),
+  )
 
   const clearSelection = () => {
     dispatch(setSelection(null))
@@ -52,6 +60,14 @@ const DocumentTypesGroupHeader = ({ group }) => {
           ENV.FEATURE_CLASSIFIER &&
           ENV.FEATURE_LLM_DATA_EXTRACTION && (
             <SetClassifiersDrawerButton
+              group={group}
+            />
+          )
+        }
+        {
+          ENV.FEATURE_PDF_SPLITTING &&
+          isSetSplitterButtonVisible && (
+            <SetSplittersDrawerButton
               group={group}
             />
           )

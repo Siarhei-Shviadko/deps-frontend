@@ -1,8 +1,8 @@
 
+import { mockShallowComponent } from '@/mocks/mockComponent'
 import { mockEnv } from '@/mocks/mockEnv'
 import { mockReactHookForm } from '@/mocks/mockReactHookForm'
 import { screen } from '@testing-library/dom'
-import { within } from '@testing-library/react'
 import { Localization, localize } from '@/localization/i18n'
 import { render } from '@/utils/rendererRTL'
 import { LLMExtractorForm } from './LLMExtractorForm'
@@ -19,16 +19,14 @@ jest.mock('../InstructionSection', () => ({
 jest.mock('../TemperatureSection', () => ({
   TemperatureSection: () => <div data-testid={TEMPERATURE_TEST_ID} />,
 }))
-jest.mock('@/containers/PageSpanSection', () => ({
-  PageSpanSection: () => <div data-testid={PAGE_SPAN_TEST_ID} />,
-}))
+jest.mock('./AdvancedLLMSettings', () => mockShallowComponent('AdvancedLLMSettings'))
 
 const INSTRUCTION_TEST_ID = 'instruction-section'
 const LLM_TEST_ID = 'llm'
 const TEMPERATURE_TEST_ID = 'temperature-section'
-const PAGE_SPAN_TEST_ID = 'page-span-section'
+const ADVANCED_LLM_SETTINGS_TEST_ID = 'AdvancedLLMSettings'
 
-test('shows all form sections correctly', () => {
+test('shows base form sections correctly', () => {
   render(
     <LLMExtractorForm />,
   )
@@ -46,22 +44,16 @@ test('shows all form sections correctly', () => {
   const temperatureSection = screen.getByTestId(TEMPERATURE_TEST_ID)
   expect(temperatureSection).toBeInTheDocument()
 
-  const groupingFactorLabel = screen.getByText(localize(Localization.GROUPING_FACTOR))
-  const groupingFactorInput = screen.getByPlaceholderText(localize(Localization.GROUPING_FACTOR_PLACEHOLDER))
-  expect(groupingFactorLabel).toBeInTheDocument()
-  expect(groupingFactorInput).toBeInTheDocument()
-
-  const pageSpanLabel = screen.getByText(localize(Localization.PAGE_SPAN))
-  const pageSpanSection = screen.getByTestId(PAGE_SPAN_TEST_ID)
-  expect(pageSpanLabel).toBeInTheDocument()
-  expect(pageSpanSection).toBeInTheDocument()
-
-  const contextAttachmentsLabel = screen.getByText(localize(Localization.CONTEXT_FOR_EXTRACTION))
-  const [contextAttachmentsSelect] = screen.getAllByTestId('CustomSelect')
-  const contextAttachmentsSelectedOption = within(contextAttachmentsSelect).getByText(localize(Localization.AI_CONTEXT_TEXT_ONLY))
-  expect(contextAttachmentsLabel).toBeInTheDocument()
-  expect(contextAttachmentsSelectedOption).toBeInTheDocument()
-
   const instructionSection = screen.getByTestId(INSTRUCTION_TEST_ID)
   expect(instructionSection).toBeInTheDocument()
+})
+
+test('renders AdvancedLLMSettings section', () => {
+  render(
+    <LLMExtractorForm />,
+  )
+
+  const advancedSettings = screen.getByTestId(ADVANCED_LLM_SETTINGS_TEST_ID)
+
+  expect(advancedSettings).toBeInTheDocument()
 })

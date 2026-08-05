@@ -6,6 +6,8 @@ import {
   useEffect,
   useMemo,
 } from 'react'
+import { useDispatch } from 'react-redux'
+import { setActivePdfPage, setHighlightedField } from '@/actions/documentReviewPage'
 import { NoData } from '@/components/NoData'
 import { RadioOptionType, RadioButtonStyle } from '@/components/Radio'
 import {
@@ -15,14 +17,17 @@ import {
 } from '@/enums/DocumentLayoutType'
 import { KnownParsingFeature } from '@/enums/KnownParsingFeature'
 import { localize, Localization } from '@/localization/i18n'
+import { INITIAL_PAGE } from './constants'
 import {
   StyledRadioGroup,
   StyledRadio,
   SubHeader,
   Wrapper,
+  ContentArea,
 } from './EntityLayout.styles'
 import { ImageLayout } from './ImageLayout'
 import { KeyValuePairLayout } from './KeyValuePairLayout'
+import { LayoutPagination } from './LayoutPagination'
 import { LayoutSelect } from './LayoutSelect'
 import { ParagraphLayout } from './ParagraphLayout'
 import { TableLayout } from './TableLayout'
@@ -59,9 +64,16 @@ const getMergedTablesList = (mergedTables = []) => mergedTables
   )
 
 export const EntityLayout = ({ rawParsingInfoData }) => {
+  const dispatch = useDispatch()
   const [selectedParsingType, setSelectedParsingType] = useState('')
-
   const [activeFeature, setActiveFeature] = useState('')
+  const [currentPage, setCurrentPage] = useState(INITIAL_PAGE)
+
+  const handlePageChange = useCallback((page) => {
+    setCurrentPage(page)
+    dispatch(setActivePdfPage(page))
+    dispatch(setHighlightedField(null))
+  }, [dispatch])
 
   const parsingInfoData = useMemo(() => {
     if (
@@ -116,15 +128,20 @@ export const EntityLayout = ({ rawParsingInfoData }) => {
     return (
       <DocumentLayoutComponent
         key={selectedParsingType}
+        batchIndex={currentPage - 1}
         parsingType={selectedParsingType}
-        total={parsingInfoData.totalPages}
         {...(
           activeFeature === DOCUMENT_LAYOUT_TYPE.TABLES &&
           { mergedTables: parsingInfoData.mergedTables }
         )}
       />
     )
-  }, [activeFeature, parsingInfoData, selectedParsingType])
+  }, [
+    activeFeature,
+    currentPage,
+    parsingInfoData,
+    selectedParsingType,
+  ])
 
   useEffect(() => {
     if (parsingInfoData?.features?.length && !activeFeature) {
@@ -163,10 +180,21 @@ export const EntityLayout = ({ rawParsingInfoData }) => {
           )
         }
       </SubHeader>
-      {activeFeature && renderSelectedContent()}
+      <ContentArea>
+        {activeFeature && renderSelectedContent()}
+        {
+          !activeFeature && (
+            <NoData description={localize(Localization.NOTHING_TO_DISPLAY)} />
+          )
+        }
+      </ContentArea>
       {
-        !activeFeature && (
-          <NoData description={localize(Localization.NOTHING_TO_DISPLAY)} />
+        activeFeature && (
+          <LayoutPagination
+            currentPage={currentPage}
+            onPageChange={handlePageChange}
+            total={parsingInfoData?.totalPages}
+          />
         )
       }
     </Wrapper>

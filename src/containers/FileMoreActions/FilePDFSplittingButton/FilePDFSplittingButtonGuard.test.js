@@ -56,13 +56,13 @@ test('renders disabled button with tooltip for non-PDF files', () => {
 
   expect(disabledBtn).toBeInTheDocument()
   expect(disabledBtn).toBeDisabled()
-  expect(disabledBtn).toHaveTextContent(localize(Localization.SPLIT_FILE))
+  expect(disabledBtn).toHaveTextContent(localize(Localization.MANUAL_FILE_SPLITTING))
 })
 
 test('renders FilePDFSplittingButton if file has PDF extension', () => {
   render(<FilePDFSplittingButtonGuard file={mockFilePdf} />)
 
-  const splitFileBtn = screen.getByText(localize(Localization.SPLIT_FILE))
+  const splitFileBtn = screen.getByText(localize(Localization.MANUAL_FILE_SPLITTING))
 
   expect(splitFileBtn).toBeInTheDocument()
 })
@@ -98,7 +98,7 @@ test('renders disabled PDF splitting button when file has reference', () => {
 
   const button = screen.getByRole('button')
   expect(button).toBeDisabled()
-  expect(button).toHaveTextContent(localize(Localization.SPLIT_FILE))
+  expect(button).toHaveTextContent(localize(Localization.MANUAL_FILE_SPLITTING))
 })
 
 test('shows tooltip with reference unavailable message when PDF file has reference', async () => {

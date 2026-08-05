@@ -3,12 +3,14 @@ import { mockEnv } from '@/mocks/mockEnv'
 import { mockNotification } from '@/mocks/mockNotification'
 import { mockReactRedux } from '@/mocks/mockReactRedux'
 import { shallow } from 'enzyme'
+import flushPromises from 'flush-promises'
 import {
   highlightTableCoordsField,
   highlightPolygonCoordsField,
 } from '@/actions/documentReviewPage'
-import { updateExtractedData } from '@/actions/documents'
+import { storeValidation, updateExtractedData } from '@/actions/documents'
 import { documentsApi } from '@/api/documentsApi'
+import { documentTypesApi } from '@/api/documentTypesApi'
 import {
   HTColumn,
   HTCell,
@@ -63,6 +65,7 @@ jest.mock('@/selectors/navigation')
 jest.mock('@/selectors/requests')
 jest.mock('@/actions/documents', () => ({
   updateExtractedData: jest.fn(),
+  storeValidation: jest.fn(),
 }))
 jest.mock('@/actions/documentReviewPage', () => ({
   highlightTableCoordsField: jest.fn(),
@@ -125,6 +128,12 @@ jest.mock('@/api/documentsApi', () => ({
   documentsApi: {
     updateEdField: jest.fn(),
     saveEdField: jest.fn(),
+  },
+}))
+
+jest.mock('@/api/documentTypesApi', () => ({
+  documentTypesApi: {
+    validateField: jest.fn(),
   },
 }))
 
@@ -215,6 +224,11 @@ describe('Container: ExtractedDataHandsonTable', () => {
       props.updateExtractedData()
       expect(updateExtractedData).toHaveBeenCalledTimes(1)
     })
+
+    it('should pass storeValidation action as storeValidation property', () => {
+      props.storeValidation()
+      expect(storeValidation).toHaveBeenCalledTimes(1)
+    })
   })
 
   describe('ConnectedComponent', () => {
@@ -231,6 +245,9 @@ describe('Container: ExtractedDataHandsonTable', () => {
 
     beforeEach(() => {
       jest.clearAllMocks()
+      documentsApi.updateEdField.mockResolvedValue({})
+      documentsApi.saveEdField.mockResolvedValue({})
+      documentTypesApi.validateField.mockResolvedValue({})
       const cells1 = [
         new Cell(0, 0, '0 1', 2, 2, 1, 0.1),
         new Cell(0, 2, '0 3', 1, 2, 1, 0.1),
@@ -306,6 +323,7 @@ describe('Container: ExtractedDataHandsonTable', () => {
         highlightPolygonCoordsField: jest.fn(),
         tableField: tableField1,
         updateExtractedData: jest.fn(),
+        storeValidation: jest.fn(),
         readOnly: false,
         confidenceView: confidenceViewSelector.getSelectorMockValue(),
         documentType: documentTypeSelector.getSelectorMockValue(),
@@ -358,6 +376,7 @@ describe('Container: ExtractedDataHandsonTable', () => {
         highlightPolygonCoordsField: jest.fn(),
         tableField: tableField2,
         updateExtractedData: jest.fn(),
+        storeValidation: jest.fn(),
         readOnly: false,
         confidenceView: confidenceViewSelector.getSelectorMockValue(),
         documentType: documentTypeSelector.getSelectorMockValue(),
@@ -1223,6 +1242,86 @@ describe('Container: ExtractedDataHandsonTable', () => {
         fieldPk: fieldToUpdate.fieldPk,
         documentPk: defaultStringsProps.documentId,
       })
+    })
+
+    it('should call validation after successful field save when calling validateFieldAfterSave', async () => {
+      const mockValidation = {
+        fieldValidations: [],
+        crossFieldValidations: [],
+      }
+      documentTypesApi.validateField.mockResolvedValue(mockValidation)
+
+      await wrapperStrings.instance().validateFieldAfterSave()
+
+      expect(documentTypesApi.validateField).toHaveBeenNthCalledWith(
+        1,
+        defaultStringsProps.documentType.code,
+        defaultStringsProps.dtField.code,
+        defaultStringsProps.documentId,
+      )
+      expect(defaultStringsProps.storeValidation).toHaveBeenNthCalledWith(
+        1,
+        defaultStringsProps.documentId,
+        mockValidation,
+      )
+    })
+
+    it('should skip validation when FEATURE_PER_FIELD_VALIDATION is disabled', async () => {
+      ENV.FEATURE_PER_FIELD_VALIDATION = false
+
+      await wrapperStrings.instance().validateFieldAfterSave()
+
+      expect(documentTypesApi.validateField).not.toHaveBeenCalled()
+      expect(defaultStringsProps.storeValidation).not.toHaveBeenCalled()
+
+      ENV.FEATURE_PER_FIELD_VALIDATION = true
+    })
+
+    it('should call validation after saveData when FEATURE_PER_FIELD_VALIDATION is enabled', async () => {
+      defaultStringsProps.document.extractedData = []
+      defaultStringsProps.dtField.fieldIndex = undefined
+      const tableData = [[1, 2]]
+      const mergeCells = []
+      const mockValidation = {
+        fieldValidations: [],
+        crossFieldValidations: [],
+      }
+      documentTypesApi.validateField.mockResolvedValue(mockValidation)
+
+      htStringsProps.saveData(tableData, mergeCells)
+      await flushPromises()
+
+      expect(documentTypesApi.validateField).toHaveBeenCalledTimes(1)
+      expect(defaultStringsProps.storeValidation).toHaveBeenNthCalledWith(
+        1,
+        defaultStringsProps.documentId,
+        mockValidation,
+      )
+    })
+
+    it('should not call validation if save fails', async () => {
+      documentsApi.updateEdField.mockRejectedValueOnce(new Error('Save failed'))
+      defaultStringsProps.document.extractedData = []
+      defaultStringsProps.dtField.fieldIndex = undefined
+      const tableData = [[1, 2]]
+      const mergeCells = []
+      const { fieldToUpdate } = ExtractedData.getUpdates(
+        defaultStringsProps.document.extractedData,
+        defaultStringsProps.dtField,
+      )
+      fieldToUpdate.data.cells = mapHandsonDataStringsToTableFieldCells(
+        tableData,
+        mergeCells,
+        defaultStringsProps.activePage,
+      )
+      fieldToUpdate.data.modifiedBy = User.getName(defaultStringsProps.user)
+
+      await wrapperStrings.instance().sendFieldToSave(fieldToUpdate).catch(() => {})
+      await flushPromises()
+
+      expect(documentsApi.updateEdField).toHaveBeenCalledTimes(1)
+      expect(documentTypesApi.validateField).not.toHaveBeenCalled()
+      expect(defaultStringsProps.storeValidation).not.toHaveBeenCalled()
     })
   })
 })

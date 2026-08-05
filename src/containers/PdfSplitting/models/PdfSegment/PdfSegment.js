@@ -7,11 +7,13 @@ export class UserPage {
     page,
     segmentId,
     isExcluded = false,
+    coordinates = null,
   }) {
     this.id = uuidV4()
     this.page = page
     this.segmentId = segmentId
     this.isExcluded = isExcluded
+    this.coordinates = coordinates
   }
 }
 
@@ -21,11 +23,13 @@ export class PdfSegment {
     documentTypeId,
     userPages,
     isSelected = false,
+    name,
   }) {
     this.id = id
     this.documentTypeId = documentTypeId
     this.userPages = userPages
     this.isSelected = isSelected
+    this.name = name
   }
 
   static split = (segment, userPage) => {
@@ -37,6 +41,7 @@ export class PdfSegment {
         id: segment.id,
         userPages: segment.userPages.slice(0, pageIndex),
         documentTypeId: segment.documentTypeId,
+        name: segment.name,
       }),
       new PdfSegment({
         id,
@@ -66,6 +71,7 @@ export class PdfSegment {
         })),
       ],
       documentTypeId: segment1.documentTypeId,
+      name: segment1.name,
     })
   )
 
@@ -107,6 +113,7 @@ export class PdfSegment {
     new PdfSegment({
       id: segment.id,
       documentTypeId: segment.documentTypeId,
+      name: segment.name,
       userPages: segment.userPages.map((uP) => {
         if (userPage === uP) {
           return {
@@ -134,6 +141,7 @@ export class PdfSegment {
     return new PdfSegment({
       id: segment.id,
       documentTypeId: segment.documentTypeId,
+      name: segment.name,
       userPages: segment.userPages.toSpliced(userPageIndex + 1, 0, duplicatedPage),
     })
   }
@@ -149,6 +157,26 @@ export class PdfSegment {
     new PdfSegment({
       ...segment,
       documentTypeId,
+    })
+  )
+
+  static setUserPageCoordinates = (segments, userPage, coordinates) => (
+    segments.map((segment) => {
+      const hasPage = segment.userPages.some((uP) => uP === userPage)
+
+      if (!hasPage) {
+        return segment
+      }
+
+      return new PdfSegment({
+        ...segment,
+        userPages: segment.userPages.map((uP) => (
+          uP === userPage ? {
+            ...uP,
+            coordinates,
+          } : uP
+        )),
+      })
     })
   )
 
@@ -204,11 +232,15 @@ export class PdfSegment {
   }
 
   static getSegmentByUserPage = (segments, userPage) => {
-    return segments.find((segment) => segment.userPages.includes(userPage))
+    return segments.find((segment) => segment.userPages.some((uP) => uP.id === userPage.id))
   }
 
   static isPageDragDisabled = (segments, userPage) => {
     const segment = PdfSegment.getSegmentByUserPage(segments, userPage)
+
+    if (!segment) {
+      return true
+    }
 
     return (
       segment.userPages.length > 1 &&
@@ -219,17 +251,29 @@ export class PdfSegment {
   static isPageExcludeDisabled = (segments, userPage) => {
     const segment = PdfSegment.getSegmentByUserPage(segments, userPage)
 
+    if (!segment) {
+      return true
+    }
+
     return (
       PdfSegment.getIncludedUserPages(segment).length <= 1
     )
   }
 }
 
+export const coordinatesShape = PropTypes.shape({
+  x: PropTypes.number.isRequired,
+  y: PropTypes.number.isRequired,
+  width: PropTypes.number.isRequired,
+  height: PropTypes.number.isRequired,
+})
+
 export const userPageShape = PropTypes.shape({
   id: PropTypes.string.isRequired,
   page: PropTypes.number.isRequired,
   segmentId: PropTypes.string.isRequired,
   isExcluded: PropTypes.bool.isRequired,
+  coordinates: coordinatesShape,
 })
 
 export const pdfSegmentShape = PropTypes.shape({
@@ -237,4 +281,5 @@ export const pdfSegmentShape = PropTypes.shape({
   documentTypeId: PropTypes.string,
   userPages: PropTypes.arrayOf(userPageShape).isRequired,
   isSelected: PropTypes.bool.isRequired,
+  name: PropTypes.string,
 })

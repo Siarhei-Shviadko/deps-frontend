@@ -11,6 +11,10 @@ import { FileStateCell } from './FileStateCell'
 
 jest.mock('@/utils/env', () => mockEnv)
 
+beforeEach(() => {
+  jest.clearAllMocks()
+})
+
 const mockErrorIconId = 'Error-icon'
 const mockRestartButtonId = 'restart-button'
 
@@ -75,6 +79,15 @@ test('renders component for IN_REVIEW status', () => {
   expect(badge).toBeInTheDocument()
 })
 
+test('renders component for SPLITTING_REVIEW status', () => {
+  const mockFile = createMockFile(FileStatus.SPLITTING_REVIEW)
+
+  render(<FileStateCell file={mockFile} />)
+
+  const badge = screen.getByText(RESOURCE_FILE_STATUS[FileStatus.SPLITTING_REVIEW])
+  expect(badge).toBeInTheDocument()
+})
+
 test('renders badge with correct color for PROCESSING status', () => {
   const mockFile = createMockFile(FileStatus.PROCESSING)
 
@@ -122,8 +135,6 @@ test('does not render error icon when errorMessage is not provided', () => {
 })
 
 test('renders tooltip with error message when error icon is hovered', async () => {
-  jest.clearAllMocks()
-
   const mockErrorMessage = 'error message'
   const mockFile = createMockFile(FileStatus.FAILED, mockErrorMessage)
 

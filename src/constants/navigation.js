@@ -75,6 +75,7 @@ const GroupDocumentTypesFilterKey = {
   NAME: 'name',
   EXTRACTION_TYPE: 'extractionType',
   CLASSIFIER: 'classifier',
+  SPLITTER: 'splitter',
 }
 
 const BatchFilterKey = {

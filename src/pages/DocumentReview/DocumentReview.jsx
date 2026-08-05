@@ -71,6 +71,7 @@ const DocumentReview = ({
 
     const extras = [
       DocumentTypeExtras.EXTRACTION_FIELDS,
+      DocumentTypeExtras.WORKFLOW_CONFIGURATIONS,
     ]
     ENV.FEATURE_OUTPUT_PROFILES && extras.push(DocumentTypeExtras.PROFILES)
     ENV.FEATURE_ENRICHMENT && extras.push(DocumentTypeExtras.EXTRA_FIELDS)

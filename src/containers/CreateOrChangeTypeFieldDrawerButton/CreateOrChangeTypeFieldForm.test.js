@@ -246,6 +246,7 @@ describe('Component: CreateOrChangeTypeFieldForm', () => {
 
     expect(wrapper.find(ManageDisplayModeFormSection).exists()).toBe(false)
 
+    ENV.FEATURE_FIELDS_DISPLAY_MODE = true
     jest.clearAllMocks()
   })
 
@@ -261,11 +262,40 @@ describe('Component: CreateOrChangeTypeFieldForm', () => {
       66,
     )
 
-    useWatch.mockImplementationOnce(() => FieldType.CHECKMARK)
+    useWatch
+      .mockImplementationOnce(() => FieldType.CHECKMARK)
+      .mockImplementationOnce(() => undefined)
 
     wrapper.setProps(defaultProps)
 
     expect(ALLOWED_FIELD_TYPES_FOR_DISPLAY_MODE_FEATURE).not.toContain(FieldType.CHECKMARK)
     expect(wrapper.find(ManageDisplayModeFormSection).exists()).toBe(false)
+  })
+
+  it('should pass displayCharLimit from valueMeta to ManageDisplayModeFormSection for Dictionary field', () => {
+    const mockDisplayCharLimit = 5
+
+    defaultProps.field = new DocumentTypeField(
+      'kvCode',
+      'kvName',
+      {
+        keyType: FieldType.STRING,
+        valueType: FieldType.STRING,
+        valueMeta: {
+          displayCharLimit: mockDisplayCharLimit,
+        },
+      },
+      FieldType.DICTIONARY,
+      false,
+      0,
+      'whole',
+      7,
+    )
+
+    useWatch.mockImplementationOnce(() => FieldType.DICTIONARY)
+
+    wrapper.setProps(defaultProps)
+
+    expect(wrapper.find(ManageDisplayModeFormSection).props().displayCharLimit).toBe(mockDisplayCharLimit)
   })
 })

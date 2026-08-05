@@ -48,6 +48,8 @@ test('transforms LLM extractors to studio extractors correctly', () => {
     pageSpan,
     temperature,
     topP,
+    stop: [],
+    contextAttachments: '',
   }))
 })
 
@@ -105,4 +107,30 @@ test('handles extractor with pageSpan object', () => {
     start: 2,
     end: 10,
   })
+})
+
+test('maps advanced extraction params to studio extractor', () => {
+  const llmExtractors = [
+    {
+      ...mockLLMExtractor,
+      extractionParams: {
+        ...mockLLMExtractor.extractionParams,
+        contextAttachments: 'documentImages',
+        maxTokens: 2048,
+        stop: ['stop1'],
+        seed: 42,
+        logprobs: true,
+      },
+    },
+  ]
+
+  const result = mapLLMExtractorsToStudioExtractors(llmExtractors)
+
+  expect(result[0]).toEqual(expect.objectContaining({
+    contextAttachments: 'documentImages',
+    maxTokens: 2048,
+    stop: ['stop1'],
+    seed: 42,
+    logprobs: true,
+  }))
 })

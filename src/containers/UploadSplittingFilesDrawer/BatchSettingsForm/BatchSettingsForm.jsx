@@ -1,5 +1,6 @@
 
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
+import { useFormContext, useWatch } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchOCREngines } from '@/actions/engines'
 import {
@@ -13,7 +14,7 @@ import { FORBIDDEN_WHITE_SPACE_BEFORE_TEXT } from '@/constants/regexp'
 import { DocumentTypesGroupsSelect } from '@/containers/DocumentTypesGroupsSelect'
 import { ExtractionLLMSelect } from '@/containers/ExtractionLLMSelect'
 import { ParsingFeaturesSwitch } from '@/containers/ParsingFeaturesSwitch'
-import { FIELD_FORM_CODE } from '@/containers/UploadSplittingFilesDrawer/constants'
+import { BATCH_TYPE, FIELD_FORM_CODE } from '@/containers/UploadSplittingFilesDrawer/constants'
 import { ComponentSize } from '@/enums/ComponentSize'
 import { FieldType } from '@/enums/FieldType'
 import { Localization, localize } from '@/localization/i18n'
@@ -29,7 +30,27 @@ export const BatchSettingsForm = () => {
   const engines = useSelector(ocrEnginesSelector)
   const areEnginesFetching = useSelector(areEnginesFetchingSelector)
 
+  const selectedEngine = useWatch({ name: FIELD_FORM_CODE.ENGINE })
+  const isAutoSplitting = useWatch({ name: FIELD_FORM_CODE.AUTOMATIC_SPLITTING })
+
+  const { clearErrors, getValues, setValue } = useFormContext()
   const dispatch = useDispatch()
+
+  const handleAutomaticSplittingChange = (value) => {
+    if (value) {
+      setValue(FIELD_FORM_CODE.BATCH_TYPE, BATCH_TYPE.MULTI_BATCHES)
+      const selectedGroup = getValues(FIELD_FORM_CODE.GROUP)
+
+      !selectedGroup?.splitter && setValue(FIELD_FORM_CODE.GROUP, null)
+    } else {
+      clearErrors(FIELD_FORM_CODE.GROUP)
+      setValue(FIELD_FORM_CODE.BATCH_TYPE, BATCH_TYPE.ONE_BATCH)
+    }
+  }
+
+  const handleNeedsSplittingProposalReviewChange = useCallback((val) => {
+    setValue(FIELD_FORM_CODE.NEEDS_SPLITTING_PROPOSAL_REVIEW, val)
+  }, [setValue])
 
   useEffect(() => {
     !engines.length && dispatch(fetchOCREngines())
@@ -40,11 +61,13 @@ export const BatchSettingsForm = () => {
       code: FIELD_FORM_CODE.AUTOMATIC_SPLITTING,
       label: localize(Localization.AUTOMATIC_SPLITTING),
       type: FieldType.CHECKMARK,
+      handler: {
+        onChange: handleAutomaticSplittingChange,
+      },
       render: ({ value, defaultValue, ...restProps }) => (
         <Switch
           checked={value}
           defaultChecked={defaultValue}
-          disabled
           size={ComponentSize.SMALL}
           {...restProps}
         />
@@ -54,7 +77,16 @@ export const BatchSettingsForm = () => {
       ? [{
         code: FIELD_FORM_CODE.GROUP,
         label: localize(Localization.GROUP),
-        render: DocumentTypesGroupsSelect,
+        render: (props) => (
+          <DocumentTypesGroupsSelect
+            {...props}
+            filterWithSplitter={isAutoSplitting}
+          />
+        ),
+        ...(isAutoSplitting ? {
+          requiredMark: true,
+          rules: { ...new RequiredValidator() },
+        } : {}),
       }]
       : []
     ),
@@ -64,20 +96,22 @@ export const BatchSettingsForm = () => {
       disabled: true,
       render: BatchTypeSwitcher,
     },
-    {
-      code: FIELD_FORM_CODE.BATCH_NAME,
-      label: localize(Localization.BATCH_NAME),
-      placeholder: localize(Localization.BATCH_NAME),
-      requiredMark: true,
-      type: FormFieldType.STRING,
-      rules: {
-        ...new RequiredValidator(),
-        ...new PatternValidator(
-          FORBIDDEN_WHITE_SPACE_BEFORE_TEXT,
-          localize(Localization.WHITE_SPACE_VALIDATOR_ERROR_MESSAGE),
-        ),
-      },
-    },
+    ...(!isAutoSplitting
+      ? [{
+        code: FIELD_FORM_CODE.BATCH_NAME,
+        label: localize(Localization.BATCH_NAME),
+        placeholder: localize(Localization.BATCH_NAME),
+        requiredMark: true,
+        type: FormFieldType.STRING,
+        rules: {
+          ...new RequiredValidator(),
+          ...new PatternValidator(
+            FORBIDDEN_WHITE_SPACE_BEFORE_TEXT,
+            localize(Localization.WHITE_SPACE_VALIDATOR_ERROR_MESSAGE),
+          ),
+        },
+      }]
+      : []),
     ...(ENV.FEATURE_LLM_DATA_EXTRACTION
       ? [{
         code: FIELD_FORM_CODE.LLM_TYPE,
@@ -104,8 +138,24 @@ export const BatchSettingsForm = () => {
       code: FIELD_FORM_CODE.PARSING_FEATURES,
       label: localize(Localization.PARSING_FEATURES),
       placeholder: localize(Localization.SELECT_PARSING_FEATURE),
-      render: ParsingFeaturesSwitch,
+      render: (props) => (
+        <ParsingFeaturesSwitch
+          {...props}
+          engineCode={selectedEngine}
+        />
+      ),
     },
+    ...(isAutoSplitting
+      ? [{
+        code: FIELD_FORM_CODE.NEEDS_SPLITTING_PROPOSAL_REVIEW,
+        label: localize(Localization.NEEDS_SPLITTING_REVIEW),
+        type: FieldType.CHECKMARK,
+        handler: {
+          onChange: handleNeedsSplittingProposalReviewChange,
+        },
+      }]
+      : []
+    ),
   ]
 
   return (

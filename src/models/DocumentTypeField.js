@@ -89,6 +89,8 @@ class DocumentTypeField {
         dictFieldConfig.order,
         dictFieldConfig.documentTypeCode,
         dictFieldConfig.pk,
+        dictFieldConfig.readOnly,
+        dictFieldConfig.confidential,
       ),
       fieldIndex: dictFieldConfig.fieldIndex,
       fieldId: VALUE_INDEX,

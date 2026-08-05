@@ -39,6 +39,7 @@ jest.mock('@/actions/documentTypes', () => ({
   fetchDocumentTypes: jest.fn(() => mockActions.fetchDocumentTypes),
 }))
 jest.mock('@/containers/DocumentsStatesChart', () => mockComponent('DocumentsStatesChart'))
+jest.mock('@/containers/FieldEditsTable', () => mockComponent('FieldEditsTable'))
 jest.mock('./DocumentsByTypeChart', () => mockComponent('DocumentsByTypeChart'))
 
 describe('Container: DashboardCharts', () => {
@@ -87,6 +88,11 @@ describe('Container: DashboardCharts', () => {
 
   it('should render correct layout when fetching is finished', () => {
     expect(wrapper).toMatchSnapshot()
+  })
+
+  it('should render FieldEditsTable alongside DocumentsStatesChart in charts row', () => {
+    expect(wrapper.find('FieldEditsTable').exists()).toEqual(true)
+    expect(wrapper.find('DocumentsStatesChart').exists()).toEqual(true)
   })
 
   it('should render empty if no documents and document types provided', () => {

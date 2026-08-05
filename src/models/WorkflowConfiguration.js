@@ -1,9 +1,11 @@
 
 import PropTypes from 'prop-types'
+import { KnownOCREngine } from '@/enums/KnownOCREngine'
 import { ReviewPolicy } from '@/enums/ReviewPolicy'
 
 class WorkflowConfiguration {
   constructor ({
+    engine = KnownOCREngine.TESSERACT,
     parsingFeatures = [],
     needsPostprocessing = false,
     needsExtraction = false,
@@ -11,6 +13,7 @@ class WorkflowConfiguration {
     needsReview = ReviewPolicy.ALWAYS_REVIEW,
     needsOutputExporting = false,
   } = {}) {
+    this.engine = engine
     this.parsingFeatures = parsingFeatures
     this.needsPostprocessing = needsPostprocessing
     this.needsExtraction = needsExtraction

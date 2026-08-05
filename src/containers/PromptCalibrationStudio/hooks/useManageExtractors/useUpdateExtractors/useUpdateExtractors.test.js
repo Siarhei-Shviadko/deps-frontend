@@ -2,6 +2,7 @@
 import { mockEnv } from '@/mocks/mockEnv'
 import { mockNotification } from '@/mocks/mockNotification'
 import { renderHook } from '@testing-library/react-hooks'
+import { mapExtractorToLLMExtractor } from '@/containers/PromptCalibrationStudio/mappers'
 import { sendBatchRequests } from '@/containers/PromptCalibrationStudio/utils'
 import { Extractor } from '@/containers/PromptCalibrationStudio/viewModels'
 import { useUpdateExtractors } from './useUpdateExtractors'
@@ -120,18 +121,14 @@ test('updates extractor with correct data', async () => {
     [mockInitialExtractor],
   )
 
+  const { extractorName, extractionParams } = mapExtractorToLLMExtractor(mockUpdatedExtractorSameModel)
+
   expect(mockUpdateLLMExtractor).toHaveBeenCalledWith({
     documentTypeId: mockDocumentTypeId,
     extractorId: mockUpdatedExtractorSameModel.id,
     data: {
-      name: mockUpdatedExtractorSameModel.name,
-      extractionParams: {
-        temperature: mockUpdatedExtractorSameModel.temperature,
-        topP: mockUpdatedExtractorSameModel.topP,
-        groupingFactor: mockUpdatedExtractorSameModel.groupingFactor,
-        customInstruction: mockUpdatedExtractorSameModel.customInstruction,
-        pageSpan: mockUpdatedExtractorSameModel.pageSpan,
-      },
+      name: extractorName,
+      extractionParams,
     },
   })
 })

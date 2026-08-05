@@ -15,6 +15,7 @@ export const PdfSegmentsProvider = ({
   onChange,
   defaultSegments,
   defaultBatchName,
+  allowAreaSelection,
 }) => {
   const [segments, setSegments] = useState(defaultSegments ?? [])
   const [initialSegment, setInitialSegment] = useState(null)
@@ -66,9 +67,11 @@ export const PdfSegmentsProvider = ({
       setBatchName,
       selectedGroup,
       setSelectedGroup: handleGroupChange,
+      allowAreaSelection: allowAreaSelection ?? false,
     }),
     [
       activeUserPage,
+      allowAreaSelection,
       initialSegment,
       segments,
       isDraggable,
@@ -88,6 +91,7 @@ export const PdfSegmentsProvider = ({
 }
 
 PdfSegmentsProvider.propTypes = {
+  allowAreaSelection: PropTypes.bool,
   children: PropTypes.node.isRequired,
   onChange: PropTypes.func,
   defaultSegments: PropTypes.arrayOf(pdfSegmentShape),

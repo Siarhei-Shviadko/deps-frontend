@@ -19,10 +19,13 @@ import {
 import { documentTypeStateSelector } from '@/selectors/documentType'
 import { notifySuccess, notifyWarning } from '@/utils/notification'
 
-const getStringMeta = ({ displayCharLimit }) => displayCharLimit && { displayCharLimit }
+const getStringMeta = ({ displayCharLimit }) => displayCharLimit != null && { displayCharLimit }
+
+const getDictionaryMeta = ({ displayCharLimit }) => displayCharLimit != null && { valueMeta: { displayCharLimit } }
 
 const FIELD_TYPE_TO_META_FIELDS_MAPPING = {
   [FieldType.STRING]: getStringMeta,
+  [FieldType.DICTIONARY]: getDictionaryMeta,
 }
 
 const mapFieldDataToExtractionField = (

@@ -17,6 +17,12 @@ jest.mock('@/selectors/documentReviewPage')
 jest.mock('@/selectors/documentTypesListPage')
 jest.mock('@/utils/notification', () => mockNotification)
 
+jest.mock('@/containers/DocumentTypesGroupsSelect', () => ({
+  DocumentTypesGroupsSelect: () => (
+    <div data-testid="DocumentTypesGroupsSelect" />
+  ),
+}))
+
 jest.mock('../services', () => ({
   PdfSplitter: {
     getSplittedFilesData: jest.fn(() => mockFilesData),
@@ -82,6 +88,10 @@ const mockSegments = [
 const openDrawerWithSegments = async () => {
   const openBtn = screen.getByRole('button', { name: localize(Localization.SPLIT_DOCUMENT) })
   await userEvent.click(openBtn)
+
+  await waitFor(() => {
+    expect(screen.getByRole('button', { name: localize(Localization.SAVE) })).toBeInTheDocument()
+  })
 }
 
 beforeEach(() => {

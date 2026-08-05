@@ -5,6 +5,7 @@ export const ParsingFeaturesContainer = styled.div`
   flex-wrap: wrap;
   gap: 1rem;
   margin-top: 0.8rem;
+  flex-direction: ${(props) => props.$columnView ? 'column' : 'row'};
 `
 
 export const FeatureItem = styled.div`
@@ -16,4 +17,6 @@ export const FeatureItem = styled.div`
   border-radius: 0.5rem;
   background-color: ${(props) => props.theme.color.grayscale20};
   cursor: pointer;
+
+  justify-content: ${(props) => props.$columnView ? 'space-between' : 'start'};
 `

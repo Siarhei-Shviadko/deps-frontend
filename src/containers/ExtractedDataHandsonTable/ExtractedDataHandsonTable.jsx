@@ -10,8 +10,9 @@ import {
   extractAreaWithAlgorithm,
   extractArea,
 } from '@/actions/documentReviewPage'
-import { updateExtractedData } from '@/actions/documents'
+import { storeValidation, updateExtractedData } from '@/actions/documents'
 import { documentsApi } from '@/api/documentsApi'
+import { documentTypesApi } from '@/api/documentTypesApi'
 import {
   HTCell,
   ContextMenuItem,
@@ -100,6 +101,7 @@ class ExtractedDataHandsonTable extends Component {
     ]),
     tableField: extractedDataFieldShape.isRequired,
     updateExtractedData: PropTypes.func.isRequired,
+    storeValidation: PropTypes.func.isRequired,
     document: documentShape.isRequired,
     activePage: PropTypes.number.isRequired,
     readOnly: PropTypes.bool.isRequired,
@@ -578,26 +580,46 @@ class ExtractedDataHandsonTable extends Component {
     }
   }
 
-  sendFieldToSave = ({
+  sendFieldToSave = async ({
     aliases,
     data,
     fieldPk,
   }) => {
+    const { documentId, tableField } = this.props
+
     const dataToSend = {
       aliases,
       data,
       fieldPk,
-      documentPk: this.props.documentId,
+      documentPk: documentId,
     }
 
-    if (TableData.isEmpty(this.props.tableField.data)) {
-      documentsApi.saveEdField(dataToSend)
+    if (TableData.isEmpty(tableField.data)) {
+      await documentsApi.saveEdField(dataToSend)
     } else {
-      documentsApi.updateEdField({
+      await documentsApi.updateEdField({
         ...dataToSend,
         data: Array.isArray(data) ? data.reduce((prev, cur) => ({ cells: prev.cells.concat(cur.cells) })) : data,
       })
     }
+
+    await this.validateFieldAfterSave()
+  }
+
+  validateFieldAfterSave = async () => {
+    if (!ENV.FEATURE_PER_FIELD_VALIDATION) {
+      return
+    }
+
+    const { documentId, documentType, dtField, storeValidation } = this.props
+
+    const validationResult = await documentTypesApi.validateField(
+      documentType.code,
+      dtField.code,
+      documentId,
+    )
+
+    storeValidation(documentId, validationResult)
   }
 
   getFieldCellsWithUpdatedConfidence = (currentTable, prevTable) => (
@@ -764,6 +786,7 @@ const mapDispatchToProps = {
   highlightTableCoordsField,
   highlightPolygonCoordsField,
   updateExtractedData,
+  storeValidation,
   extractAreaWithAlgorithm,
   extractArea,
 }

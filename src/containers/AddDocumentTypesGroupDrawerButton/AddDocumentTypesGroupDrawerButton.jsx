@@ -1,6 +1,7 @@
 
 import { useState } from 'react'
 import { useCreateDocumentTypesGroupMutation } from '@/apiRTK/documentTypesGroupsApi'
+import { useCreateSplitterMutation } from '@/apiRTK/splittingApi'
 import { ButtonType } from '@/components/Button'
 import { NewPlusIcon } from '@/components/Icons/NewPlusIcon'
 import { DocumentTypesGroupDrawer } from '@/containers/DocumentTypesGroupDrawer'
@@ -14,14 +15,33 @@ const AddDocumentTypesGroupDrawerButton = () => {
 
   const [
     createDocumentTypesGroup,
-    { isLoading },
+    { isLoading: isGroupCreating },
   ] = useCreateDocumentTypesGroupMutation()
+
+  const [
+    createSplitter,
+    { isLoading: isSplitterCreating },
+  ] = useCreateSplitterMutation()
+
+  const isLoading = isGroupCreating || isSplitterCreating
 
   const toggleDrawer = () => setIsDrawerVisible((prev) => !prev)
 
-  const createGroup = async (group) => {
+  const createGroup = async (formValues) => {
+    const { splitter, ...groupData } = formValues
     try {
-      await createDocumentTypesGroup(group).unwrap()
+      const newGroup = await createDocumentTypesGroup(groupData).unwrap()
+
+      if (splitter) {
+        const { splittingMode, ...rest } = splitter
+
+        await createSplitter({
+          groupId: newGroup.id,
+          mode: splittingMode,
+          ...rest,
+        }).unwrap()
+      }
+
       notifySuccess(localize(Localization.DOC_TYPES_GROUP_SUCCESS_CREATION))
       toggleDrawer()
     } catch (e) {

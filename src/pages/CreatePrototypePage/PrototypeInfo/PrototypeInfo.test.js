@@ -4,7 +4,9 @@ import { mockReactHookForm } from '@/mocks/mockReactHookForm'
 import { mockReactRedux } from '@/mocks/mockReactRedux'
 import { shallow } from 'enzyme'
 import { FormItem } from '@/components/Form/ReactHookForm'
+import { KnownOCREngine } from '@/enums/KnownOCREngine'
 import { PrototypeViewType } from '@/enums/PrototypeViewType'
+import { ENV } from '@/utils/env'
 import { PrototypeInfo } from './PrototypeInfo'
 
 const mockSetValue = jest.fn()
@@ -61,5 +63,23 @@ describe('Component: PrototypeInfo', () => {
     FormComponent.props().field.handler.onChange(mockEvent)
 
     expect(mockSetValue).nthCalledWith(1, mockCode, mockValue)
+  })
+
+  it('should exclude Tesseract from engine options when Tesseract is available', () => {
+    ENV.FEATURE_HIDDEN_ENGINES = []
+
+    const testWrapper = shallow(
+      <PrototypeInfo
+        fieldsViewType={PrototypeViewType.FIELDS}
+        setFieldsViewType={jest.fn()}
+      />,
+    )
+
+    const engineField = testWrapper.find(FormItem).at(1)
+    const optionValues = engineField.props().field.options.map((option) => option.value)
+
+    expect(optionValues).not.toContain(KnownOCREngine.TESSERACT)
+
+    ENV.FEATURE_HIDDEN_ENGINES = [KnownOCREngine.TESSERACT]
   })
 })

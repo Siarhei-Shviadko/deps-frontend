@@ -86,14 +86,20 @@ export const FieldAdvancedCalibration = () => {
       const {
         model,
         customInstruction,
-        ...params
+        contextAttachments,
+        stop,
+        ...rest
       } = fieldExtractor
 
       const elements = await retrieveInsights({
         model,
         requestedInsights,
         customInstructions: customInstruction,
-        params,
+        params: {
+          contextAttachments: contextAttachments || null,
+          stop: stop?.length ? stop : null,
+          ...rest,
+        },
       }).unwrap()
 
       const elementData = elements[activeField.id]

@@ -26,5 +26,6 @@ test('retrieves the context value provided by PdfSegmentsContext', () => {
     updateActiveUserPage: expect.any(Function),
     selectedGroup: null,
     setSelectedGroup: expect.any(Function),
+    allowAreaSelection: false,
   })
 })

@@ -14,6 +14,7 @@ const StyledModal = styled(Modal)`
   .ant-modal-body {
     padding: 0;
     flex-grow: 1;
+    height: calc(100% - 11rem);
   }
 
   .ant-modal-header {

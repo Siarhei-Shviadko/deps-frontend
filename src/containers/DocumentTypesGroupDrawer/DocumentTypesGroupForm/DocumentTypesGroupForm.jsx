@@ -11,8 +11,10 @@ import {
 import { CustomSelect, SelectMode } from '@/components/Select'
 import { Tooltip } from '@/components/Tooltip'
 import { FORBIDDEN_WHITE_SPACE_BEFORE_TEXT } from '@/constants/regexp'
+import { DocumentTypeSplitter } from '@/containers/DocumentTypeSplitter'
 import { Localization, localize } from '@/localization/i18n'
 import { DocumentType, documentTypeShape } from '@/models/DocumentType'
+import { ENV } from '@/utils/env'
 
 const GROUP_PROPERTY = {
   NAME: 'name',
@@ -86,6 +88,13 @@ const DocumentTypesGroupForm = ({ documentTypes }) => {
             requiredMark={requiredMark}
           />
         ))
+      }
+      {
+        ENV.FEATURE_PDF_SPLITTING && (
+          <DocumentTypeSplitter.Section>
+            <DocumentTypeSplitter.Fields />
+          </DocumentTypeSplitter.Section>
+        )
       }
     </Form>
   )

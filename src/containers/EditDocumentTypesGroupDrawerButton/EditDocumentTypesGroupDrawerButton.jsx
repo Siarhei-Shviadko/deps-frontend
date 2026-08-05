@@ -9,6 +9,7 @@ import { useUpdateDocumentTypesGroupMutation } from '@/apiRTK/documentTypesGroup
 import { Button } from '@/components/Button'
 import { FormValidationMode } from '@/components/Form'
 import { Spin } from '@/components/Spin'
+import { DEFAULT_VALUES } from '@/containers/DocumentTypeSplitter'
 import { RESOURCE_ERROR_TO_DISPLAY } from '@/enums/Errors'
 import { localize, Localization } from '@/localization/i18n'
 import { documentTypesGroupShape } from '@/models/DocumentTypesGroup'
@@ -20,14 +21,23 @@ import {
   DrawerFooterWrapper,
 } from './EditDocumentTypesGroupDrawerButton.styles'
 import { EditDocumentTypesGroupForm } from './EditDocumentTypesGroupForm'
+import { useManageSplitter } from './useManageSplitter'
 
 const EditDocumentTypesGroupDrawerButton = ({ group }) => {
   const [isDrawerVisible, setIsDrawerVisible] = useState(false)
+  const [isSplitterVisible, setIsSplitterVisible] = useState(false)
 
   const [
     updateDocumentTypesGroup,
-    { isLoading },
+    { isLoading: isGroupUpdateLoading },
   ] = useUpdateDocumentTypesGroupMutation()
+
+  const {
+    manageSplitter,
+    isLoading: isSplitterLoading,
+  } = useManageSplitter(group)
+
+  const isLoading = isGroupUpdateLoading || isSplitterLoading
 
   const methods = useForm({
     mode: FormValidationMode.ON_CHANGE,
@@ -40,29 +50,55 @@ const EditDocumentTypesGroupDrawerButton = ({ group }) => {
       isValid,
     },
     handleSubmit,
+    reset,
   } = methods
 
-  const toggleDrawer = useCallback(() =>
-    setIsDrawerVisible((prev) => !prev),
-  [])
+  const handleOpenDrawer = useCallback(() => {
+    const groupSplitter = group.splitters.find((splitter) => !splitter.documentTypeId)
+    setIsSplitterVisible(!!groupSplitter)
+
+    reset({
+      name: group.name,
+      splitter: groupSplitter ?? DEFAULT_VALUES,
+    })
+
+    setIsDrawerVisible(true)
+  }, [group, reset])
+
+  const handleSplitterVisibilityChange = useCallback((isVisible) => {
+    setIsSplitterVisible(isVisible)
+  }, [])
+
+  const handleCloseDrawer = useCallback(() => {
+    reset()
+    setIsDrawerVisible(false)
+  }, [reset])
 
   const saveGroup = useCallback(async () => {
+    const { splitter, ...groupInfo } = getValues()
+    const splitterToSave = isSplitterVisible ? splitter : null
+
     try {
+      await manageSplitter(splitterToSave)
+
       await updateDocumentTypesGroup({
         groupId: group.id,
-        groupInfo: getValues(),
+        groupInfo,
       }).unwrap()
+
       notifySuccess(localize(Localization.DOC_TYPES_GROUP_SUCCESS_UPDATE))
-      toggleDrawer()
+      handleCloseDrawer()
     } catch (e) {
       const errorCode = e?.data?.code
       const message = RESOURCE_ERROR_TO_DISPLAY[errorCode] ?? localize(Localization.DEFAULT_ERROR)
       notifyWarning(message)
     }
   }, [
+    manageSplitter,
     getValues,
     group.id,
-    toggleDrawer,
+    isSplitterVisible,
+    handleCloseDrawer,
     updateDocumentTypesGroup,
   ])
 
@@ -70,7 +106,7 @@ const EditDocumentTypesGroupDrawerButton = ({ group }) => {
     <DrawerFooterWrapper>
       <CancelButton
         disabled={isLoading}
-        onClick={toggleDrawer}
+        onClick={handleCloseDrawer}
       >
         {localize(Localization.CANCEL)}
       </CancelButton>
@@ -84,7 +120,7 @@ const EditDocumentTypesGroupDrawerButton = ({ group }) => {
     </DrawerFooterWrapper>
   ), [
     isLoading,
-    toggleDrawer,
+    handleCloseDrawer,
     isValid,
     saveGroup,
   ])
@@ -92,7 +128,7 @@ const EditDocumentTypesGroupDrawerButton = ({ group }) => {
   return (
     <>
       <Button.Secondary
-        onClick={toggleDrawer}
+        onClick={handleOpenDrawer}
       >
         {localize(Localization.EDIT)}
       </Button.Secondary>
@@ -100,7 +136,7 @@ const EditDocumentTypesGroupDrawerButton = ({ group }) => {
         destroyOnClose
         footer={DrawerFooter}
         hasCloseIcon={false}
-        onClose={toggleDrawer}
+        onClose={handleCloseDrawer}
         open={isDrawerVisible}
         title={localize(Localization.EDIT_GROUP)}
         width={theme.size.drawerWidth}
@@ -110,6 +146,7 @@ const EditDocumentTypesGroupDrawerButton = ({ group }) => {
             <EditDocumentTypesGroupForm
               group={group}
               handleSubmit={handleSubmit}
+              onSplitterVisibilityChange={handleSplitterVisibilityChange}
               saveGroup={saveGroup}
             />
           </FormProvider>

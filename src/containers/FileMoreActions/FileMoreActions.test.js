@@ -27,6 +27,15 @@ jest.mock('./FilePDFSplittingButton', () => ({
   ),
 }))
 
+jest.mock('./AutoFileSplittingButton', () => ({
+  AutoFileSplittingButton: ({ file }) => (
+    <button
+      data-file-id={file.id}
+      data-testid="auto-split-file-button"
+    />
+  ),
+}))
+
 jest.mock('@/containers/FilePromptCalibrationStudio', () => ({
   StudioTriggerButton: () => (
     <button data-testid="studio-trigger-button" />
@@ -111,6 +120,7 @@ describe('FileMoreActions', () => {
 
     mockEnv.ENV.FEATURE_ASSIGN_DOCUMENT_TYPE_TO_FILE = true
     mockEnv.ENV.FEATURE_PDF_SPLITTING = true
+    mockEnv.ENV.FEATURE_DOCUMENT_TYPES_GROUPS = true
     mockEnv.ENV.FEATURE_PROMPT_CALIBRATION_STUDIO = true
   })
 
@@ -156,6 +166,29 @@ describe('FileMoreActions', () => {
 
     const button = screen.getByTestId('split-file-button')
     expect(button).not.toBeDisabled()
+  })
+
+  it('renders AutoFileSplittingButton when feature flags are enabled', () => {
+    render(<FileMoreActions {...defaultProps} />)
+
+    const button = screen.getByTestId('auto-split-file-button')
+    expect(button).toBeInTheDocument()
+  })
+
+  it('does not render AutoFileSplittingButton when FEATURE_DOCUMENT_TYPES_GROUPS is disabled', () => {
+    mockEnv.ENV.FEATURE_DOCUMENT_TYPES_GROUPS = false
+
+    render(<FileMoreActions {...defaultProps} />)
+
+    expect(screen.queryByTestId('auto-split-file-button')).not.toBeInTheDocument()
+  })
+
+  it('does not render AutoFileSplittingButton when FEATURE_PDF_SPLITTING is disabled', () => {
+    mockEnv.ENV.FEATURE_PDF_SPLITTING = false
+
+    render(<FileMoreActions {...defaultProps} />)
+
+    expect(screen.queryByTestId('auto-split-file-button')).not.toBeInTheDocument()
   })
 
   it('should not render StudioTriggerButton when feature flag is disabled', () => {

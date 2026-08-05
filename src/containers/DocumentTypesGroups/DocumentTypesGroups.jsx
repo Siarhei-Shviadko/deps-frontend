@@ -28,6 +28,7 @@ import {
   generateGroupCreationDateColumn,
   generateGroupDocumentTypesColumn,
   generateGroupNameColumn,
+  generateGroupSplitterColumn,
   DocumentTypesGroupsColumn,
 } from './columns'
 
@@ -47,6 +48,7 @@ const getTableColumns = (filterConfig, documentTypes) => [
   generateGroupNameColumn(filterConfig),
   generateGroupDocumentTypesColumn(filterConfig, documentTypes),
   generateGroupCreationDateColumn(filterConfig),
+  generateGroupSplitterColumn(),
   generateGroupActionsColumn(),
 ]
 

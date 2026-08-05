@@ -1,4 +1,3 @@
-
 import { mockEnv } from '@/mocks/mockEnv'
 import { CHAR_TYPE } from '@/containers/FieldBusinessRuleModal/constants'
 import { MULTIPLICITY, Field } from '@/containers/PromptCalibrationStudio/viewModels'
@@ -8,6 +7,7 @@ import { mapFieldToExtractionField } from './mapFieldToExtractionField'
 jest.mock('@/utils/env', () => mockEnv)
 
 const mockExtractorId = 'mapped-extractor-1'
+const mockDisplayCharLimit = 10
 
 const mockField = new Field({
   id: 'field-1',
@@ -30,7 +30,9 @@ test('maps single multiplicity field correctly', () => {
     confidential: mockField.confidential,
     fieldType: mockField.fieldType,
     extractorId: mockField.extractorId,
-    fieldMeta: {},
+    fieldMeta: {
+      charType: CHAR_TYPE.ALPHANUMERIC,
+    },
     order: mockField.order,
   })
 })
@@ -49,8 +51,31 @@ test('maps single STRING field with charType correctly', () => {
 
   const result = mapFieldToExtractionField(field)
 
-  expect(result.fieldMeta).toEqual({})
+  expect(result.fieldMeta).toEqual({
+    charType: CHAR_TYPE.ALPHANUMERIC,
+  })
   expect(result.order).toBe(2)
+})
+
+test('maps single STRING field with displayCharLimit in fieldMeta', () => {
+  const field = new Field({
+    id: 'field-string-limit',
+    name: 'Test String Field With Limit',
+    extractorId: mockExtractorId,
+    multiplicity: MULTIPLICITY.SINGLE,
+    fieldType: FieldType.STRING,
+    displayCharLimit: mockDisplayCharLimit,
+    confidential: false,
+    readOnly: false,
+    order: 2,
+  })
+
+  const result = mapFieldToExtractionField(field)
+
+  expect(result.fieldMeta).toEqual({
+    charType: CHAR_TYPE.ALPHANUMERIC,
+    displayCharLimit: mockDisplayCharLimit,
+  })
 })
 
 test('maps single CHECKMARK field with charType correctly', () => {
@@ -74,7 +99,9 @@ test('maps single CHECKMARK field with charType correctly', () => {
     confidential: field.confidential,
     fieldType: FieldType.CHECKMARK,
     extractorId: field.extractorId,
-    fieldMeta: {},
+    fieldMeta: {
+      charType: CHAR_TYPE.BOOLEAN,
+    },
     order: field.order,
   })
 })
@@ -107,6 +134,30 @@ test('maps multiple multiplicity field correctly with fieldMeta', () => {
       },
     },
     order: field.order,
+  })
+})
+
+test('maps multiple STRING field with displayCharLimit in baseTypeMeta', () => {
+  const field = new Field({
+    id: 'field-multiple-string-limit',
+    name: 'Test Multiple String Field With Limit',
+    extractorId: mockExtractorId,
+    multiplicity: MULTIPLICITY.MULTIPLE,
+    fieldType: FieldType.STRING,
+    displayCharLimit: mockDisplayCharLimit,
+    confidential: false,
+    readOnly: false,
+    order: 4,
+  })
+
+  const result = mapFieldToExtractionField(field)
+
+  expect(result.fieldMeta).toEqual({
+    baseType: FieldType.STRING,
+    baseTypeMeta: {
+      charType: CHAR_TYPE.ALPHANUMERIC,
+      displayCharLimit: mockDisplayCharLimit,
+    },
   })
 })
 
@@ -170,6 +221,30 @@ test('maps single DICTIONARY field correctly with keyType and valueType', () => 
   })
 })
 
+test('maps single DICTIONARY field with displayCharLimit in valueMeta', () => {
+  const field = new Field({
+    id: 'field-dictionary-limit',
+    name: 'Test Dictionary Field With Limit',
+    extractorId: mockExtractorId,
+    multiplicity: MULTIPLICITY.SINGLE,
+    fieldType: FieldType.DICTIONARY,
+    displayCharLimit: mockDisplayCharLimit,
+    confidential: false,
+    readOnly: false,
+    order: 6,
+  })
+
+  const result = mapFieldToExtractionField(field)
+
+  expect(result.fieldMeta).toEqual({
+    keyType: FieldType.STRING,
+    valueType: FieldType.STRING,
+    valueMeta: {
+      displayCharLimit: mockDisplayCharLimit,
+    },
+  })
+})
+
 test('maps multiple DICTIONARY field (KVP list) correctly with baseTypeMeta', () => {
   const field = new Field({
     id: 'field-4',
@@ -199,6 +274,33 @@ test('maps multiple DICTIONARY field (KVP list) correctly with baseTypeMeta', ()
       },
     },
     order: field.order,
+  })
+})
+
+test('maps multiple DICTIONARY field with displayCharLimit in baseTypeMeta valueMeta', () => {
+  const field = new Field({
+    id: 'field-multiple-dictionary-limit',
+    name: 'Test KVP List Field With Limit',
+    extractorId: mockExtractorId,
+    multiplicity: MULTIPLICITY.MULTIPLE,
+    fieldType: FieldType.DICTIONARY,
+    displayCharLimit: mockDisplayCharLimit,
+    confidential: false,
+    readOnly: false,
+    order: 7,
+  })
+
+  const result = mapFieldToExtractionField(field)
+
+  expect(result.fieldMeta).toEqual({
+    baseType: FieldType.DICTIONARY,
+    baseTypeMeta: {
+      keyType: FieldType.STRING,
+      valueType: FieldType.STRING,
+      valueMeta: {
+        displayCharLimit: mockDisplayCharLimit,
+      },
+    },
   })
 })
 

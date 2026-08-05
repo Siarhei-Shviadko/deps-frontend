@@ -19,9 +19,10 @@ import {
 import { documentTypeStateSelector } from '@/selectors/documentType'
 import { notifySuccess, notifyWarning } from '@/utils/notification'
 
-const getDictionaryMeta = () => ({
+const getDictionaryMeta = ({ displayCharLimit }) => ({
   keyType: FieldType.STRING,
   valueType: FieldType.STRING,
+  ...(displayCharLimit != null && { valueMeta: { displayCharLimit } }),
 })
 
 const getStringMeta = ({ displayCharLimit }) => displayCharLimit && { displayCharLimit }

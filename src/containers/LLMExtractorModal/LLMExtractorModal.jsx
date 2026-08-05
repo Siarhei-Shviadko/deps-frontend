@@ -11,13 +11,14 @@ import { localize, Localization } from '@/localization/i18n'
 import { llmExtractorShape } from '@/models/LLMExtractor'
 import { LLMSettings } from '@/models/LLMProvider'
 import { LLMExtractorForm } from './LLMExtractorForm'
+import { DEFAULT_VALUES, FIELD_CODE } from './LLMExtractorForm/constants'
 import {
   Modal,
   ModalFooterWrapper,
 } from './LLMExtractorModal.styles'
 
 const MODAL_WIDTH = '98%'
-const MODAL_HEIGHT = '80%'
+const MODAL_HEIGHT = '85%'
 
 const mapLLMExtractorToFieldValues = ({
   name,
@@ -32,6 +33,10 @@ const mapLLMExtractorToFieldValues = ({
     temperature,
     topP,
     contextAttachments,
+    maxTokens,
+    stop,
+    seed,
+    logprobs,
   } = extractionParams
 
   return {
@@ -43,6 +48,10 @@ const mapLLMExtractorToFieldValues = ({
     pageSpan,
     customInstruction,
     contextAttachments: contextAttachments ?? '',
+    maxTokens,
+    stop: stop == null ? DEFAULT_VALUES[FIELD_CODE.STOP] : stop,
+    seed,
+    logprobs,
   }
 }
 
@@ -56,7 +65,9 @@ const LLMExtractorModal = ({
   const methods = useForm({
     mode: FormValidationMode.ON_CHANGE,
     shouldUnregister: true,
-    ...(llmExtractor && { defaultValues: mapLLMExtractorToFieldValues(llmExtractor) }),
+    defaultValues: llmExtractor
+      ? mapLLMExtractorToFieldValues(llmExtractor)
+      : DEFAULT_VALUES,
   })
 
   const {
@@ -74,14 +85,10 @@ const LLMExtractorModal = ({
 
   const onSubmit = useCallback(async () => {
     const {
-      customInstruction,
       extractorName,
-      groupingFactor,
       llmModel,
-      temperature,
-      topP,
-      pageSpan,
       contextAttachments,
+      ...rest
     } = getValues()
 
     const { provider, model } = LLMSettings.llmTypeToSettings(llmModel)
@@ -91,12 +98,8 @@ const LLMExtractorModal = ({
       provider,
       model,
       extractionParams: {
-        customInstruction,
-        groupingFactor,
-        temperature,
-        topP,
-        ...(pageSpan && { pageSpan }),
-        ...(contextAttachments && { contextAttachments }),
+        contextAttachments: contextAttachments || null,
+        ...rest,
       },
     }
 
@@ -137,6 +140,7 @@ const LLMExtractorModal = ({
 
   return (
     <Modal
+      centered
       closable={false}
       destroyOnClose
       footer={ModalFooter}

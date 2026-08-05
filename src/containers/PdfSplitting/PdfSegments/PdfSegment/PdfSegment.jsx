@@ -61,9 +61,9 @@ export const PdfSegment = ({
     >
       <CardHeader>
         <TitleWrapper>
-          <SegmentTitle>
-            {localize(Localization.SEGMENT, { index: index + 1 })}
-          </SegmentTitle>
+          <SegmentTitle
+            text={segment.name ?? localize(Localization.SEGMENT, { index: index + 1 })}
+          />
           <SegmentPagesRange
             content={getRangeDescription(segment)}
             ellipsis={{ tooltip: getRangeDescription(segment) }}

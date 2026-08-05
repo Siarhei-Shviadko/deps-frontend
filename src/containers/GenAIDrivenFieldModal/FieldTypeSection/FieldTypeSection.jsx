@@ -4,7 +4,7 @@ import { useFormContext, useWatch } from 'react-hook-form'
 import { FormFieldType } from '@/components/Form/ReactHookForm'
 import { RadioOption } from '@/components/Radio/RadioOption'
 import { stringsToOptions } from '@/components/Select'
-import { FORM_FIELD_CODES } from '@/containers/GenAIDrivenFieldModal/constants'
+import { FIELD_TYPES_WITH_DISABLED_MASKING, FORM_FIELD_CODES } from '@/containers/GenAIDrivenFieldModal/constants'
 import { FieldType, RESOURCE_FIELD_TYPE } from '@/enums/FieldType'
 import { Localization, localize } from '@/localization/i18n'
 import { LLMQueryCardinality, llmExtractionQueryFormatShape } from '@/models/LLMExtractor'
@@ -48,7 +48,7 @@ const FieldTypeSection = ({
   })
 
   const setConfidentialFieldValue = (newType) => {
-    if (newType !== FieldType.STRING) {
+    if (FIELD_TYPES_WITH_DISABLED_MASKING.includes(newType)) {
       setValue(FORM_FIELD_CODES.CONFIDENTIAL, false)
     }
   }

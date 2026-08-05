@@ -21,8 +21,9 @@ class Engine {
     return engines.filter((e) => !hiddenEngines.includes(e.code))
   }
 
-  static toAllEnginesOptions = (apiEngines) => {
-    const engines = Engine.getAvailableEngines(apiEngines)
+  static toAllEnginesOptions = (apiEngines, excludedEngines = []) => {
+    const availableEngines = Engine.getAvailableEngines(apiEngines)
+    const engines = availableEngines.filter((e) => !excludedEngines.includes(e.code))
 
     return engines.map((e) =>
       new SelectOption(

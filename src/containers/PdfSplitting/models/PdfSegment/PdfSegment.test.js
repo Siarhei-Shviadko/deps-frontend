@@ -22,7 +22,8 @@ test('splits a segment into two at a specified user page', () => {
 
   const segment = new PdfSegment({
     id: mockSegmentId,
-    documentType: 'PDF',
+    documentTypeId: 'doc-type-1',
+    name: 'Segment Name',
     userPages: [userPage1, userPage2],
   })
 
@@ -31,7 +32,8 @@ test('splits a segment into two at a specified user page', () => {
   expect(segment1).toEqual(
     new PdfSegment({
       id: mockSegmentId,
-      documentType: 'PDF',
+      documentTypeId: 'doc-type-1',
+      name: 'Segment Name',
       userPages: [userPage1],
     }),
   )
@@ -65,13 +67,15 @@ test('merges two segments into one', () => {
 
   const segment1 = new PdfSegment({
     id: mockSegmentId1,
-    documentType: 'PDF',
+    documentTypeId: 'doc-type-1',
+    name: 'Segment Name',
     userPages: [userPage1],
   })
 
   const segment2 = new PdfSegment({
     id: mockSegmentId2,
-    documentType: 'PDF',
+    documentTypeId: 'doc-type-2',
+    name: 'Other Segment',
     userPages: [userPage2],
   })
 
@@ -80,7 +84,8 @@ test('merges two segments into one', () => {
   expect(mergedSegment).toEqual(
     new PdfSegment({
       id: mockSegmentId1,
-      documentType: 'PDF',
+      documentTypeId: 'doc-type-1',
+      name: 'Segment Name',
       userPages: [
         userPage1,
         {
@@ -541,6 +546,17 @@ test('swaps user pages within a segment when call swapUserPages', () => {
   )
 })
 
+test('returns true when segment is not found when call isPageDragDisabled', () => {
+  const userPage = new UserPage({
+    page: 0,
+    segmentId: 'missing-segment-id',
+  })
+
+  const result = PdfSegment.isPageDragDisabled([], userPage)
+
+  expect(result).toBe(true)
+})
+
 test('returns true when segment has multiple pages but only one included page when call isPageDragDisabled', () => {
   const mockSegment = new PdfSegment({
     id: 'test-segment-id',
@@ -596,6 +612,17 @@ test('returns false when segment has multiple included pages when call isPageDra
   expect(result).toBe(false)
 })
 
+test('returns true when segment is not found when call isPageExcludeDisabled', () => {
+  const userPage = new UserPage({
+    page: 0,
+    segmentId: 'missing-segment-id',
+  })
+
+  const result = PdfSegment.isPageExcludeDisabled([], userPage)
+
+  expect(result).toBe(true)
+})
+
 test('returns true when segment has only one included page when call isPageExcludeDisabled', () => {
   const mockUserPage = new UserPage({
     page: 0,
@@ -631,4 +658,103 @@ test('returns false when segment has multiple included pages when call isPageExc
   const result = PdfSegment.isPageExcludeDisabled([mockSegment], mockUserPage)
 
   expect(result).toBe(false)
+})
+
+test('creates UserPage with null coordinates by default', () => {
+  const userPage = new UserPage({
+    page: 0,
+    segmentId: 'mockId',
+  })
+
+  expect(userPage.coordinates).toBeNull()
+})
+
+test('creates UserPage with provided coordinates', () => {
+  const mockCoordinates = {
+    x: 0.1,
+    y: 0.2,
+    width: 0.3,
+    height: 0.4,
+  }
+
+  const userPage = new UserPage({
+    page: 0,
+    segmentId: 'mockId',
+    coordinates: mockCoordinates,
+  })
+
+  expect(userPage.coordinates).toEqual(mockCoordinates)
+})
+
+test('sets coordinates for matching user page when call setUserPageCoordinates', () => {
+  const mockCoordinates = {
+    x: 0,
+    y: 0.25,
+    width: 1,
+    height: 0.5,
+  }
+
+  const userPage1 = new UserPage({
+    page: 0,
+    segmentId: 'mockId1',
+  })
+
+  const userPage2 = new UserPage({
+    page: 1,
+    segmentId: 'mockId1',
+  })
+
+  const userPage3 = new UserPage({
+    page: 2,
+    segmentId: 'mockId2',
+  })
+
+  const mockSegment1 = new PdfSegment({
+    id: 'mockId1',
+    userPages: [userPage1, userPage2],
+  })
+
+  const mockSegment2 = new PdfSegment({
+    id: 'mockId2',
+    userPages: [userPage3],
+  })
+
+  const result = PdfSegment.setUserPageCoordinates(
+    [mockSegment1, mockSegment2],
+    userPage1,
+    mockCoordinates,
+  )
+
+  expect(result).toEqual([
+    new PdfSegment({
+      id: 'mockId1',
+      userPages: [
+        {
+          ...userPage1,
+          coordinates: mockCoordinates,
+        },
+        userPage2,
+      ],
+    }),
+    mockSegment2,
+  ])
+})
+
+test('returns segment by userPage id when object reference differs when call getSegmentByUserPage', () => {
+  const mockUserPage = new UserPage({
+    page: 1,
+    segmentId: 'mockId1',
+  })
+
+  const mockSegment = new PdfSegment({
+    id: 'mockId1',
+    userPages: [mockUserPage],
+  })
+
+  const result = PdfSegment.getSegmentByUserPage(
+    [mockSegment],
+    { ...mockUserPage },
+  )
+
+  expect(result).toEqual(mockSegment)
 })

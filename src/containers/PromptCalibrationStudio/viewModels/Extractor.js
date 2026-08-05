@@ -12,6 +12,11 @@ export class Extractor {
     pageSpan,
     temperature,
     topP,
+    logprobs,
+    seed,
+    stop,
+    contextAttachments,
+    maxTokens,
   }) {
     this.id = id
     this.customInstruction = customInstruction
@@ -21,6 +26,11 @@ export class Extractor {
     this.pageSpan = pageSpan
     this.temperature = temperature
     this.topP = topP
+    this.logprobs = logprobs
+    this.seed = seed
+    this.stop = stop
+    this.contextAttachments = contextAttachments
+    this.maxTokens = maxTokens
   }
 
   static isValid = (extractor) => (
@@ -44,4 +54,9 @@ export const extractorShape = PropTypes.exact({
   }),
   temperature: PropTypes.number.isRequired,
   topP: PropTypes.number.isRequired,
+  logprobs: PropTypes.bool,
+  seed: PropTypes.number,
+  stop: PropTypes.arrayOf(PropTypes.string),
+  contextAttachments: PropTypes.string,
+  maxTokens: PropTypes.number,
 })

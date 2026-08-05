@@ -9,22 +9,34 @@ export const FIELDS_CODE = {
   TEMPERATURE: 'temperature',
   TOP_P: 'topP',
   CUSTOM_INSTRUCTION: 'customInstruction',
+  MAX_TOKENS: 'maxTokens',
+  STOP: 'stop',
+  SEED: 'seed',
+  LOGPROBS: 'logprobs',
+  CONTEXT_ATTACHMENTS: 'contextAttachments',
 }
 
 export const MIN_GROUPING_FACTOR_VALUE = 1
-export const DEFAULT_GROUPING_FACTOR_VALUE = 5
+const DEFAULT_GROUPING_FACTOR_VALUE = 5
 
-export const MIN_TEMPERATURE_VALUE = 0
-export const MAX_TEMPERATURE_VALUE = 1
-export const TEMPERATURE_VALUE_STEP = 0.05
-export const DEFAULT_TEMPERATURE_VALUE = 0
-export const TEMPERATURE_VALUE_PRECISION = 2
+const MIN_TEMPERATURE_VALUE = 0
+const MAX_TEMPERATURE_VALUE = 1
+const TEMPERATURE_VALUE_STEP = 0.05
+const DEFAULT_TEMPERATURE_VALUE = 0
+const TEMPERATURE_VALUE_PRECISION = 2
 
-export const MIN_TOP_P_VALUE = 0
-export const MAX_TOP_P_VALUE = 1
-export const TOP_P_VALUE_STEP = 0.05
-export const DEFAULT_TOP_P_VALUE = 1
-export const TOP_P_VALUE_PRECISION = 2
+const MIN_TOP_P_VALUE = 0
+const MAX_TOP_P_VALUE = 1
+const TOP_P_VALUE_STEP = 0.05
+const DEFAULT_TOP_P_VALUE = 1
+const TOP_P_VALUE_PRECISION = 2
+
+export const MIN_MAX_TOKENS_VALUE = 1
+const DEFAULT_MAX_TOKENS_VALUE = 4096
+export const MIN_SEED_VALUE = 1
+export const MAX_SEED_VALUE = 100
+const DEFAULT_SEED_VALUE = 1
+export const MAX_STOP_WORDS_COUNT = 4
 
 export const TemperatureFieldSettings = {
   min: MIN_TEMPERATURE_VALUE,
@@ -50,4 +62,9 @@ export const DefaultValues = {
   [FIELDS_CODE.TOP_P]: DEFAULT_TOP_P_VALUE,
   [FIELDS_CODE.PAGE_SPAN]: null,
   [FIELDS_CODE.CUSTOM_INSTRUCTION]: localize(Localization.LLM_MODEL_CUSTOM_INSTRUCTION),
+  [FIELDS_CODE.MAX_TOKENS]: DEFAULT_MAX_TOKENS_VALUE,
+  [FIELDS_CODE.STOP]: [],
+  [FIELDS_CODE.SEED]: DEFAULT_SEED_VALUE,
+  [FIELDS_CODE.LOGPROBS]: false,
+  [FIELDS_CODE.CONTEXT_ATTACHMENTS]: '',
 }

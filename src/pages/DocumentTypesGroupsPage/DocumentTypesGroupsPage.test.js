@@ -93,13 +93,15 @@ test('render DocumentTypesGroupsPage correctly', () => {
     fieldNameColumn,
     fieldDocTypesColumn,
     fieldCreationDateColumn,
+    fieldSplitterColumn,
   ] = columns
 
-  expect(columns).toHaveLength(5)
+  expect(columns).toHaveLength(6)
 
   expect(fieldNameColumn).toHaveTextContent(localize(Localization.NAME))
   expect(fieldDocTypesColumn).toHaveTextContent(localize(Localization.DOCUMENT_TYPES))
   expect(fieldCreationDateColumn).toHaveTextContent(localize(Localization.CREATION_DATE))
+  expect(fieldSplitterColumn).toHaveTextContent(localize(Localization.SPLITTER))
 })
 
 test('shows notification warning message document types groups fetch fails', async () => {

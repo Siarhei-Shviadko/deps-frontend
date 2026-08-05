@@ -1,4 +1,5 @@
 
+import { mockShallowComponent } from '@/mocks/mockComponent'
 import { mockEnv } from '@/mocks/mockEnv'
 import { mockNotification } from '@/mocks/mockNotification'
 import { screen } from '@testing-library/react'
@@ -28,6 +29,8 @@ jest.mock('./PdfThumbnail', () => ({
 jest.mock('./SegmentsSeparator', () => ({
   SegmentsSeparator: jest.fn(() => <div data-testid={mockSeparatorId} />),
 }))
+
+jest.mock('./PageViewer', () => mockShallowComponent('PageViewer'))
 
 jest.mock('react-pdf', () => ({
   Document: ({
@@ -153,9 +156,9 @@ test('shows page if there is activeUserPage', () => {
 
   render(<PdfThumbnailsMap {...props} />)
 
-  const page = screen.getByTestId(mockPageId)
+  const pageViewer = screen.getByTestId('PageViewer')
 
-  expect(page).toBeInTheDocument()
+  expect(pageViewer).toBeInTheDocument()
 })
 
 test('shows no data if pdfFile is not provided', () => {

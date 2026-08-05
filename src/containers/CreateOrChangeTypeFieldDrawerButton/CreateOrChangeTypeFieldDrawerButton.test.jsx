@@ -12,7 +12,6 @@ import { DocumentTypeField } from '@/models/DocumentTypeField'
 import {
   TableFieldColumn,
   TableFieldMeta,
-  DictFieldMeta,
   ListFieldMeta,
   EnumFieldMeta,
 } from '@/models/DocumentTypeFieldMeta'
@@ -149,7 +148,20 @@ describe('Component: CreateOrChangeTypeFieldDrawerButton', () => {
 
   it('should call onSave with correct argument in case creating a field with type Dictionary', () => {
     const mockedResult = {
-      fieldMeta: new DictFieldMeta(),
+      fieldMeta: {
+        keyMeta: {
+          charBlacklist: null,
+          charWhitelist: null,
+          displayCharLimit: null,
+        },
+        keyType: 'string',
+        valueMeta: {
+          charBlacklist: null,
+          charWhitelist: null,
+          displayCharLimit: null,
+        },
+        valueType: 'string',
+      },
       code: 'code',
       fieldType: FieldType.DICTIONARY,
       name: 'name',
@@ -163,6 +175,56 @@ describe('Component: CreateOrChangeTypeFieldDrawerButton', () => {
       required: 'test',
       keyType: 'string',
       valueType: 'string',
+    }
+
+    useForm.mockImplementation(() => ({
+      formState: {},
+      getValues: jest.fn(() => mockFormValues),
+    }))
+
+    wrapper.setProps({
+      ...defaultProps,
+      allowedFieldTypes: [FieldType.DICTIONARY],
+    })
+
+    const Footer = wrapper.find(Drawer).props().footer
+    const DrawerFooter = shallow(<div>{Footer}</div>)
+    DrawerFooter.find(Button).props().onClick()
+
+    expect(defaultProps.onSave).toBeCalledWith(mockedResult)
+  })
+
+  it('should call onSave with displayCharLimit in fieldMeta when creating Dictionary field with masking', () => {
+    const mockDisplayCharLimit = 5
+    const mockedResult = {
+      fieldMeta: {
+        keyMeta: {
+          charBlacklist: null,
+          charWhitelist: null,
+          displayCharLimit: mockDisplayCharLimit,
+        },
+        keyType: 'string',
+        valueMeta: {
+          charBlacklist: null,
+          charWhitelist: null,
+          displayCharLimit: mockDisplayCharLimit,
+        },
+        valueType: 'string',
+      },
+      code: 'code',
+      fieldType: FieldType.DICTIONARY,
+      name: 'name',
+      required: 'test',
+    }
+
+    const mockFormValues = {
+      code: 'code',
+      name: 'name',
+      fieldType: FieldType.DICTIONARY,
+      required: 'test',
+      keyType: 'string',
+      valueType: 'string',
+      displayCharLimit: mockDisplayCharLimit,
     }
 
     useForm.mockImplementation(() => ({

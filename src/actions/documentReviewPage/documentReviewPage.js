@@ -76,12 +76,14 @@ export const addComment = createRequestAction(
 
 export const completeReview = createRequestAction(
   'completeReview',
-  (documentId) => async (dispatch) => {
+  (documentId) => async (dispatch, getState) => {
     const documentData = await documentsApi.completeReview(documentId)
     const extractedData = await documentsApi.getDocumentExtractedData(documentId)
+    const currentDocumentState = getState().documents[documentId]?.state
     dispatch(saveDocumentData({
       ...documentData,
       extractedData,
+      state: currentDocumentState ?? documentData.state,
     }))
   },
 )

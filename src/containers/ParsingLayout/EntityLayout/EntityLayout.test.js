@@ -1,17 +1,25 @@
-
 import { mockShallowComponent } from '@/mocks/mockComponent'
 import { mockEnv } from '@/mocks/mockEnv'
+import { mockReactRedux } from '@/mocks/mockReactRedux'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { setHighlightedField } from '@/actions/documentReviewPage'
 import { DOCUMENT_LAYOUT_PARSING_TYPE } from '@/enums/DocumentLayoutType'
 import { KnownParsingFeature } from '@/enums/KnownParsingFeature'
 import { render } from '@/utils/rendererRTL'
 import { EntityLayout } from './EntityLayout'
 
+const mockDispatch = jest.fn()
+
 var MockParagraphLayout
 var MockTableLayout
 
 jest.mock('@/utils/env', () => mockEnv)
+
+jest.mock('react-redux', () => ({
+  ...mockReactRedux,
+  useDispatch: () => mockDispatch,
+}))
 
 jest.mock('@/components/NoData', () => mockShallowComponent('NoData'))
 jest.mock('@/components/Radio', () => ({
@@ -46,6 +54,21 @@ jest.mock('./TableLayout', () => {
 })
 jest.mock('./KeyValuePairLayout', () => mockShallowComponent('KeyValuePairLayout'))
 jest.mock('./ImageLayout', () => mockShallowComponent('ImageLayout'))
+
+jest.mock('./LayoutPagination', () => ({
+  LayoutPagination: (props) => (
+    <div data-testid="LayoutPagination">
+      <span data-testid="pagination-current">{props.currentPage}</span>
+      <span data-testid="pagination-total">{props.total}</span>
+      <button
+        data-testid="change-page-button"
+        onClick={() => props.onPageChange(2)}
+      >
+        Change page
+      </button>
+    </div>
+  ),
+}))
 
 const mockDocumentLayoutSelect = jest.fn()
 
@@ -221,9 +244,35 @@ test('passes correct props to layout components', () => {
   expect(paragraphLayoutProps).toEqual(
     expect.objectContaining({
       parsingType: DOCUMENT_LAYOUT_PARSING_TYPE.TESSERACT,
-      total: 5,
+      batchIndex: 0,
     }),
   )
+})
+
+test('renders LayoutPagination with total pages when feature is active', () => {
+  const mockData = createMockDocumentLayoutData([KnownParsingFeature.TEXT])
+
+  render(<EntityLayout rawParsingInfoData={mockData} />)
+
+  expect(screen.getByTestId('LayoutPagination')).toBeInTheDocument()
+  expect(screen.getByTestId('pagination-current')).toHaveTextContent('1')
+  expect(screen.getByTestId('pagination-total')).toHaveTextContent('5')
+})
+
+test('updates batchIndex and dispatches actions when page changes', async () => {
+  const mockData = createMockDocumentLayoutData([KnownParsingFeature.TEXT])
+
+  render(<EntityLayout rawParsingInfoData={mockData} />)
+
+  await userEvent.click(screen.getByTestId('change-page-button'))
+
+  expect(MockParagraphLayout.getProps()).toEqual(
+    expect.objectContaining({
+      batchIndex: 1,
+    }),
+  )
+  expect(mockDispatch).toHaveBeenCalledWith(expect.any(Function))
+  expect(mockDispatch).toHaveBeenCalledWith(setHighlightedField(null))
 })
 
 test('renders no data when no features are available', () => {

@@ -2,7 +2,6 @@
 import PropTypes from 'prop-types'
 import { Badge } from '@/components/Badge'
 import { LabelingIcon } from '@/components/Icons/LabelingIcon'
-import { InView } from '@/containers/InView'
 import { useHighlightCoords } from '@/containers/ParsingLayout/EntityLayout/hooks'
 import { DOCUMENT_LAYOUT_PARSING_TYPE } from '@/enums/DocumentLayoutType'
 import { Placement } from '@/enums/Placement'
@@ -13,6 +12,7 @@ import {
   LinesWrapper,
   ParagraphWrapper,
   IconButton,
+  InView,
 } from './ParagraphField.styles'
 
 const PARAGRAPH_FIELD_TOOLTIP = {

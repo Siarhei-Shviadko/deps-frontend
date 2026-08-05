@@ -67,6 +67,15 @@ export const PipelineStepModal = ({
   }, [dispatch])
 
   const [isLoading, setIsLoading] = useState(false)
+  const [currentEngine, setCurrentEngine] = useState(selectedEngine ?? documentEngine)
+
+  const handleEngineChange = useCallback(
+    (value) => {
+      setCurrentEngine(value)
+      return value
+    },
+    [],
+  )
 
   const isForbiddenIfError = useCallback(
     (step) => {
@@ -131,6 +140,7 @@ export const PipelineStepModal = ({
           render: (props) => (
             <ParsingFeaturesSwitch
               {...props}
+              engineCode={currentEngine}
             />
           ),
           initialValue: DEFAULT_PARSING_FEATURES,
@@ -143,11 +153,12 @@ export const PipelineStepModal = ({
             {...props}
             allowClear
             fetching={areEnginesFetching}
+            onChange={handleEngineChange}
             options={Engine.toAllEnginesOptions(engines)}
             placeholder={localize(Localization.SELECT_ENGINE)}
           />
         ),
-        initialValue: selectedEngine || documentEngine,
+        initialValue: selectedEngine ?? documentEngine,
       },
       ...(ENV.FEATURE_LLM_DATA_EXTRACTION && {
         [FieldProperty.LLM_TYPE]: {
@@ -166,10 +177,12 @@ export const PipelineStepModal = ({
     }),
     [
       areEnginesFetching,
+      currentEngine,
       documentEngine,
       documentLLMType,
       engines,
       selectedEngine,
+      handleEngineChange,
     ],
   )
 

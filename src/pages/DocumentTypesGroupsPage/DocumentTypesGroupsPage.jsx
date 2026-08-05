@@ -16,6 +16,7 @@ import { DOCUMENT_TYPES_GROUPS_PER_PAGE } from '@/constants/storage'
 import { AddDocumentTypesGroupDrawerButton } from '@/containers/AddDocumentTypesGroupDrawerButton'
 import { DeleteDocumentTypesGroupButton } from '@/containers/DeleteDocumentTypesGroupButton'
 import { DocumentTypesGroups } from '@/containers/DocumentTypesGroups'
+import { DocumentTypesGroupExtras } from '@/enums/DocumentTypesGroupExtras'
 import { Localization, localize } from '@/localization/i18n'
 import { Pagination } from '@/models/Pagination'
 import { DefaultPaginationConfig } from '@/models/PaginationConfig'
@@ -57,6 +58,7 @@ const DocumentTypesGroupsPage = () => {
     {
       ...filterConfig,
       [PaginationKeys.PAGE]: filterConfig.page - 1,
+      extras: [DocumentTypesGroupExtras.SPLITTERS],
     },
     {
       refetchOnMountOrArgChange: true,

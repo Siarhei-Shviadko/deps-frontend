@@ -15,6 +15,7 @@ import {
 import { LLMSettings } from '@/models/LLMProvider'
 import { render } from '@/utils/rendererRTL'
 import { KnownContextAttachments } from './KnownContextAttachments'
+import { DEFAULT_VALUES, FIELD_CODE } from './LLMExtractorForm/constants'
 import { LLMExtractorModal } from './LLMExtractorModal'
 
 jest.mock('@/utils/env', () => mockEnv)
@@ -47,6 +48,10 @@ const mockValues = {
     start: 1,
     end: 2,
   }),
+  maxTokens: DEFAULT_VALUES[FIELD_CODE.MAX_TOKENS],
+  stop: DEFAULT_VALUES[FIELD_CODE.STOP],
+  seed: DEFAULT_VALUES[FIELD_CODE.SEED],
+  logprobs: DEFAULT_VALUES[FIELD_CODE.LOGPROBS],
 }
 
 const mockLLMExtractor = new LLMExtractor({
@@ -143,6 +148,10 @@ test('calls useForm with default values if LLM Extractor is passed', async () =>
       topP: mockLLMExtractor.extractionParams.topP,
       pageSpan: mockLLMExtractor.extractionParams.pageSpan,
       contextAttachments: '',
+      maxTokens: mockLLMExtractor.extractionParams.maxTokens,
+      stop: DEFAULT_VALUES[FIELD_CODE.STOP],
+      seed: mockLLMExtractor.extractionParams.seed,
+      logprobs: mockLLMExtractor.extractionParams.logprobs,
     },
   })
 })
@@ -195,11 +204,16 @@ test('calls onSave with correct arguments when Create button is clicked', async 
       provider: mockProvider,
       model: mockModel,
       extractionParams: {
+        contextAttachments: null,
         customInstruction: mockValues.customInstruction,
         groupingFactor: mockValues.groupingFactor,
         temperature: mockValues.temperature,
         topP: mockValues.topP,
         pageSpan: mockValues.pageSpan,
+        maxTokens: mockValues.maxTokens,
+        stop: mockValues.stop,
+        seed: mockValues.seed,
+        logprobs: mockValues.logprobs,
       },
     },
   )
@@ -246,6 +260,10 @@ test('calls onSave with contextAttachments when provided', async () => {
         topP: mockValues.topP,
         pageSpan: mockValues.pageSpan,
         contextAttachments: contextAttachmentsValue,
+        maxTokens: mockValues.maxTokens,
+        stop: mockValues.stop,
+        seed: mockValues.seed,
+        logprobs: mockValues.logprobs,
       },
     },
   )

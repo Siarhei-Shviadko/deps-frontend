@@ -32,17 +32,24 @@ const useFilterGroupDocTypes = ({
       type.classifier?.name.toLowerCase().includes(filters[GroupDocumentTypesFilterKey.CLASSIFIER]?.toLowerCase())
   ), [filters])
 
+  const filterBySplitter = useCallback((type) => (
+    !filters[GroupDocumentTypesFilterKey.SPLITTER] ||
+      type.splitter?.name.toLowerCase().includes(filters[GroupDocumentTypesFilterKey.SPLITTER]?.toLowerCase())
+  ), [filters])
+
   const filteredList = useMemo(() => (
     groupDocTypes
       .filter(filterByName)
       .filter(filterByExtractionType)
       .filter(filterByClassifier)
+      .filter(filterBySplitter)
   )
   , [
     groupDocTypes,
     filterByName,
     filterByExtractionType,
     filterByClassifier,
+    filterBySplitter,
   ])
 
   const filterHandler = useCallback((

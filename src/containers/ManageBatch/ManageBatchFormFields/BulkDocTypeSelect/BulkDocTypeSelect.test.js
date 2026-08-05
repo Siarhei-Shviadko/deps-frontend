@@ -4,6 +4,7 @@ import { mockReactRedux } from '@/mocks/mockReactRedux'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { FIELD_FORM_CODE } from '@/containers/ManageBatch/constants'
+import { KnownParsingFeature } from '@/enums/KnownParsingFeature'
 import { DocumentType } from '@/models/DocumentType'
 import { documentTypesSelector } from '@/selectors/documentTypesListPage'
 import { areTypesFetchingSelector } from '@/selectors/requests'
@@ -51,6 +52,9 @@ const mockGetValues = jest.fn((key) => {
   if (key === FIELD_FORM_CODE.LLM_TYPE) {
     return 'llmA'
   }
+  if (key === FIELD_FORM_CODE.PARSING_FEATURES) {
+    return []
+  }
   return undefined
 })
 
@@ -78,7 +82,7 @@ test('renders DocTypeSelect with enhanced onChange', () => {
   expect(screen.getByTestId('CustomSelect')).toBeInTheDocument()
 })
 
-test('calls original onChange and sets engine/llmType when document type has them', async () => {
+test('calls original onChange and sets engine and parsing features when document type has them', async () => {
   const onChange = jest.fn()
   const docType = new DocumentType(
     'code1',
@@ -89,7 +93,6 @@ test('calls original onChange and sets engine/llmType when document type has the
     [],
     'id1',
   )
-  docType.llmType = 'llmA'
   documentTypesSelector.mockReturnValue([docType])
 
   render(<BulkDocTypeSelect onChange={onChange} />)
@@ -98,10 +101,13 @@ test('calls original onChange and sets engine/llmType when document type has the
 
   expect(onChange).toHaveBeenCalledWith('code1')
   expect(mockSetValue).toHaveBeenCalledWith(FIELD_FORM_CODE.ENGINE, 'engine1')
-  expect(mockSetValue).toHaveBeenCalledWith(FIELD_FORM_CODE.LLM_TYPE, 'llmA')
+  expect(mockSetValue).toHaveBeenCalledWith(
+    FIELD_FORM_CODE.PARSING_FEATURES,
+    [KnownParsingFeature.TEXT],
+  )
 })
 
-test('calls original onChange and resets engine/llmType when document type does not have them', async () => {
+test('calls original onChange and resets engine and parsing features when document type does not have them', async () => {
   const onChange = jest.fn()
   const docType = new DocumentType(
     'code2',
@@ -120,5 +126,37 @@ test('calls original onChange and resets engine/llmType when document type does 
 
   expect(onChange).toHaveBeenCalledWith('code2')
   expect(mockSetValue).toHaveBeenCalledWith(FIELD_FORM_CODE.ENGINE, undefined)
-  expect(mockSetValue).toHaveBeenCalledWith(FIELD_FORM_CODE.LLM_TYPE, undefined)
+  expect(mockSetValue).toHaveBeenCalledWith(
+    FIELD_FORM_CODE.PARSING_FEATURES,
+    [KnownParsingFeature.TEXT],
+  )
+})
+
+test('sets engine and parsing features from workflowConfiguration when document type has it', async () => {
+  const onChange = jest.fn()
+  const docType = new DocumentType(
+    'code1',
+    'Type 1',
+    'defaultEngine',
+    'en',
+    undefined,
+    [],
+    'id1',
+  )
+  docType.workflowConfiguration = {
+    engine: 'workflowEngine',
+    parsingFeatures: [KnownParsingFeature.TEXT, KnownParsingFeature.IMAGES],
+  }
+  documentTypesSelector.mockReturnValue([docType])
+
+  render(<BulkDocTypeSelect onChange={onChange} />)
+
+  await userEvent.selectOptions(screen.getByTestId('CustomSelect'), 'code1')
+
+  expect(onChange).toHaveBeenCalledWith('code1')
+  expect(mockSetValue).toHaveBeenCalledWith(FIELD_FORM_CODE.ENGINE, 'workflowEngine')
+  expect(mockSetValue).toHaveBeenCalledWith(
+    FIELD_FORM_CODE.PARSING_FEATURES,
+    [KnownParsingFeature.TEXT, KnownParsingFeature.IMAGES],
+  )
 })

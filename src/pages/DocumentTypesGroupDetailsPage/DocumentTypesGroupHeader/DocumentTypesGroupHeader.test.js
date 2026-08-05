@@ -5,6 +5,7 @@ import { waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { setSelection } from '@/actions/navigation'
 import { DocumentTypesGroup, GenAiClassifier } from '@/models/DocumentTypesGroup'
+import { Splitter } from '@/models/Splitter'
 import { selectionSelector } from '@/selectors/navigation'
 import { render } from '@/utils/rendererRTL'
 import { DocumentTypesGroupHeader } from './DocumentTypesGroupHeader'
@@ -28,6 +29,10 @@ jest.mock('@/containers/EditDocumentTypesGroupDrawerButton', () => ({
 
 jest.mock('../SetClassifiersDrawerButton', () => ({
   SetClassifiersDrawerButton: () => <div data-testid='set-classifiers' />,
+}))
+
+jest.mock('../SetSplittersDrawerButton', () => ({
+  SetSplittersDrawerButton: () => <div data-testid='set-splitters' />,
 }))
 
 jest.mock('@/containers/DeleteDocumentTypesFromGroupButton', () => ({
@@ -85,6 +90,54 @@ test('renders Set Classifiers button if some document type in the group does not
   render(<DocumentTypesGroupHeader group={mockDocTypesGroup} />)
 
   expect(screen.getByTestId('set-classifiers')).toBeInTheDocument()
+})
+
+test('renders Set Splitters button if some document type in the group does not have splitter', () => {
+  const groupWithPartialSplitters = new DocumentTypesGroup({
+    id: 'id1',
+    name: 'Group1',
+    documentTypeIds: ['testType1', 'testType2'],
+    createdAt: '2012-12-12',
+    genAiClassifiers: [],
+    splitters: [
+      new Splitter({
+        id: 'splitter-id',
+        groupId: 'id1',
+        documentTypeId: 'testType1',
+        name: 'Splitter Name',
+        splittingQuery: 'Test query',
+        llmType: 'provider1/model-1-1',
+      }),
+    ],
+  })
+
+  render(<DocumentTypesGroupHeader group={groupWithPartialSplitters} />)
+
+  expect(screen.getByTestId('set-splitters')).toBeInTheDocument()
+})
+
+test('does not render Set Splitters button if all document types in the group have splitter', () => {
+  const groupWithAllSplitters = new DocumentTypesGroup({
+    id: 'id1',
+    name: 'Group1',
+    documentTypeIds: ['testType1'],
+    createdAt: '2012-12-12',
+    genAiClassifiers: [],
+    splitters: [
+      new Splitter({
+        id: 'splitter-id',
+        groupId: 'id1',
+        documentTypeId: 'testType1',
+        name: 'Splitter Name',
+        splittingQuery: 'Test query',
+        llmType: 'provider1/model-1-1',
+      }),
+    ],
+  })
+
+  render(<DocumentTypesGroupHeader group={groupWithAllSplitters} />)
+
+  expect(screen.queryByTestId('set-splitters')).not.toBeInTheDocument()
 })
 
 test('does not renders Set Classifiers button if all document types in the group have classifier', () => {

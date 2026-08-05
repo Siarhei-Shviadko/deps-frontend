@@ -274,16 +274,20 @@ const CreateOrChangeTypeFieldForm = ({
     )
   )
 
+  const charLimit = (
+    field?.fieldMeta?.displayCharLimit ??
+    field?.fieldMeta?.valueMeta?.displayCharLimit ??
+    field?.fieldMeta?.baseTypeMeta?.displayCharLimit ??
+    field?.fieldMeta?.baseTypeMeta?.valueMeta?.displayCharLimit
+  )
+
   return (
     <Form>
       { BaseFormSection }
       {
         showDisplayModeFormSection && (
           <ManageDisplayModeFormSection
-            displayCharLimit={
-              field?.fieldMeta?.displayCharLimit ??
-              field?.fieldMeta?.baseTypeMeta?.displayCharLimit
-            }
+            displayCharLimit={charLimit}
             fieldType={fieldType}
             isConfidentialField={field?.confidential}
             isEditMode={true}

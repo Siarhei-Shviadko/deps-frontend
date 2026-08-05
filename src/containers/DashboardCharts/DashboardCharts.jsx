@@ -10,6 +10,7 @@ import { fetchDocumentTypes } from '@/actions/documentTypes'
 import { Spin } from '@/components/Spin'
 import { PaginationKeys } from '@/constants/navigation'
 import { DocumentsStatesChart } from '@/containers/DocumentsStatesChart'
+import { FieldEditsTable } from '@/containers/FieldEditsTable'
 import { ExtractionType } from '@/enums/ExtractionType'
 import { BASE_DOCUMENTS_FILTER_CONFIG } from '@/models/DocumentsFilterConfig'
 import { DefaultPaginationConfig } from '@/models/PaginationConfig'
@@ -17,7 +18,7 @@ import { documentsTotalSelector } from '@/selectors/documentsListPage'
 import { documentTypesStateSelector } from '@/selectors/documentTypes'
 import { areDocumentsFetchingSelector, areTypesFetchingSelector } from '@/selectors/requests'
 import { ENV } from '@/utils/env'
-import { ChartsWrapper } from './DashboardCharts.styles'
+import { ChartsRowWrapper, ChartsWrapper } from './DashboardCharts.styles'
 import { DocumentsByTypeChart } from './DocumentsByTypeChart'
 import { EmptyDashboard } from './EmptyDashboard'
 
@@ -99,8 +100,11 @@ const DashboardCharts = () => {
 
   return (
     <ChartsWrapper>
+      <ChartsRowWrapper>
+        <DocumentsStatesChart />
+        <FieldEditsTable />
+      </ChartsRowWrapper>
       <DocumentsByTypeChart {...docTypesConfig} />
-      <DocumentsStatesChart />
     </ChartsWrapper>
   )
 }

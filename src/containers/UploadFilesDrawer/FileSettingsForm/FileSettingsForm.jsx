@@ -1,5 +1,6 @@
 
 import { useEffect } from 'react'
+import { useWatch } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchOCREngines } from '@/actions/engines'
 import { FormItem } from '@/components/Form'
@@ -17,6 +18,7 @@ import { StyledForm } from './FileSettingsForm.styles'
 export const FileSettingsForm = () => {
   const areEnginesFetching = useSelector(areEnginesFetchingSelector)
   const engines = useSelector(ocrEnginesSelector)
+  const selectedEngine = useWatch({ name: FIELD_FORM_CODE.ENGINE })
 
   const dispatch = useDispatch()
 
@@ -41,7 +43,12 @@ export const FileSettingsForm = () => {
     {
       code: FIELD_FORM_CODE.PARSING_FEATURES,
       label: localize(Localization.PARSING_FEATURES),
-      render: ParsingFeaturesSwitch,
+      render: (props) => (
+        <ParsingFeaturesSwitch
+          {...props}
+          engineCode={selectedEngine}
+        />
+      ),
     },
     {
       code: FIELD_FORM_CODE.LABELS,

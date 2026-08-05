@@ -2,8 +2,13 @@
 import { rootApi } from '@/apiRTK/rootApi'
 import { RequestMethod } from '@/enums/RequestMethod'
 import { apiMap } from '@/utils/apiMap'
+import {
+  mapFileDataToDto,
+  mapSplitFileDataToDto,
+  mapSplittedFileDataToDto,
+} from './mappers'
 
-const FILES_TAG = 'Files'
+export const FILES_TAG = 'Files'
 const FILE_UNIFIED_DATA_TAG = 'FileUnifiedData'
 const FILE_TABLE_CELLS_TAG = 'FileTableCells'
 
@@ -12,33 +17,6 @@ const defaultTags = [
   FILE_UNIFIED_DATA_TAG,
   FILE_TABLE_CELLS_TAG,
 ]
-
-const mapFileDataToDto = (formData) => {
-  const dto = new FormData()
-  const {
-    labels,
-    group,
-    assignedToMe,
-    needsExtraction,
-    llmType,
-    parsingFeatures,
-    ...rest
-  } = formData
-
-  Object.entries(rest).forEach(([key, value]) => {
-    dto.append(key, value)
-  })
-
-  dto.append('needsExtraction', needsExtraction ?? false)
-  dto.append('assignedToMe', assignedToMe ?? true)
-  dto.append('needsUnifier', true)
-  dto.append('labels', JSON.stringify(labels.map((label) => label.name)))
-  dto.append('parsingFeatures', JSON.stringify(parsingFeatures))
-  dto.append('groupId', group?.id ?? null)
-  dto.append('llmType', llmType ?? null)
-
-  return dto
-}
 
 export const filesApi = rootApi.injectEndpoints({
   tagTypes: defaultTags,
@@ -134,6 +112,22 @@ export const filesApi = rootApi.injectEndpoints({
       }),
       invalidatesTags: [FILES_TAG],
     }),
+    splitFile: builder.mutation({
+      query: (fileData) => ({
+        url: apiMap.apiGatewayV2.v5.files.split(),
+        method: RequestMethod.POST,
+        body: mapSplitFileDataToDto(fileData),
+      }),
+      invalidatesTags: [FILES_TAG],
+    }),
+    splitExistingFile: builder.mutation({
+      query: ({ fileId, ...data }) => ({
+        url: apiMap.apiGatewayV2.v5.files.file.split(fileId),
+        method: RequestMethod.PATCH,
+        body: mapSplittedFileDataToDto(data),
+      }),
+      invalidatesTags: [FILES_TAG],
+    }),
   }),
 })
 
@@ -149,4 +143,6 @@ export const {
   useLazyFetchFileUnifiedDataTableCellsQuery,
   useCreateBatchFromFileMutation,
   useRestartFileMutation,
+  useSplitFileMutation,
+  useSplitExistingFileMutation,
 } = filesApi

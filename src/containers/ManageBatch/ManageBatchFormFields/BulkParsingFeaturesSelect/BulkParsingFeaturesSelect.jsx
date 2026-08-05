@@ -1,11 +1,13 @@
 
 import PropTypes from 'prop-types'
-import { useFormContext } from 'react-hook-form'
+import { useFormContext, useWatch } from 'react-hook-form'
 import { FIELD_FORM_CODE } from '@/containers/ManageBatch/constants'
 import { ParsingFeaturesSwitch } from '@/containers/ParsingFeaturesSwitch'
 
 export const BulkParsingFeaturesSelect = ({ onChange, ...props }) => {
   const { setValue, getValues } = useFormContext()
+
+  const selectedEngine = useWatch({ name: FIELD_FORM_CODE.ENGINE })
 
   const enhancedOnChange = (value) => {
     const files = getValues(FIELD_FORM_CODE.FILES)
@@ -35,6 +37,7 @@ export const BulkParsingFeaturesSelect = ({ onChange, ...props }) => {
   return (
     <ParsingFeaturesSwitch
       {...props}
+      engineCode={selectedEngine}
       onChange={enhancedOnChange}
     />
   )

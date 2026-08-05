@@ -48,6 +48,7 @@ const GenAiClassifierDrawer = ({
     groupId,
     extras: [
       DocumentTypesGroupExtras.CLASSIFIERS,
+      DocumentTypesGroupExtras.SPLITTERS,
     ],
   })
 

@@ -10,7 +10,7 @@ const StyledDrawer = styled(Drawer)`
   }
 
   .ant-drawer-body {
-    padding: 2rem;
+    padding: 1.6rem 2rem;
   }
 
   .ant-drawer-footer {

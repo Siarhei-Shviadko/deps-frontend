@@ -1,3 +1,4 @@
+import { FieldType } from '@/enums/FieldType'
 
 const Position = {
   BEFORE: 'before',
@@ -25,9 +26,14 @@ const TEST_ID = {
   NODE_VERTICAL_LINE: 'node-vertical-line',
 }
 
+const FIELD_TYPES_WITH_DISABLED_MASKING = [
+  FieldType.CHECKMARK,
+]
+
 export {
   Position,
   FORM_FIELD_CODES,
   REQUIRED_FIELD_MARKER,
   TEST_ID,
+  FIELD_TYPES_WITH_DISABLED_MASKING,
 }

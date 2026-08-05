@@ -16,7 +16,7 @@ import { ManageDisplayModeFormSection } from '@/containers/ManageDisplayModeForm
 import { useFieldCalibration } from '@/containers/PromptCalibrationStudio/hooks'
 import { MULTIPLICITY, SUPPORTED_BASE_FIELD_TYPES } from '@/containers/PromptCalibrationStudio/viewModels'
 import { ComponentSize } from '@/enums/ComponentSize'
-import { RESOURCE_FIELD_TYPE } from '@/enums/FieldType'
+import { FieldType, RESOURCE_FIELD_TYPE } from '@/enums/FieldType'
 import { Localization, localize } from '@/localization/i18n'
 import { ENV } from '@/utils/env'
 import { FIELD_FORM_CODE } from '../constants'
@@ -30,6 +30,10 @@ const isUniqueName = (value, fields) => {
     (field) => field.name.toLowerCase() === trimmedName,
   )
 }
+
+const FIELD_TYPES_WITH_DISABLED_MASKING = [
+  FieldType.CHECKMARK,
+]
 
 export const AddFieldForm = () => {
   const { control } = useFormContext()
@@ -144,6 +148,7 @@ export const AddFieldForm = () => {
             displayCharLimit={10}
             fieldType={fieldType}
             isEditMode={true}
+            isMaskingModeDisabled={FIELD_TYPES_WITH_DISABLED_MASKING.includes(fieldType)}
             isReadOnlyField={false}
           />
         )

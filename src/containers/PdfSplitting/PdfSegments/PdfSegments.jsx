@@ -1,7 +1,11 @@
 
 import PropTypes from 'prop-types'
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchDocumentTypes } from '@/actions/documentTypes'
 import { DocumentTypesGroupsSelect } from '@/containers/DocumentTypesGroupsSelect'
 import { Localization, localize } from '@/localization/i18n'
+import { documentTypesSelector } from '@/selectors/documentTypesListPage'
 import { ENV } from '@/utils/env'
 import { usePdfSegments } from '../hooks'
 import { PdfSegment as SegmentModel } from '../models'
@@ -17,7 +21,19 @@ import {
   Wrapper,
 } from './PdfSegments.styles'
 
-export const PdfSegments = ({ onCancel, onSave }) => {
+export const PdfSegments = ({
+  onCancel,
+  onSave,
+  isSaveDisabled: propIsSaveDisabled,
+  disableDocumentTypeGroup,
+}) => {
+  const dispatch = useDispatch()
+  const documentTypes = useSelector(documentTypesSelector)
+
+  useEffect(() => {
+    !documentTypes.length && dispatch(fetchDocumentTypes())
+  }, [dispatch, documentTypes.length])
+
   const {
     segments,
     setSegments,
@@ -96,7 +112,8 @@ export const PdfSegments = ({ onCancel, onSave }) => {
   const hasGroupId = !!selectedGroup?.id
   const allSegmentsHaveDocumentType = segments.every((s) => !!s.documentTypeId)
   const meetsBatchCreationConstraint = hasGroupId || allSegmentsHaveDocumentType
-  const isSaveDisabled = !batchName || !meetsBatchCreationConstraint
+  const internalIsSaveDisabled = !batchName || !meetsBatchCreationConstraint
+  const isSaveDisabled = propIsSaveDisabled ?? internalIsSaveDisabled
 
   return (
     <Wrapper>
@@ -106,13 +123,15 @@ export const PdfSegments = ({ onCancel, onSave }) => {
         )
       }
       {
-        ENV.FEATURE_DOCUMENT_TYPES_GROUPS && batchName !== null && (
+        ENV.FEATURE_DOCUMENT_TYPES_GROUPS &&
+        batchName !== null && (
           <GroupSelectWrapper>
             <StyledGroupLabel
               name={localize(Localization.GROUP)}
               required={false}
             />
             <DocumentTypesGroupsSelect
+              disabled={disableDocumentTypeGroup}
               onChange={setSelectedGroup}
               value={selectedGroup}
             />
@@ -151,4 +170,6 @@ export const PdfSegments = ({ onCancel, onSave }) => {
 PdfSegments.propTypes = {
   onCancel: PropTypes.func,
   onSave: PropTypes.func,
+  isSaveDisabled: PropTypes.bool,
+  disableDocumentTypeGroup: PropTypes.bool,
 }

@@ -2,6 +2,7 @@
 import { mockReact } from '@/mocks/mockReact'
 import { mockEnv } from '@/mocks/mockEnv'
 import { mockNotification } from '@/mocks/mockNotification'
+import { mockReactHookForm } from '@/mocks/mockReactHookForm'
 import { mockReactRedux } from '@/mocks/mockReactRedux'
 import { shallow } from 'enzyme'
 import React from 'react'
@@ -21,6 +22,7 @@ jest.mock('@/selectors/requests')
 jest.mock('@/selectors/engines')
 jest.mock('@/utils/notification', () => mockNotification)
 jest.mock('@/utils/env', () => mockEnv)
+jest.mock('react-hook-form', () => mockReactHookForm)
 
 jest.mock('react-redux', () => ({
   ...mockReactRedux,

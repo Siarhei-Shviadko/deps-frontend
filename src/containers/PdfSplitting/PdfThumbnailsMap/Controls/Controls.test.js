@@ -1,4 +1,3 @@
-
 import { mockEnv } from '@/mocks/mockEnv'
 import { screen, waitFor } from '@testing-library/dom'
 import userEvent, { PointerEventsCheckLevel } from '@testing-library/user-event'
@@ -27,6 +26,22 @@ jest.mock('@/components/Icons/AlternativeArrowsIcon', () => ({
   AlternativeArrowsIcon: () => <span>{mockAlternativeArrowsIconContent}</span>,
 }))
 
+jest.mock('@/components/Icons/PenToSquareIcon', () => ({
+  PenToSquareIcon: () => <span>{mockPenToSquareIconContent}</span>,
+}))
+
+jest.mock('@/components/Icons/TrashIcon', () => ({
+  TrashIcon: () => <span>{mockTrashIconContent}</span>,
+}))
+
+jest.mock('@/containers/AreaSelector', () => ({
+  useAreaCreate: jest.fn(() => ({
+    isCreating: false,
+    startCreating: mockStartCreating,
+    deleteArea: mockDeleteArea,
+  })),
+}))
+
 jest.mock('@/containers/PdfSplitting/hooks', () => ({
   usePdfSegments: jest.fn(() => ({
     segments: [mockSegment],
@@ -44,8 +59,12 @@ const mockOpenEyeIconContent = 'open-eye'
 const mockXMarkIconContent = 'x-mark'
 const mockCopyIconContent = 'copy'
 const mockAlternativeArrowsIconContent = 'alternative'
+const mockPenToSquareIconContent = 'pen-to-square'
+const mockTrashIconContent = 'trash'
 const mockSetSegments = jest.fn()
 const mockSetActiveUserPage = jest.fn()
+const mockStartCreating = jest.fn()
+const mockDeleteArea = jest.fn()
 
 const mockUserPage1 = new UserPage({
   page: 0,
@@ -297,4 +316,79 @@ test('shows tooltip with message when hover on drag button if disabledTooltip pr
     const tooltip = screen.getByRole('tooltip')
     expect(tooltip).toHaveTextContent(props.disabledTooltip)
   })
+})
+
+test('renders select area button when user page has no coordinates', () => {
+  const props = {
+    userPage: mockUserPage1,
+    showAreaControls: true,
+  }
+
+  render(<Controls {...props} />)
+
+  const selectAreaBtn = screen.getByRole('button', { name: mockPenToSquareIconContent })
+
+  expect(selectAreaBtn).toBeInTheDocument()
+})
+
+test('calls startCreating when select area button is clicked', async () => {
+  jest.clearAllMocks()
+
+  const props = {
+    userPage: mockUserPage1,
+    showAreaControls: true,
+  }
+
+  render(<Controls {...props} />)
+
+  const selectAreaBtn = screen.getByRole('button', { name: mockPenToSquareIconContent })
+  await userEvent.click(selectAreaBtn)
+
+  expect(mockStartCreating).toHaveBeenCalledTimes(1)
+})
+
+test('renders delete area button when user page has coordinates', () => {
+  const props = {
+    showAreaControls: true,
+    userPage: new UserPage({
+      page: 0,
+      segmentId: '1',
+      coordinates: {
+        x: 0,
+        y: 0.2,
+        width: 1,
+        height: 0.4,
+      },
+    }),
+  }
+
+  render(<Controls {...props} />)
+
+  expect(screen.getByRole('button', { name: mockTrashIconContent })).toBeInTheDocument()
+  expect(screen.queryByRole('button', { name: mockPenToSquareIconContent })).not.toBeInTheDocument()
+})
+
+test('calls deleteArea when delete area button is clicked', async () => {
+  jest.clearAllMocks()
+
+  const props = {
+    showAreaControls: true,
+    userPage: new UserPage({
+      page: 0,
+      segmentId: '1',
+      coordinates: {
+        x: 0,
+        y: 0.2,
+        width: 1,
+        height: 0.4,
+      },
+    }),
+  }
+
+  render(<Controls {...props} />)
+
+  const deleteAreaBtn = screen.getByRole('button', { name: mockTrashIconContent })
+  await userEvent.click(deleteAreaBtn)
+
+  expect(mockDeleteArea).toHaveBeenCalledTimes(1)
 })

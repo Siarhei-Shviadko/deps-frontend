@@ -177,7 +177,9 @@ test('calls retrieveInsights with correct parameters when onExecute is triggered
   const {
     model,
     customInstruction,
-    ...params
+    contextAttachments,
+    stop,
+    ...rest
   } = mockExtractor
 
   expect(mockRetrieveInsights).toHaveBeenCalledWith(
@@ -185,7 +187,11 @@ test('calls retrieveInsights with correct parameters when onExecute is triggered
       model,
       customInstructions: customInstruction,
       requestedInsights: mapNodesToRequestedInsights(mockField1, mockField1.query.nodes),
-      params,
+      params: {
+        contextAttachments: contextAttachments || null,
+        stop: stop?.length ? stop : null,
+        ...rest,
+      },
     }),
   )
 })

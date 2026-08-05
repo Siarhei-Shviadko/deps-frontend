@@ -226,6 +226,44 @@ test('calls correct APIs and pass correct KEY VALUE PAIR field data on form subm
   })
 })
 
+test('calls correct APIs and pass displayCharLimit in DICTIONARY field meta on form submit', async () => {
+  const mockValues = {
+    name: mockName,
+    required: false,
+    fieldType: FieldType.DICTIONARY,
+    extractorId: mockExtractorId,
+    confidential: true,
+    displayCharLimit: 5,
+    cardinality: LLMQueryCardinality.SCALAR,
+    readOnly: false,
+    includeAliases: false,
+    llmWorkflow: mockLlmWorkflow,
+  }
+
+  render(<AddGenAiDrivenFieldSection />)
+
+  await act(async () => await openFormAndSubmit(mockValues))
+
+  expect(mockCreateExtractionField).nthCalledWith(1, {
+    documentTypeCode: mockDocumentTypeCode,
+    field: {
+      confidential: mockValues.confidential,
+      extractorId: mockValues.extractorId,
+      fieldType: mockValues.fieldType,
+      name: mockValues.name,
+      required: mockValues.required,
+      readOnly: mockValues.readOnly,
+      fieldMeta: {
+        keyType: FieldType.STRING,
+        valueType: FieldType.STRING,
+        valueMeta: {
+          displayCharLimit: mockValues.displayCharLimit,
+        },
+      },
+    },
+  })
+})
+
 test('calls correct APIs and pass correct CHECKMARK field data on form submit', async () => {
   const mockValues = {
     name: mockName,

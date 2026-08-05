@@ -36,11 +36,12 @@ const META_FIELDS_NAME_MAPPING = {
   keyCharBlacklist: 'charBlacklist',
   valueCharWhitelist: 'charWhitelist',
   valueCharBlacklist: 'charBlacklist',
+  displayCharLimit: 'displayCharLimit',
 }
 
 const BASE_FIELD_TYPE_TO_META_FIELDS_MAPPING = {
   [BASE_FIELD_TYPES.STRING]: ['baseCharWhitelist', 'baseCharBlacklist', 'displayCharLimit'],
-  [BASE_FIELD_TYPES.DICTIONARY]: ['keyMeta', 'keyType', 'valueMeta', 'valueType'],
+  [BASE_FIELD_TYPES.DICTIONARY]: ['keyMeta', 'keyType', 'valueMeta', 'valueType', 'displayCharLimit'],
   [BASE_FIELD_TYPES.ENUM]: ['baseEnum'],
 }
 
@@ -48,17 +49,17 @@ const FIELD_TYPE_TO_META_FIELDS_MAPPING = {
   [FieldType.ENUM]: ['enum'],
   [FieldType.STRING]: ['charWhitelist', 'charBlacklist', 'displayCharLimit'],
   [FieldType.LIST]: ['baseType'],
-  [FieldType.DICTIONARY]: ['keyType', 'valueType'],
+  [FieldType.DICTIONARY]: ['keyType', 'valueType', 'displayCharLimit'],
   [FieldType.TABLE]: ['columns'],
   [FieldType.DATE]: ['format', 'displayCharLimit'],
 }
 
 const DICTIONARY_KEY_FIELD_TYPE_TO_META_FIELDS_MAPPING = {
-  [BASE_FIELD_TYPES.STRING]: ['keyCharWhitelist', 'keyCharBlacklist'],
+  [BASE_FIELD_TYPES.STRING]: ['keyCharWhitelist', 'keyCharBlacklist', 'displayCharLimit'],
 }
 
 const DICTIONARY_VALUE_FIELD_TYPE_TO_META_FIELDS_MAPPING = {
-  [BASE_FIELD_TYPES.STRING]: ['valueCharWhitelist', 'valueCharBlacklist'],
+  [BASE_FIELD_TYPES.STRING]: ['valueCharWhitelist', 'valueCharBlacklist', 'displayCharLimit'],
 }
 
 const CreateOrChangeTypeFieldDrawerButton = ({

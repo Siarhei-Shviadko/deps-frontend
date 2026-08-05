@@ -2,6 +2,10 @@
 
 exports[`Container: DashboardCharts should render correct layout when fetching is finished 1`] = `
 <DashboardChartsstyles__ChartsWrapper>
+  <DashboardChartsstyles__ChartsRowWrapper>
+    <DocumentsStatesChart />
+    <FieldEditsTable />
+  </DashboardChartsstyles__ChartsRowWrapper>
   <DocumentsByTypeChart
     docTypesList={
       Array [
@@ -30,6 +34,5 @@ exports[`Container: DashboardCharts should render correct layout when fetching i
     }
     isFetching={false}
   />
-  <DocumentsStatesChart />
 </DashboardChartsstyles__ChartsWrapper>
 `;

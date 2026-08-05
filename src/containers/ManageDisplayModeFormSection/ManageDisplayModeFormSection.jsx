@@ -38,19 +38,13 @@ const ManageDisplayModeFormSection = ({
   isMaskingModeDisabled,
   displayCharLimit,
 }) => {
-  const { control, setValue } = useFormContext()
+  const { control } = useFormContext()
 
   const watchedConfidentialValue = useWatch({
     control,
     defaultValue: !!isConfidentialField,
     name: FIELD_CODE.CONFIDENTIAL,
   })
-
-  const setReadOnlyFieldValue = (checked) => {
-    if (checked) {
-      setValue(FIELD_CODE.READ_ONLY, checked)
-    }
-  }
 
   const formFields = [
     ...(fieldName ? [{
@@ -64,7 +58,7 @@ const ManageDisplayModeFormSection = ({
       code: FIELD_CODE.READ_ONLY,
       label: localize(Localization.READ_ONLY_MODE),
       defaultValue: isReadOnlyField,
-      disabled: watchedConfidentialValue || !isEditMode,
+      disabled: !isEditMode,
       type: FieldType.CHECKMARK,
       render: ({ value, ...restProps }) => (
         <Switch
@@ -75,15 +69,12 @@ const ManageDisplayModeFormSection = ({
         />
       ),
     },
-    {
+    ...(!isMaskingModeDisabled ? [{
       code: FIELD_CODE.CONFIDENTIAL,
       label: localize(Localization.MASK_MODE),
-      disabled: !isEditMode || isMaskingModeDisabled,
+      disabled: !isEditMode,
       defaultValue: isConfidentialField,
       type: FieldType.CHECKMARK,
-      handler: {
-        onChange: setReadOnlyFieldValue,
-      },
       render: ({ value, ...restProps }) => (
         <Switch
           checked={!!value}
@@ -92,7 +83,7 @@ const ManageDisplayModeFormSection = ({
           {...restProps}
         />
       ),
-    },
+    }] : []),
     ...(watchedConfidentialValue ? [{
       code: FIELD_CODE.DISPLAY_CHAR_LIMIT,
       label: localize(Localization.VISIBLE_SYMBOLS),
