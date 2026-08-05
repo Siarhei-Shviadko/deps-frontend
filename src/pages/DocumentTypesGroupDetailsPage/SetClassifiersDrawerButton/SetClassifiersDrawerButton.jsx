@@ -1,12 +1,12 @@
 
 import { useCallback, useMemo } from 'react'
 import { useCreateGenAiClassifierMutation } from '@/apiRTK/documentTypesGroupsApi'
+import { Button } from '@/components/Button'
 import { GenAiClassifierDrawer } from '@/containers/GenAiClassifierDrawer'
 import { RESOURCE_ERROR_TO_DISPLAY } from '@/enums/Errors'
 import { Localization, localize } from '@/localization/i18n'
 import { documentTypesGroupShape } from '@/models/DocumentTypesGroup'
 import { notifySuccess, notifyWarning } from '@/utils/notification'
-import { Trigger } from './SetClassifiersDrawerButton.styles'
 
 const SetClassifiersDrawerButton = ({ group }) => {
   const [
@@ -15,11 +15,11 @@ const SetClassifiersDrawerButton = ({ group }) => {
   ] = useCreateGenAiClassifierMutation()
 
   const getTrigger = (onClick) => (
-    <Trigger
+    <Button.Secondary
       onClick={onClick}
     >
       {localize(Localization.SET_CLASSIFIERS)}
-    </Trigger>
+    </Button.Secondary>
   )
 
   const onSubmit = useCallback(async (values) => {

@@ -30,6 +30,7 @@ import {
   setActivePdfPage,
 } from '@/actions/documentReviewPage'
 import {
+  saveDocumentData,
   storeComment,
   storeValidation,
   updateExtractedData,
@@ -38,6 +39,7 @@ import {
 import { setUi } from '@/actions/navigation'
 import { documentsApi } from '@/api/documentsApi'
 import { UiKeys } from '@/constants/navigation'
+import { DocumentState } from '@/enums/DocumentState'
 import { KnownLanguage } from '@/enums/KnownLanguage'
 import { KnownOCREngine } from '@/enums/KnownOCREngine'
 import { KnownTableEngine } from '@/enums/KnownTableEngine'
@@ -88,6 +90,7 @@ jest.mock('@/actions/navigation', () => ({
 jest.mock('@/actions/documents', () => ({
   ...jest.requireActual('@/actions/documents'),
   fetchDocumentData: jest.fn(() => Promise.resolve(mockDocument)),
+  saveDocumentData: jest.fn(),
   updateExtractedData: jest.fn(),
   setDataByProp: jest.fn(),
 }))
@@ -193,26 +196,53 @@ describe('Action creator: saveDocument', () => {
 describe('Action creator: completeReview', () => {
   let dispatch, getState
 
+  const documentId = 'test-document-id'
+  const mockExtractedData = [{ fieldPk: 'field-1' }]
   const mockData = {
     saveDocument: [],
     previewDocuments: {},
     documentMetadata: {},
+    state: DocumentState.VALIDATION,
   }
 
-  documentsApi.completeReview = jest.fn(() => {
-    return mockData
-  })
-
   beforeEach(() => {
+    jest.clearAllMocks()
     dispatch = jest.fn()
-    getState = jest.fn()
+    getState = jest.fn(() => ({ documents: {} }))
+    documentsApi.completeReview = jest.fn(() => Promise.resolve(mockData))
+    documentsApi.getDocumentExtractedData = jest.fn(() => Promise.resolve(mockExtractedData))
   })
 
-  it('should call documentsApi.completeReview once', () => {
-    const id = 1
-    completeReview(id)(dispatch, getState)
+  it('should call documentsApi.completeReview once', async () => {
+    await completeReview(documentId)(dispatch, getState)
     expect(documentsApi.completeReview).toHaveBeenCalledTimes(1)
-    expect(documentsApi.completeReview).nthCalledWith(1, id)
+    expect(documentsApi.completeReview).nthCalledWith(1, documentId)
+  })
+
+  it('should preserve current document state from redux when dispatching saveDocumentData', async () => {
+    getState = jest.fn(() => ({
+      documents: {
+        [documentId]: { state: DocumentState.IN_REVIEW },
+      },
+    }))
+
+    await completeReview(documentId)(dispatch, getState)
+
+    expect(saveDocumentData).nthCalledWith(1, {
+      ...mockData,
+      extractedData: mockExtractedData,
+      state: DocumentState.IN_REVIEW,
+    })
+  })
+
+  it('should use documentData.state when current document state is not in redux', async () => {
+    await completeReview(documentId)(dispatch, getState)
+
+    expect(saveDocumentData).nthCalledWith(1, {
+      ...mockData,
+      extractedData: mockExtractedData,
+      state: DocumentState.VALIDATION,
+    })
   })
 })
 

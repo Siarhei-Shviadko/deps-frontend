@@ -1,6 +1,7 @@
 
 import styled, { css } from 'styled-components'
 import { Button } from '@/components/Button'
+import { LongText } from '@/components/LongText'
 import { TypographyText } from '@/components/TypographyText'
 
 export const SegmentCard = styled.div`
@@ -27,7 +28,7 @@ export const SegmentPagesRange = styled(TypographyText)`
   color: ${(props) => props.theme.color.grayscale12};
 `
 
-export const SegmentTitle = styled.h4`
+export const SegmentTitle = styled(LongText)`
   font-size: 1.4rem;
   font-weight: 600;
   color: ${(props) => props.theme.color.grayscale18};
@@ -43,7 +44,7 @@ export const CardHeader = styled.div`
 export const TitleWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  max-width: 80%;
+  max-width: 90%;
 `
 
 export const IconButton = styled(Button.Icon)`

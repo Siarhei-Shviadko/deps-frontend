@@ -1,9 +1,9 @@
-
 import { mockEnv } from '@/mocks/mockEnv'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import React from 'react'
-import { DOCUMENT_LAYOUT_PARSING_TYPE } from '@/enums/DocumentLayoutType'
+import { useHighlightCoords, usePaginatedLayout } from '@/containers/ParsingLayout/EntityLayout/hooks'
+import { DOCUMENT_LAYOUT_FEATURE, DOCUMENT_LAYOUT_PARSING_TYPE } from '@/enums/DocumentLayoutType'
+import { Localization, localize } from '@/localization/i18n'
 import { ImageLayout as ImageLayoutModel } from '@/models/DocumentLayout'
 import { Point } from '@/models/Point'
 import { render } from '@/utils/rendererRTL'
@@ -11,15 +11,29 @@ import { ImageLayout } from './ImageLayout'
 
 jest.mock('@/utils/env', () => mockEnv)
 
-const mockHighlightCoords = jest.fn()
-const mockUnhighlightCoords = jest.fn()
+jest.mock('@/components/Spin', () => ({
+  Spin: () => <div data-testid="spin" />,
+}))
 
 jest.mock('@/containers/ParsingLayout/EntityLayout/hooks', () => ({
-  useHighlightCoords: jest.fn(() => ({
-    highlightCoords: mockHighlightCoords,
-    unhighlightCoords: mockUnhighlightCoords,
-  })),
+  useHighlightCoords: jest.fn(),
+  usePaginatedLayout: jest.fn(),
 }))
+
+jest.mock('./ImageField', () => ({
+  ImageField: jest.fn(({ imageLayout, onClick }) => (
+    <div
+      data-testid={imageLayout.id}
+      onClick={onClick}
+    >
+      <span>{imageLayout.title}</span>
+      <span>{imageLayout.description}</span>
+    </div>
+  )),
+}))
+
+const mockHighlightCoords = jest.fn()
+const mockUnhighlightCoords = jest.fn()
 
 const mockImage1 = new ImageLayoutModel({
   id: 'img1',
@@ -58,71 +72,35 @@ const mockData = [
   },
 ]
 
-function MockInfiniteScrollLayout ({ setLayout, children }) {
-  React.useEffect(() => {
-    setLayout(mockData)
-  }, [setLayout])
-  return children
+const defaultProps = {
+  batchIndex: 0,
+  parsingType: DOCUMENT_LAYOUT_PARSING_TYPE.AWS_TEXTRACT,
 }
-
-jest.mock('../InfiniteScrollLayout', () => ({
-  InfiniteScrollLayout: MockInfiniteScrollLayout,
-}))
-
-jest.mock('./ImageField', () => ({
-  ImageField: jest.fn(({ imageLayout, onClick }) => (
-    <div
-      data-testid={imageLayout.id}
-      onClick={onClick}
-    >
-      <span>{imageLayout.title}</span>
-      <span>{imageLayout.description}</span>
-    </div>
-  )),
-}))
 
 beforeEach(() => {
   jest.clearAllMocks()
-})
-
-test('should highlight coords on image click', async () => {
-  render(
-    <ImageLayout
-      parsingType={DOCUMENT_LAYOUT_PARSING_TYPE.AWS_TEXTRACT}
-      total={1}
-    />,
-  )
-
-  await userEvent.click(screen.getByTestId('img1'))
-
-  expect(mockHighlightCoords).toHaveBeenCalledWith({
-    field: [mockImage1.polygon],
-    page: 1,
+  useHighlightCoords.mockReturnValue({
+    highlightCoords: mockHighlightCoords,
+    unhighlightCoords: mockUnhighlightCoords,
+  })
+  usePaginatedLayout.mockReturnValue({
+    layoutData: mockData,
+    isFetching: false,
   })
 })
 
-test('should call unhighlightCoords when toggling off image', async () => {
-  render(
-    <ImageLayout
-      parsingType={DOCUMENT_LAYOUT_PARSING_TYPE.AWS_TEXTRACT}
-      total={1}
-    />,
-  )
+test('calls usePaginatedLayout with correct parameters', () => {
+  render(<ImageLayout {...defaultProps} />)
 
-  await userEvent.click(screen.getByTestId('img1'))
-
-  await userEvent.click(screen.getByTestId('img1'))
-
-  expect(mockUnhighlightCoords).toHaveBeenCalled()
+  expect(usePaginatedLayout).toHaveBeenCalledWith({
+    batchIndex: 0,
+    parsingFeature: DOCUMENT_LAYOUT_FEATURE.IMAGES,
+    parsingType: DOCUMENT_LAYOUT_PARSING_TYPE.AWS_TEXTRACT,
+  })
 })
 
-test('should render correct layout for images', () => {
-  render(
-    <ImageLayout
-      parsingType={DOCUMENT_LAYOUT_PARSING_TYPE.AWS_TEXTRACT}
-      total={1}
-    />,
-  )
+test('renders correct layout for images', () => {
+  render(<ImageLayout {...defaultProps} />)
 
   const image1 = screen.getByTestId(mockImage1.id)
   const image2 = screen.getByTestId(mockImage2.id)
@@ -135,13 +113,28 @@ test('should render correct layout for images', () => {
   expect(screen.getByText(mockImage2.description)).toBeInTheDocument()
 })
 
-test('should highlight new image when clicking on different image', async () => {
-  render(
-    <ImageLayout
-      parsingType={DOCUMENT_LAYOUT_PARSING_TYPE.AWS_TEXTRACT}
-      total={1}
-    />,
-  )
+test('highlights coords on image click', async () => {
+  render(<ImageLayout {...defaultProps} />)
+
+  await userEvent.click(screen.getByTestId('img1'))
+
+  expect(mockHighlightCoords).toHaveBeenCalledWith({
+    field: [mockImage1.polygon],
+    page: 1,
+  })
+})
+
+test('calls unhighlightCoords when toggling off image', async () => {
+  render(<ImageLayout {...defaultProps} />)
+
+  await userEvent.click(screen.getByTestId('img1'))
+  await userEvent.click(screen.getByTestId('img1'))
+
+  expect(mockUnhighlightCoords).toHaveBeenCalled()
+})
+
+test('highlights new image when clicking on different image', async () => {
+  render(<ImageLayout {...defaultProps} />)
 
   await userEvent.click(screen.getByTestId('img1'))
 
@@ -158,4 +151,42 @@ test('should highlight new image when clicking on different image', async () => 
     field: [mockImage2.polygon],
     page: 2,
   })
+})
+
+test('calls unhighlightCoords when batchIndex changes', () => {
+  const { rerender } = render(<ImageLayout {...defaultProps} />)
+
+  jest.clearAllMocks()
+
+  const props = {
+    ...defaultProps,
+    batchIndex: 1,
+  }
+
+  rerender(<ImageLayout {...props} />)
+
+  expect(mockUnhighlightCoords).toHaveBeenCalled()
+})
+
+test('renders spinner when layout is fetching', () => {
+  usePaginatedLayout.mockReturnValueOnce({
+    layoutData: [],
+    isFetching: true,
+  })
+
+  render(<ImageLayout {...defaultProps} />)
+
+  expect(screen.getByTestId('spin')).toBeInTheDocument()
+  expect(screen.queryByTestId(mockImage1.id)).not.toBeInTheDocument()
+})
+
+test('renders no data message when layout data is empty', () => {
+  usePaginatedLayout.mockReturnValueOnce({
+    layoutData: [],
+    isFetching: false,
+  })
+
+  render(<ImageLayout {...defaultProps} />)
+
+  expect(screen.getByText(localize(Localization.NO_DATA))).toBeInTheDocument()
 })

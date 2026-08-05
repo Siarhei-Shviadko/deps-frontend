@@ -52,7 +52,9 @@ const ExtractionLLMSelect = ({
       provider.models.map((model) => {
         const llmType = LLMSettings.settingsToLLMType(provider.code, model.code)
         const text = `${model.name} ${provider.name}`
-        const optionTooltip = { title: RESOURCE_KNOWN_LLM_DESCRIPTION[model.code] ?? model.description }
+        const optionTooltip = {
+          title: RESOURCE_KNOWN_LLM_DESCRIPTION[model.code] || model.description,
+        }
 
         return new SelectOption(
           llmType,

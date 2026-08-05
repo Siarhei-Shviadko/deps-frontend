@@ -10,6 +10,10 @@ class LLMExtractionParams {
     topP,
     pageSpan,
     contextAttachments,
+    maxTokens,
+    stop,
+    seed,
+    logprobs,
   }) {
     this.customInstruction = customInstruction
     this.groupingFactor = groupingFactor
@@ -17,6 +21,10 @@ class LLMExtractionParams {
     this.topP = topP
     this.pageSpan = pageSpan
     this.contextAttachments = contextAttachments
+    this.maxTokens = maxTokens
+    this.stop = stop
+    this.seed = seed
+    this.logprobs = logprobs
   }
 }
 
@@ -52,6 +60,11 @@ const llmExtractionParamsShape = PropTypes.shape({
   temperature: PropTypes.number.isRequired,
   topP: PropTypes.number.isRequired,
   pageSpan: llmExtractionPageSpanShape,
+  contextAttachments: PropTypes.string,
+  maxTokens: PropTypes.number,
+  stop: PropTypes.arrayOf(PropTypes.string),
+  seed: PropTypes.number,
+  logprobs: PropTypes.bool,
 })
 
 export {

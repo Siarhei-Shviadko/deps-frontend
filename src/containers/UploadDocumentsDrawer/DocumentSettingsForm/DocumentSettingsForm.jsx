@@ -59,7 +59,9 @@ export const DocumentSettingsForm = () => {
       setValue(FIELD_FORM_CODE.PARSING_FEATURES, workflowConfiguration.parsingFeatures)
     }
 
-    setValue(FIELD_FORM_CODE.ENGINE, selectedDocumentType.engine)
+    const engine = workflowConfiguration?.engine ?? selectedDocumentType.engine
+
+    setValue(FIELD_FORM_CODE.ENGINE, engine)
   }, [documentTypes, setValue])
 
   const ConditionalFields = useMemo(() => {

@@ -4,6 +4,7 @@ import { screen } from '@testing-library/dom'
 import { waitFor } from '@testing-library/react'
 import userEvent, { PointerEventsCheckLevel } from '@testing-library/user-event'
 import { DocumentTypesGroupsFilterKey, PaginationKeys } from '@/constants/navigation'
+import { DocumentTypesGroupExtras } from '@/enums/DocumentTypesGroupExtras'
 import { Localization, localize } from '@/localization/i18n'
 import { DocumentTypesGroup } from '@/models/DocumentTypesGroup'
 import { render } from '@/utils/rendererRTL'
@@ -152,21 +153,21 @@ test('sets correct filter values on search value change', async () => {
   const select = screen.getByRole('combobox')
 
   await userEvent.click(select)
-  await userEvent.paste('text')
+  await userEvent.type(select, 'text')
 
-  expect(useFetchGroupsInfiniteQuery).toHaveBeenCalledWith(
+  expect(useFetchGroupsInfiniteQuery).toHaveBeenLastCalledWith(
     {
       filter: {
         [DocumentTypesGroupsFilterKey.NAME]: 'text',
         [PaginationKeys.PAGE]: GROUPS_INITIAL_PAGE,
         [PaginationKeys.PER_PAGE]: GROUPS_PER_PAGE,
+        extras: [DocumentTypesGroupExtras.SPLITTERS],
       },
-      skip: false,
     },
   )
 })
 
-test('sets default filter on dropdown close', async () => {
+test('sets default filter on dropdown open', async () => {
   useFetchGroupsInfiniteQuery.mockReturnValue({
     groups: [mockGroup1, mockGroup2],
     total: 2,
@@ -181,12 +182,13 @@ test('sets default filter on dropdown close', async () => {
 
   const select = screen.getByRole('combobox')
   await userEvent.click(select)
-  await userEvent.tab()
 
-  expect(useFetchGroupsInfiniteQuery).toHaveBeenCalledWith(
+  expect(useFetchGroupsInfiniteQuery).toHaveBeenLastCalledWith(
     {
-      filter: defaultFilterConfig,
-      skip: true,
+      filter: {
+        ...defaultFilterConfig,
+        extras: [DocumentTypesGroupExtras.SPLITTERS],
+      },
     },
   )
 })

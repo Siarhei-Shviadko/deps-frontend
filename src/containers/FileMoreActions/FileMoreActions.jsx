@@ -1,4 +1,3 @@
-
 import { Button } from '@/components/Button'
 import { Dropdown } from '@/components/Dropdown'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
@@ -10,6 +9,7 @@ import { localize, Localization } from '@/localization/i18n'
 import { fileShape } from '@/models/File'
 import { ENV } from '@/utils/env'
 import { AssignDocumentTypeToFileButton } from './AssignDocumentTypeToFileButton'
+import { AutoFileSplittingButton } from './AutoFileSplittingButton'
 import { StyledMenu, LocalBoundary } from './FileMoreActions.styles'
 import { FilePDFSplittingButton } from './FilePDFSplittingButton'
 
@@ -49,8 +49,13 @@ const FileMoreActions = ({ file }) => {
     </AssignDocumentTypeToFileButton>,
   )
 
-  const renderSplitFile = () => renderMenuOptions(
-    'splitFile',
+  const renderAutoSplitFile = () => renderMenuOptions(
+    'autoSplitFile',
+    <AutoFileSplittingButton file={file} />,
+  )
+
+  const renderManualSplitFile = () => renderMenuOptions(
+    'manualSplitFile',
     <FilePDFSplittingButton file={file} />,
   )
 
@@ -63,7 +68,8 @@ const FileMoreActions = ({ file }) => {
     <StyledMenu>
       {file.state.status === FileStatus.FAILED && renderRestartFile()}
       {ENV.FEATURE_ASSIGN_DOCUMENT_TYPE_TO_FILE && renderAssignDocumentType()}
-      {ENV.FEATURE_PDF_SPLITTING && renderSplitFile()}
+      {ENV.FEATURE_PDF_SPLITTING && ENV.FEATURE_DOCUMENT_TYPES_GROUPS && renderAutoSplitFile()}
+      {ENV.FEATURE_PDF_SPLITTING && renderManualSplitFile()}
       {ENV.FEATURE_PROMPT_CALIBRATION_STUDIO && renderFilePromptCalibrationStudioButton()}
     </StyledMenu>
   )

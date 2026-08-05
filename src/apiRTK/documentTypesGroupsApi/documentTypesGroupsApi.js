@@ -65,6 +65,7 @@ export const useFetchDocumentTypesGroupState = documentTypesGroupsApi.endpoints.
 export const {
   useFetchDocumentTypesGroupsQuery,
   useFetchDocumentTypesGroupQuery,
+  useLazyFetchDocumentTypesGroupQuery,
   useCreateDocumentTypesGroupMutation,
   useDeleteDocumentTypesGroupMutation,
   useAddDocumentTypesToGroupMutation,

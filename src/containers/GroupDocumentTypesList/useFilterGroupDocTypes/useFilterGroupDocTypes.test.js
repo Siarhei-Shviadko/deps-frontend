@@ -5,6 +5,7 @@ import { renderHook } from '@testing-library/react-hooks'
 import { GroupDocumentTypesFilterKey } from '@/constants/navigation'
 import { ExtractionType } from '@/enums/ExtractionType'
 import { GenAiClassifier } from '@/models/DocumentTypesGroup'
+import { Splitter } from '@/models/Splitter'
 import { GroupDocumentType } from '../GroupDocumentType'
 import { useFilterGroupDocTypes } from './useFilterGroupDocTypes'
 
@@ -138,5 +139,39 @@ test('returns filtered list by document type classifier', async () => {
   const [list, filterHandler] = result.current
 
   expect(list).toEqual([firstDocType])
+  expect(filterHandler).toEqual(expect.any(Function))
+})
+
+test('returns filtered list by document type splitter', async () => {
+  const docTypeWithSplitter = new GroupDocumentType({
+    id: 'typeCode4',
+    groupId: 'mockGroupId',
+    name: 'typeName4',
+    splitter: new Splitter({
+      id: 'splitter-id',
+      groupId: 'mockGroupId',
+      documentTypeId: 'typeCode4',
+      name: 'Splitter Name',
+      splittingQuery: 'Test query',
+      llmType: 'provider1/model-1-1',
+    }),
+    extractionType: ExtractionType.PROTOTYPE,
+  })
+
+  const args = {
+    groupDocTypes: [...mockDocumentTypes, docTypeWithSplitter],
+    filters: {
+      ...defaultFilters,
+      [GroupDocumentTypesFilterKey.SPLITTER]: docTypeWithSplitter.splitter.name,
+    },
+    filterConfig: {},
+    changePagination: jest.fn(),
+  }
+
+  const { result } = renderHook(() => useFilterGroupDocTypes(args))
+
+  const [list, filterHandler] = result.current
+
+  expect(list).toEqual([docTypeWithSplitter])
   expect(filterHandler).toEqual(expect.any(Function))
 })

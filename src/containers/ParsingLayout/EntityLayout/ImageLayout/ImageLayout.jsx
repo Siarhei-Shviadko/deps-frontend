@@ -1,28 +1,33 @@
 
 import PropTypes from 'prop-types'
 import {
-  useCallback,
+  useEffect,
   useState,
 } from 'react'
+import { NoData } from '@/components/NoData'
 import { useHighlightCoords } from '@/containers/ParsingLayout/EntityLayout/hooks'
 import { DOCUMENT_LAYOUT_FEATURE, DOCUMENT_LAYOUT_PARSING_TYPE } from '@/enums/DocumentLayoutType'
-import { InfiniteScrollLayout } from '../InfiniteScrollLayout'
+import { Localization, localize } from '@/localization/i18n'
+import { usePaginatedLayout } from '../hooks'
 import { LocalErrorBoundary } from '../LocalErrorBoundary'
 import { ImageField } from './ImageField'
-import { ImagesFieldContainer } from './ImageLayout.styles'
+import { ImagesFieldContainer, Spinner } from './ImageLayout.styles'
 
-const ImageLayout = ({
-  parsingType,
-  total,
-}) => {
+const ImageLayout = ({ batchIndex, parsingType }) => {
   const [expandedImageId, setExpandedImageId] = useState(null)
-  const [layoutData, setLayoutData] = useState([])
 
   const { highlightCoords, unhighlightCoords } = useHighlightCoords()
 
-  const setLayout = useCallback((layoutData) =>
-    setLayoutData((data) => [...data, ...layoutData]),
-  [])
+  const { layoutData, isFetching } = usePaginatedLayout({
+    batchIndex,
+    parsingFeature: DOCUMENT_LAYOUT_FEATURE.IMAGES,
+    parsingType,
+  })
+
+  useEffect(() => {
+    setExpandedImageId(null)
+    unhighlightCoords()
+  }, [batchIndex, unhighlightCoords])
 
   const highlightImageCoords = (polygon, page) => {
     highlightCoords({
@@ -39,42 +44,41 @@ const ImageLayout = ({
     shouldExpand ? highlightImageCoords(polygon, page) : unhighlightCoords()
   }
 
+  if (isFetching) {
+    return <Spinner spinning />
+  }
+
+  if (!layoutData.length) {
+    return <NoData description={localize(Localization.NO_DATA)} />
+  }
+
   return (
     <ImagesFieldContainer>
-      <InfiniteScrollLayout
-        parsingFeature={DOCUMENT_LAYOUT_FEATURE.IMAGES}
-        parsingType={parsingType}
-        setLayout={setLayout}
-        showEmpty={!layoutData.length}
-        total={total}
-      >
-        {
-          layoutData.map(({ page, pageId, layout }) => {
-            const { id, polygon } = layout
-            return (
-              <LocalErrorBoundary key={id}>
-                <ImageField
-                  key={id}
-                  imageLayout={layout}
-                  isExpanded={expandedImageId === id}
-                  onClick={() => handleImageClick(id, polygon, page)}
-                  pageId={pageId}
-                  parsingType={parsingType}
-                />
-              </LocalErrorBoundary>
-            )
-          })
-        }
-      </InfiniteScrollLayout>
+      {
+        layoutData.map(({ page, pageId, layout }) => {
+          const { id, polygon } = layout
+          return (
+            <LocalErrorBoundary key={id}>
+              <ImageField
+                imageLayout={layout}
+                isExpanded={expandedImageId === id}
+                onClick={() => handleImageClick(id, polygon, page)}
+                pageId={pageId}
+                parsingType={parsingType}
+              />
+            </LocalErrorBoundary>
+          )
+        })
+      }
     </ImagesFieldContainer>
   )
 }
 
 ImageLayout.propTypes = {
+  batchIndex: PropTypes.number.isRequired,
   parsingType: PropTypes.oneOf(
     Object.values(DOCUMENT_LAYOUT_PARSING_TYPE),
   ).isRequired,
-  total: PropTypes.number.isRequired,
 }
 
 export { ImageLayout }

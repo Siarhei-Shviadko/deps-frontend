@@ -1,5 +1,6 @@
 
 import PropTypes from 'prop-types'
+import { splitterShape } from '@/models/Splitter'
 
 class GenAiClassifier {
   constructor ({
@@ -32,12 +33,14 @@ class DocumentTypesGroup {
     documentTypeIds,
     createdAt,
     genAiClassifiers = [],
+    splitters = [],
   }) {
     this.id = id
     this.name = name
     this.documentTypeIds = documentTypeIds
     this.createdAt = createdAt
     this.genAiClassifiers = genAiClassifiers
+    this.splitters = splitters
   }
 }
 
@@ -50,6 +53,9 @@ const documentTypesGroupShape = PropTypes.shape({
   createdAt: PropTypes.string,
   genAiClassifiers: PropTypes.arrayOf(
     genAiClassifierShape,
+  ),
+  splitters: PropTypes.arrayOf(
+    splitterShape,
   ),
 })
 

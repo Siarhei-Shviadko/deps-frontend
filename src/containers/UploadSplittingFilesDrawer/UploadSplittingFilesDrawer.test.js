@@ -23,11 +23,24 @@ jest.mock('@/utils/notification', () => mockNotification)
 
 jest.mock('react-redux', () => mockReactRedux)
 
+const mockUploadSplittingFiles = jest.fn(() => Promise.resolve([{
+  name: 'file1.png',
+  uid: 'uid1',
+}]))
+
+const mockAutoSplitFiles = jest.fn(() => Promise.resolve())
+const mockResetAutoSplitCounter = jest.fn()
+
 jest.mock('./hooks', () => ({
   useUploadSplittingFiles: jest.fn(() => ({
     uploadSplittingFiles: mockUploadSplittingFiles,
     completedRequests: 0,
     resetRequestsCounter: jest.fn(),
+  })),
+  useAutoSplitFiles: jest.fn(() => ({
+    autoSplitFiles: mockAutoSplitFiles,
+    completedRequests: 0,
+    resetRequestsCounter: mockResetAutoSplitCounter,
   })),
 }))
 
@@ -48,19 +61,17 @@ const mockCreateBatch = jest.fn(() => ({
 jest.mock('./UploadFilesForm', () => mockShallowComponent('UploadFilesForm'))
 jest.mock('./BatchSettingsForm', () => mockShallowComponent('BatchSettingsForm'))
 
+const mockTrigger = jest.fn(() => Promise.resolve(true))
+
 useForm.mockImplementation(() => ({
   watch: jest.fn(() => mockFormValues),
   getValues: jest.fn(() => mockFormValues),
   reset: mockResetCallback,
+  trigger: mockTrigger,
   formState: {
     isValid: true,
   },
 }))
-
-const mockUploadSplittingFiles = jest.fn(() => Promise.resolve([{
-  name: 'file1.png',
-  uid: 'uid1',
-}]))
 
 const mockFile = {
   name: 'file1.png',
@@ -75,14 +86,18 @@ const mockFormValues = {
 
 const mockResetCallback = jest.fn()
 
-test('uploads splitting files with correct data when Upload btn is clicked', async () => {
+let defaultProps
+
+beforeEach(() => {
   jest.clearAllMocks()
 
-  const defaultProps = {
+  defaultProps = {
     isVisible: true,
     onClose: jest.fn(),
   }
+})
 
+test('uploads splitting files with correct data when Upload btn is clicked', async () => {
   render(<UploadSplittingFilesDrawer {...defaultProps} />)
 
   const triggerBtn = screen.getByRole('button', {
@@ -99,13 +114,6 @@ test('uploads splitting files with correct data when Upload btn is clicked', asy
 })
 
 test('calls createBatch with correct data when Upload btn is clicked', async () => {
-  jest.clearAllMocks()
-
-  const defaultProps = {
-    isVisible: true,
-    onClose: jest.fn(),
-  }
-
   render(<UploadSplittingFilesDrawer {...defaultProps} />)
 
   const triggerBtn = screen.getByRole('button', {
@@ -135,8 +143,6 @@ test('calls createBatch with correct data when Upload btn is clicked', async () 
 })
 
 test('shows BatchFilesSplittingDrawer when Upload btn is clicked if pdf files are uploaded', async () => {
-  jest.clearAllMocks()
-
   useForm.mockImplementationOnce(() => ({
     watch: jest.fn(() => ({
       ...mockFormValues,
@@ -151,11 +157,6 @@ test('shows BatchFilesSplittingDrawer when Upload btn is clicked if pdf files ar
       isValid: true,
     },
   }))
-
-  const defaultProps = {
-    isVisible: true,
-    onClose: jest.fn(),
-  }
 
   render(<UploadSplittingFilesDrawer {...defaultProps} />)
 
@@ -185,11 +186,6 @@ test('disables Save button when no files are selected', async () => {
     },
   }))
 
-  const defaultProps = {
-    isVisible: true,
-    onClose: jest.fn(),
-  }
-
   render(<UploadSplittingFilesDrawer {...defaultProps} />)
 
   const saveBtn = screen.getByRole('button', {
@@ -210,11 +206,6 @@ test('disables Save button if form is invalid', async () => {
     },
   }))
 
-  const defaultProps = {
-    isVisible: true,
-    onClose: jest.fn(),
-  }
-
   render(<UploadSplittingFilesDrawer {...defaultProps} />)
 
   const saveBtn = screen.getByRole('button', {
@@ -226,11 +217,6 @@ test('disables Save button if form is invalid', async () => {
 })
 
 test('calls for reset when click on Reset All button', async () => {
-  const defaultProps = {
-    isVisible: true,
-    onClose: jest.fn(),
-  }
-
   render(<UploadSplittingFilesDrawer {...defaultProps} />)
 
   const resetBtn = screen.getByRole('button', {
@@ -249,24 +235,12 @@ test('calls for reset when click on Reset All button', async () => {
 test('renders ProgressModal when files are uploading', () => {
   jest.spyOn(React, 'useState').mockImplementationOnce(() => [true, jest.fn()])
 
-  const defaultProps = {
-    isVisible: true,
-    onClose: jest.fn(),
-  }
-
   render(<UploadSplittingFilesDrawer {...defaultProps} />)
 
   expect(screen.getByText(localize(Localization.UPLOAD_FILES))).toBeInTheDocument()
 })
 
 test('shows error message when upload files limit is exceeded', async () => {
-  jest.clearAllMocks()
-
-  const defaultProps = {
-    isVisible: true,
-    onClose: jest.fn(),
-  }
-
   const mockFiles = Array.from(
     { length: MAX_FILES_COUNT_FOR_ONE_BATCH + 1 },
     () => new File(['content'], 'test1.png', { type: 'application/pdf' }),
@@ -293,13 +267,6 @@ test('shows error message when upload files limit is exceeded', async () => {
 })
 
 test('disables Upload button when upload files limit is exceeded', async () => {
-  jest.clearAllMocks()
-
-  const defaultProps = {
-    isVisible: true,
-    onClose: jest.fn(),
-  }
-
   const mockFiles = Array.from(
     { length: MAX_FILES_COUNT_FOR_ONE_BATCH + 1 },
     () => new File(['content'], 'test1.png', { type: 'application/pdf' }),
@@ -323,4 +290,106 @@ test('disables Upload button when upload files limit is exceeded', async () => {
     const uploadButton = screen.getByRole('button', { name: localize(Localization.NEXT_STEP) })
     expect(uploadButton).toBeDisabled()
   })
+})
+
+test('calls autoSplitFiles with correct data when Upload btn is clicked and automatic splitting is enabled', async () => {
+  const autoSplitFormValues = {
+    ...mockFormValues,
+    [FIELD_FORM_CODE.AUTOMATIC_SPLITTING]: true,
+    group: { id: 'group-1' },
+  }
+
+  useForm.mockImplementationOnce(() => ({
+    watch: jest.fn(() => autoSplitFormValues),
+    getValues: jest.fn(() => autoSplitFormValues),
+    reset: mockResetCallback,
+    trigger: mockTrigger,
+    formState: {
+      isValid: true,
+    },
+  }))
+
+  render(<UploadSplittingFilesDrawer {...defaultProps} />)
+
+  const uploadBtn = screen.getByRole('button', {
+    name: localize(Localization.UPLOAD),
+  })
+
+  await userEvent.click(uploadBtn)
+
+  await waitFor(() => {
+    expect(mockAutoSplitFiles).toHaveBeenNthCalledWith(1, [{
+      file: mockFile,
+      groupId: 'group-1',
+      automaticSplitting: true,
+      batchType: autoSplitFormValues.batchType,
+      batchName: autoSplitFormValues.batchName,
+      llmType: autoSplitFormValues.llmType,
+      engine: autoSplitFormValues.engine,
+      parsingFeatures: autoSplitFormValues.parsingFeatures,
+      needsSplittingProposalReview: autoSplitFormValues[FIELD_FORM_CODE.NEEDS_SPLITTING_PROPOSAL_REVIEW],
+    }])
+  })
+
+  await waitFor(() => {
+    expect(mockTrigger).toHaveBeenCalledTimes(1)
+  })
+})
+
+test('does not call autoSplitFiles when form validation fails', async () => {
+  const autoSplitFormValues = {
+    ...mockFormValues,
+    [FIELD_FORM_CODE.AUTOMATIC_SPLITTING]: true,
+    group: { id: 'group-1' },
+  }
+
+  const mockInvalidTrigger = jest.fn(() => Promise.resolve(false))
+
+  useForm.mockImplementationOnce(() => ({
+    watch: jest.fn(() => autoSplitFormValues),
+    getValues: jest.fn(() => autoSplitFormValues),
+    reset: mockResetCallback,
+    trigger: mockInvalidTrigger,
+    formState: {
+      isValid: true,
+    },
+  }))
+
+  render(<UploadSplittingFilesDrawer {...defaultProps} />)
+
+  const uploadBtn = screen.getByRole('button', {
+    name: localize(Localization.UPLOAD),
+  })
+
+  await userEvent.click(uploadBtn)
+
+  await waitFor(() => {
+    expect(mockInvalidTrigger).toHaveBeenCalledTimes(1)
+  })
+
+  expect(mockAutoSplitFiles).not.toHaveBeenCalled()
+  expect(mockResetAutoSplitCounter).not.toHaveBeenCalled()
+})
+
+test('renders Upload button when automatic splitting is enabled', () => {
+  useForm.mockImplementationOnce(() => ({
+    watch: jest.fn(() => ({
+      ...mockFormValues,
+      [FIELD_FORM_CODE.AUTOMATIC_SPLITTING]: true,
+    })),
+    getValues: jest.fn(() => mockFormValues),
+    reset: mockResetCallback,
+    trigger: mockTrigger,
+    formState: {
+      isValid: true,
+    },
+  }))
+
+  render(<UploadSplittingFilesDrawer {...defaultProps} />)
+
+  const uploadBtn = screen.getByRole('button', {
+    name: localize(Localization.UPLOAD),
+  })
+
+  expect(uploadBtn).toBeInTheDocument()
 })

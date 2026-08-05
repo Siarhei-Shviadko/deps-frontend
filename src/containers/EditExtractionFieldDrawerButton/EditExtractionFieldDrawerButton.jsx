@@ -14,6 +14,7 @@ const SUPPORTED_FIELD_TYPES = [
   FieldType.CHECKMARK,
   FieldType.DATE,
   FieldType.ENUM,
+  FieldType.DICTIONARY,
 ]
 
 const EditExtractionFieldDrawerButton = ({

@@ -1,0 +1,29 @@
+export const FIELD_CODE = {
+  EXTRACTOR_NAME: 'extractorName',
+  LLM_MODEL: 'llmModel',
+  GROUPING_FACTOR: 'groupingFactor',
+  PAGE_SPAN: 'pageSpan',
+  CONTEXT_ATTACHMENTS: 'contextAttachments',
+  MAX_TOKENS: 'maxTokens',
+  STOP: 'stop',
+  SEED: 'seed',
+  LOGPROBS: 'logprobs',
+}
+
+export const MIN_GROUPING_FACTOR_VALUE = 1
+export const MIN_MAX_TOKENS_VALUE = 1
+const DEFAULT_SEED_VALUE = 1
+export const MIN_SEED_VALUE = 1
+export const MAX_SEED_VALUE = 100
+export const MAX_STOP_WORDS_COUNT = 4
+const DEFAULT_GROUPING_FACTOR_VALUE = 5
+const DEFAULT_MAX_TOKENS_VALUE = 4096
+
+export const DEFAULT_VALUES = {
+  [FIELD_CODE.GROUPING_FACTOR]: DEFAULT_GROUPING_FACTOR_VALUE,
+  [FIELD_CODE.MAX_TOKENS]: DEFAULT_MAX_TOKENS_VALUE,
+  [FIELD_CODE.SEED]: DEFAULT_SEED_VALUE,
+  [FIELD_CODE.STOP]: [],
+  [FIELD_CODE.LOGPROBS]: false,
+  [FIELD_CODE.CONTEXT_ATTACHMENTS]: '',
+}

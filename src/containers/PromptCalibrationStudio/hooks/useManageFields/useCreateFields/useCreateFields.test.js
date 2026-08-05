@@ -107,7 +107,9 @@ test('creates extraction field with correct data for single multiplicity field',
       confidential: mockFieldWithQuery.confidential,
       fieldType: mockFieldWithQuery.fieldType,
       extractorId: mockFieldWithQuery.extractorId,
-      fieldMeta: {},
+      fieldMeta: {
+        charType: CHAR_TYPE.ALPHANUMERIC,
+      },
       order: mockFieldWithQuery.order,
     },
   })

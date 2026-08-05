@@ -1,17 +1,39 @@
-
 import { mockEnv } from '@/mocks/mockEnv'
 import { screen } from '@testing-library/react'
-import React from 'react'
-import { DOCUMENT_LAYOUT_PARSING_TYPE } from '@/enums/DocumentLayoutType'
+import { DOCUMENT_LAYOUT_FEATURE, DOCUMENT_LAYOUT_PARSING_TYPE } from '@/enums/DocumentLayoutType'
+import { Localization, localize } from '@/localization/i18n'
 import {
   LineLayout,
   ParagraphLayout,
 } from '@/models/DocumentLayout'
 import { Point } from '@/models/Point'
 import { render } from '@/utils/rendererRTL'
+import { usePaginatedLayout } from '../hooks'
 import { ParagraphLayout as ParagraphLayoutComponent } from './ParagraphLayout'
 
 jest.mock('@/utils/env', () => mockEnv)
+
+jest.mock('@/components/Spin', () => ({
+  Spin: () => <div data-testid="spin" />,
+}))
+
+jest.mock('../hooks', () => ({
+  usePaginatedLayout: jest.fn(),
+}))
+
+jest.mock('./ParagraphField', () => ({
+  ParagraphField: jest.fn(({ paragraph }) => (
+    <div data-testid={paragraph.id}>
+      {
+        paragraph.lines.map((line, index) => (
+          <span key={index}>
+            {line.content}
+          </span>
+        ))
+      }
+    </div>
+  )),
+}))
 
 const mockLine1 = new LineLayout({
   order: 1,
@@ -72,38 +94,31 @@ const mockData = [
   },
 ]
 
-function MockInfiniteScrollLayout ({ setLayout, children }) {
-  React.useEffect(() => {
-    setLayout(mockData)
-  }, [setLayout])
-  return children
+const defaultProps = {
+  batchIndex: 0,
+  parsingType: DOCUMENT_LAYOUT_PARSING_TYPE.TESSERACT,
 }
 
-jest.mock('../InfiniteScrollLayout', () => ({
-  InfiniteScrollLayout: MockInfiniteScrollLayout,
-}))
+beforeEach(() => {
+  jest.clearAllMocks()
+  usePaginatedLayout.mockReturnValue({
+    layoutData: mockData,
+    isFetching: false,
+  })
+})
 
-jest.mock('./ParagraphField', () => ({
-  ParagraphField: jest.fn(({ paragraph }) => (
-    <div data-testid={paragraph.id}>
-      {
-        paragraph.lines.map((line, index) => (
-          <span key={index}>
-            {line.content}
-          </span>
-        ))
-      }
-    </div>
-  )),
-}))
+test('calls usePaginatedLayout with correct parameters', () => {
+  render(<ParagraphLayoutComponent {...defaultProps} />)
 
-test('should render correct layout for paragraphs', () => {
-  render(
-    <ParagraphLayoutComponent
-      parsingType={DOCUMENT_LAYOUT_PARSING_TYPE.TESSERACT}
-      total={1}
-    />,
-  )
+  expect(usePaginatedLayout).toHaveBeenCalledWith({
+    batchIndex: 0,
+    parsingFeature: DOCUMENT_LAYOUT_FEATURE.TEXT,
+    parsingType: DOCUMENT_LAYOUT_PARSING_TYPE.TESSERACT,
+  })
+})
+
+test('renders correct layout for paragraphs', () => {
+  render(<ParagraphLayoutComponent {...defaultProps} />)
 
   const paragraph1 = screen.getByTestId(mockParagraph1.id)
   const paragraph2 = screen.getByTestId(mockParagraph2.id)
@@ -112,4 +127,27 @@ test('should render correct layout for paragraphs', () => {
   expect(screen.getByText(mockLine1.content)).toBeInTheDocument()
   expect(paragraph2).toBeInTheDocument()
   expect(screen.getByText(mockLine2.content)).toBeInTheDocument()
+})
+
+test('renders spinner when layout is fetching', () => {
+  usePaginatedLayout.mockReturnValueOnce({
+    layoutData: [],
+    isFetching: true,
+  })
+
+  render(<ParagraphLayoutComponent {...defaultProps} />)
+
+  expect(screen.getByTestId('spin')).toBeInTheDocument()
+  expect(screen.queryByTestId(mockParagraph1.id)).not.toBeInTheDocument()
+})
+
+test('renders no data message when layout data is empty', () => {
+  usePaginatedLayout.mockReturnValueOnce({
+    layoutData: [],
+    isFetching: false,
+  })
+
+  render(<ParagraphLayoutComponent {...defaultProps} />)
+
+  expect(screen.getByText(localize(Localization.NO_DATA))).toBeInTheDocument()
 })

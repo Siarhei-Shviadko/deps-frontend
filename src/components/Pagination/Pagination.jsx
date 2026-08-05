@@ -13,6 +13,7 @@ const Pagination = ({
   showLessItems,
   simple,
   className,
+  ...rest
 }) => (
   <StyledPagination
     className={className}
@@ -24,6 +25,7 @@ const Pagination = ({
     showSizeChanger={showSizeChanger}
     simple={simple}
     total={total}
+    {...rest}
   />
 )
 

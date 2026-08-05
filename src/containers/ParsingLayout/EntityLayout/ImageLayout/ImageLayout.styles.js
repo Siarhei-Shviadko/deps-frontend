@@ -1,5 +1,6 @@
 
 import styled from 'styled-components'
+import { Spin } from '@/components/Spin'
 
 const ImagesFieldContainer = styled.div`
   display: flex;
@@ -9,4 +10,9 @@ const ImagesFieldContainer = styled.div`
   gap: 1.2rem;
 `
 
-export { ImagesFieldContainer }
+const Spinner = styled(Spin)`
+  width: 100%;
+  margin-top: 2rem;
+`
+
+export { ImagesFieldContainer, Spinner }

@@ -8,6 +8,7 @@ const BADGE_COLOR_TO_FILE_STATUS_MAPPING = {
   [FileStatusEnum.PROCESSING]: theme.color.warning,
   [FileStatusEnum.COMPLETED]: theme.color.success,
   [FileStatusEnum.FAILED]: theme.color.error,
+  [FileStatusEnum.SPLITTING_REVIEW]: theme.color.warning,
 }
 
 const FileStatus = ({

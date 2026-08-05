@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { useCallback, useMemo, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useCreateBatchMutation } from '@/apiRTK/batchesApi'
-import { Button } from '@/components/Button'
+import { Button, ButtonType } from '@/components/Button'
 import { FormValidationMode } from '@/components/Form'
 import { BatchFilesSplittingDrawer } from '@/containers/BatchFilesSplittingDrawer'
 import { ProgressModal } from '@/containers/ProgressModal'
@@ -16,9 +16,10 @@ import { BatchSettingsForm } from './BatchSettingsForm'
 import {
   DefaultFormValues,
   DRAWER_WIDTH_DEFAULT,
+  FIELD_FORM_CODE,
   MAX_FILES_COUNT_FOR_ONE_BATCH,
 } from './constants'
-import { useUploadSplittingFiles } from './hooks'
+import { useAutoSplitFiles, useUploadSplittingFiles } from './hooks'
 import { mapDataToBatchDTO } from './mappers'
 import { UploadConfirmationButton } from './UploadConfirmationButton'
 import { UploadFilesForm } from './UploadFilesForm'
@@ -44,9 +45,15 @@ export const UploadSplittingFilesDrawer = ({ isVisible, onClose }) => {
 
   const {
     uploadSplittingFiles,
-    completedRequests,
-    resetRequestsCounter,
+    completedRequests: uploadCompletedRequests,
+    resetRequestsCounter: resetUploadCounter,
   } = useUploadSplittingFiles()
+
+  const {
+    autoSplitFiles,
+    completedRequests: autoSplitCompletedRequests,
+    resetRequestsCounter: resetAutoSplitCounter,
+  } = useAutoSplitFiles()
 
   const [createBatch] = useCreateBatchMutation()
 
@@ -79,15 +86,38 @@ export const UploadSplittingFilesDrawer = ({ isVisible, onClose }) => {
     uploadedData && await createBatchHandler(uploadedData, formValues)
 
     setIsUploading(false)
-    resetRequestsCounter()
+    resetUploadCounter()
   }, [
     formApi,
     uploadSplittingFiles,
     createBatchHandler,
-    resetRequestsCounter,
+    resetUploadCounter,
   ])
 
   const formValues = formApi.watch()
+  const isAutoSplitting = formValues[FIELD_FORM_CODE.AUTOMATIC_SPLITTING]
+
+  const submitAutoSplitData = useCallback(async () => {
+    const isFormValid = await formApi.trigger()
+
+    if (!isFormValid) {
+      return
+    }
+
+    setIsUploading(true)
+
+    const { files, group, ...rest } = formApi.getValues()
+    const filesData = files.map((file) => ({
+      file,
+      groupId: group?.id ?? null,
+      ...rest,
+    }))
+
+    await autoSplitFiles(filesData)
+
+    setIsUploading(false)
+    resetAutoSplitCounter()
+  }, [formApi, autoSplitFiles, resetAutoSplitCounter])
 
   const isSaveDisabled = (
     !formValues.files?.length ||
@@ -96,6 +126,7 @@ export const UploadSplittingFilesDrawer = ({ isVisible, onClose }) => {
   )
 
   const shouldShowConfirmation = (
+    !isAutoSplitting &&
     !!formValues.files?.every((file) => getFileExtension(file.name) !== FileExtension.PDF) &&
     !!formValues.files?.length
   )
@@ -113,6 +144,37 @@ export const UploadSplittingFilesDrawer = ({ isVisible, onClose }) => {
   }, [formApi, formValues.files])
 
   const isUploadFilesLimitExceeded = formValues.files?.length > MAX_FILES_COUNT_FOR_ONE_BATCH
+
+  const ConfirmationButton = useMemo(() => {
+    if (isAutoSplitting) {
+      return (
+        <Button
+          disabled={isSaveDisabled || isUploadFilesLimitExceeded}
+          onClick={submitAutoSplitData}
+          type={ButtonType.PRIMARY}
+        >
+          {localize(Localization.UPLOAD)}
+        </Button>
+      )
+    }
+
+    return (
+      <UploadConfirmationButton
+        disabled={isSaveDisabled || isUploadFilesLimitExceeded}
+        onClick={toggleSplittingDrawerVisibility}
+        onConfirm={onConfirmHandler}
+        withConfirm={shouldShowConfirmation}
+      />
+    )
+  }, [
+    isSaveDisabled,
+    isUploadFilesLimitExceeded,
+    isAutoSplitting,
+    submitAutoSplitData,
+    toggleSplittingDrawerVisibility,
+    onConfirmHandler,
+    shouldShowConfirmation,
+  ])
 
   const DrawerFooter = useMemo(() => (
     <DrawerFooterWrapper>
@@ -135,22 +197,14 @@ export const UploadSplittingFilesDrawer = ({ isVisible, onClose }) => {
         >
           {localize(Localization.CANCEL)}
         </Button>
-        <UploadConfirmationButton
-          disabled={isSaveDisabled || isUploadFilesLimitExceeded}
-          onClick={toggleSplittingDrawerVisibility}
-          onConfirm={onConfirmHandler}
-          withConfirm={shouldShowConfirmation}
-        />
+        {ConfirmationButton}
       </ButtonsWrapper>
     </DrawerFooterWrapper>
   ), [
     onReset,
     onClose,
-    isSaveDisabled,
     isUploadFilesLimitExceeded,
-    toggleSplittingDrawerVisibility,
-    onConfirmHandler,
-    shouldShowConfirmation,
+    ConfirmationButton,
   ])
 
   const { files, ...restFormValues } = formValues
@@ -175,7 +229,7 @@ export const UploadSplittingFilesDrawer = ({ isVisible, onClose }) => {
       {
         isUploading && (
           <ProgressModal
-            current={completedRequests}
+            current={isAutoSplitting ? autoSplitCompletedRequests : uploadCompletedRequests}
             total={formValues.files.length}
           />
         )

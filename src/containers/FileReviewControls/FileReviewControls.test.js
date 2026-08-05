@@ -5,6 +5,7 @@ import userEvent from '@testing-library/user-event'
 import { useFetchFileQuery } from '@/apiRTK/filesApi'
 import { FileStatus } from '@/enums/FileStatus'
 import { File, FileState } from '@/models/File'
+import { ENV } from '@/utils/env'
 import { FileReviewControls } from './FileReviewControls'
 
 jest.mock('@/utils/env', () => mockEnv)
@@ -72,7 +73,16 @@ jest.mock('./FileReviewControls.styles', () => ({
   Controls: ({ children }) => <div data-testid="controls">{children}</div>,
 }))
 
-mockEnv.ENV.FEATURE_GEN_AI_CHAT = false
+jest.mock('./FileReviewSplittingButton', () => ({
+  FileReviewSplittingButton: ({ file }) => (
+    <div
+      data-file-id={file.id}
+      data-testid="review-splitting-button"
+    >
+      Review Splitting
+    </div>
+  ),
+}))
 
 const mockFile = new File({
   id: 'test-file-id',
@@ -89,6 +99,9 @@ const mockFile = new File({
 })
 
 beforeEach(() => {
+  jest.clearAllMocks()
+  ENV.FEATURE_PDF_SPLITTING = false
+  mockEnv.ENV.FEATURE_GEN_AI_CHAT = false
   useFetchFileQuery.mockReturnValue({
     data: mockFile,
   })
@@ -110,6 +123,39 @@ test('renders FileMoreActions with correct file prop', () => {
   const moreActions = screen.getByTestId('file-more-actions')
   expect(moreActions).toBeInTheDocument()
   expect(moreActions).toHaveAttribute('data-file-id', 'test-file-id')
+})
+
+test('renders FileReviewSplittingButton when feature flag is enabled and file status is SPLITTING_REVIEW', () => {
+  ENV.FEATURE_PDF_SPLITTING = true
+
+  const splittingReviewFile = new File({
+    ...mockFile,
+    state: new FileState({
+      status: FileStatus.SPLITTING_REVIEW,
+      errorMessage: null,
+    }),
+  })
+
+  useFetchFileQuery.mockReturnValue({
+    data: splittingReviewFile,
+  })
+
+  render(<FileReviewControls />)
+
+  const reviewSplittingButton = screen.getByTestId('review-splitting-button')
+
+  expect(reviewSplittingButton).toBeInTheDocument()
+  expect(reviewSplittingButton).toHaveAttribute('data-file-id', 'test-file-id')
+})
+
+test('does not render FileReviewSplittingButton when file status is not SPLITTING_REVIEW', () => {
+  ENV.FEATURE_PDF_SPLITTING = true
+
+  render(<FileReviewControls />)
+
+  const reviewSplittingButton = screen.queryByTestId('review-splitting-button')
+
+  expect(reviewSplittingButton).not.toBeInTheDocument()
 })
 
 test('renders GenAI button when feature flag is enabled', () => {

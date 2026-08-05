@@ -26,15 +26,15 @@ const DocumentTypeLLMExtractorsList = () => {
   const { llmExtractors } = documentType
   const total = llmExtractors?.length
 
-  const refetchLLMExtractors = useCallback(async () => {
+  const refreshData = useCallback(() => {
     dispatch(fetchDocumentType(
       documentType.code,
-      [DocumentTypeExtras.LLM_EXTRACTORS],
+      [
+        DocumentTypeExtras.LLM_EXTRACTORS,
+        DocumentTypeExtras.EXTRACTION_FIELDS,
+      ],
     ))
-  }, [
-    documentType.code,
-    dispatch,
-  ])
+  }, [documentType.code, dispatch])
 
   const renderAddLLMExtractorTrigger = (onClick) => (
     <Button
@@ -49,12 +49,12 @@ const DocumentTypeLLMExtractorsList = () => {
   const renderActions = () => (
     <AddLLMExtractorModalButton
       documentTypeName={documentType.name}
-      onAfterAdding={refetchLLMExtractors}
+      onAfterAdding={refreshData}
       renderTrigger={renderAddLLMExtractorTrigger}
     />
   )
 
-  if (isLoading) {
+  if (isLoading && !total) {
     return <Spin.Centered spinning />
   }
 
@@ -75,7 +75,7 @@ const DocumentTypeLLMExtractorsList = () => {
               key={llmExtractor.name}
               documentTypeId={documentType.code}
               llmExtractor={llmExtractor}
-              refreshData={refetchLLMExtractors}
+              refreshData={refreshData}
             />
           ))
         }

@@ -82,6 +82,23 @@ export const Thumbnail = styled(ReactPdfThumbnail)`
   }
 `
 
+export const ThumbnailContainer = styled.div`
+  position: relative;
+  display: inline-flex;
+`
+
+export const BoundingBoxOverlay = styled.div`
+  position: absolute;
+  left: ${({ $coords }) => $coords.x * 100}%;
+  top: ${({ $coords }) => $coords.y * 100}%;
+  width: ${({ $coords }) => $coords.width * 100}%;
+  height: ${({ $coords }) => $coords.height * 100}%;
+  border: 0.15rem solid ${({ theme }) => theme.color.error};
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 1;
+`
+
 export const IconButton = styled(Button.Icon)`
   position: absolute;
   width: 2.4rem;

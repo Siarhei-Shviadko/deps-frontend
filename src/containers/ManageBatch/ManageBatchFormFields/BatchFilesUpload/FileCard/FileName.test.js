@@ -16,7 +16,6 @@ let defaultProps
 
 const documentType = 'same-doc-type'
 const engine = MockKnownOCREngine.TESSERACT
-const llmType = 'same-llm-type'
 const parsingFeatures = [MockKnownParsingFeature.TEXT]
 
 beforeEach(() => {
@@ -40,13 +39,11 @@ test('renders file name when no settings exist', () => {
 test('renders file name and disclaimer when bulk settings differ from file settings', () => {
   const bulkDocType = 'bulk-doc-type'
   const bulkEngine = MockKnownOCREngine.GCP_VISION
-  const bulkLlmType = 'bulk-llm-type'
   const bulkParsingFeatures = [MockKnownParsingFeature.TEXT, MockKnownParsingFeature.TABLES]
 
   mockReactHookForm.useWatch
     .mockReturnValueOnce(bulkDocType)
     .mockReturnValueOnce(bulkEngine)
-    .mockReturnValueOnce(bulkLlmType)
     .mockReturnValueOnce(bulkParsingFeatures)
 
   const fileData = new MockPickedFile(
@@ -57,7 +54,6 @@ test('renders file name and disclaimer when bulk settings differ from file setti
     {
       documentType,
       engine,
-      llmType,
       parsingFeatures,
     },
   )
@@ -72,7 +68,6 @@ test('renders file name without disclaimer when bulk settings match file setting
   mockReactHookForm.useWatch
     .mockReturnValueOnce(documentType)
     .mockReturnValueOnce(engine)
-    .mockReturnValueOnce(llmType)
     .mockReturnValueOnce(parsingFeatures)
 
   const fileData = new MockPickedFile(
@@ -83,7 +78,6 @@ test('renders file name without disclaimer when bulk settings match file setting
     {
       documentType,
       engine,
-      llmType,
       parsingFeatures,
     },
   )
@@ -101,7 +95,6 @@ test('renders file name without disclaimer when bulk and file parsing features m
   mockReactHookForm.useWatch
     .mockReturnValueOnce(documentType)
     .mockReturnValueOnce(engine)
-    .mockReturnValueOnce(llmType)
     .mockReturnValueOnce(bulkParsingFeatures)
 
   const fileData = new MockPickedFile(
@@ -112,7 +105,6 @@ test('renders file name without disclaimer when bulk and file parsing features m
     {
       documentType,
       engine,
-      llmType,
       parsingFeatures,
     },
   )
@@ -130,7 +122,6 @@ test('renders file name with disclaimer when parsing features differ in content'
   mockReactHookForm.useWatch
     .mockReturnValueOnce(documentType)
     .mockReturnValueOnce(engine)
-    .mockReturnValueOnce(llmType)
     .mockReturnValueOnce(bulkParsingFeatures)
 
   const fileData = new MockPickedFile(
@@ -141,7 +132,6 @@ test('renders file name with disclaimer when parsing features differ in content'
     {
       documentType,
       engine,
-      llmType,
       parsingFeatures,
     },
   )
@@ -159,7 +149,6 @@ test('renders file name with disclaimer when parsing features differ in length',
   mockReactHookForm.useWatch
     .mockReturnValueOnce(documentType)
     .mockReturnValueOnce(engine)
-    .mockReturnValueOnce(llmType)
     .mockReturnValueOnce(bulkParsingFeatures)
 
   const fileData = new MockPickedFile(
@@ -170,7 +159,6 @@ test('renders file name with disclaimer when parsing features differ in length',
     {
       documentType,
       engine,
-      llmType,
       parsingFeatures,
     },
   )

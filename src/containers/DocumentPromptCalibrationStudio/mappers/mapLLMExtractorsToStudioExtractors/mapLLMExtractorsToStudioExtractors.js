@@ -12,11 +12,9 @@ export const mapLLMExtractorsToStudioExtractors = (llmExtractors) => (
     } = llmExtractor
 
     const {
-      customInstruction,
-      groupingFactor,
-      pageSpan,
-      temperature,
-      topP,
+      stop,
+      contextAttachments,
+      ...rest
     } = extractionParams
 
     const model = LLMSettings.settingsToLLMType(llmReference.provider, llmReference.model)
@@ -24,12 +22,10 @@ export const mapLLMExtractorsToStudioExtractors = (llmExtractors) => (
     return new Extractor({
       id: extractorId,
       name,
-      customInstruction,
-      groupingFactor,
       model,
-      pageSpan,
-      temperature,
-      topP,
+      stop: stop == null ? [] : stop,
+      contextAttachments: contextAttachments == null ? '' : contextAttachments,
+      ...rest,
     })
   })
 )

@@ -26,6 +26,7 @@ import {
   generateGroupDocTypeClassifierColumn,
   generateGroupDocTypeExtractorColumn,
   generateGroupDocTypeNameColumn,
+  generateGroupDocTypeSplitterColumn,
   generateDocTypeActionsColumn,
 } from './columns'
 import {
@@ -63,6 +64,7 @@ const COLUMN_KEY_TO_COLUMN_GENERATOR = {
   [GroupDocTypeColumn.NAME]: generateGroupDocTypeNameColumn,
   [GroupDocTypeColumn.TYPE_OF_EXTRACTOR]: generateGroupDocTypeExtractorColumn,
   [GroupDocTypeColumn.CLASSIFIER]: generateGroupDocTypeClassifierColumn,
+  [GroupDocTypeColumn.SPLITTER]: generateGroupDocTypeSplitterColumn,
   [GroupDocTypeColumn.ACTIONS]: generateDocTypeActionsColumn,
 }
 
@@ -90,6 +92,7 @@ const GroupDocumentTypesList = ({ group }) => {
       .map((documentType) => mapDocTypeToGroupDocType({
         documentType,
         classifiers: group.genAiClassifiers,
+        splitters: group.splitters,
         groupId: group.id,
       }))
   ), [
@@ -150,8 +153,8 @@ const GroupDocumentTypesList = ({ group }) => {
 
     return Object.values(GroupDocTypeColumn)
       .filter((col) => (
-        (ENV.FEATURE_CLASSIFIER && ENV.FEATURE_LLM_DATA_EXTRACTION) ||
-        col !== GroupDocTypeColumn.CLASSIFIER
+        ((ENV.FEATURE_CLASSIFIER && ENV.FEATURE_LLM_DATA_EXTRACTION) || col !== GroupDocTypeColumn.CLASSIFIER) &&
+        (ENV.FEATURE_PDF_SPLITTING || col !== GroupDocTypeColumn.SPLITTER)
       ))
       .map((col) => {
         const columnFilterKey = GROUP_DOC_TYPE_COLUMN_TO_FILTER_KEY[col]

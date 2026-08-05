@@ -24,9 +24,14 @@ const getClassifier = (documentTypeId, classifiersList) => (
   classifiersList.find((classifier) => classifier.documentTypeId === documentTypeId)
 )
 
+const getSplitter = (documentTypeId, splittersList) => (
+  splittersList.find((splitter) => splitter.documentTypeId === documentTypeId)
+)
+
 export const mapDocTypeToGroupDocType = ({
   documentType,
   classifiers,
+  splitters,
   groupId,
 }) =>
   new GroupDocumentType({
@@ -34,5 +39,6 @@ export const mapDocTypeToGroupDocType = ({
     groupId,
     name: documentType.name,
     classifier: getClassifier(documentType.code, classifiers),
+    splitter: getSplitter(documentType.code, splitters),
     extractionType: getExtractionType(documentType.extractionType),
   })

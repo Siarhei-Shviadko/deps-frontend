@@ -37,14 +37,26 @@ const SubHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 2rem;
+  flex-shrink: 0;
+`
+
+const ContentArea = styled.div`
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
 `
 
 const Wrapper = styled.div`
   padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
 `
 
 export {
+  ContentArea,
   SubHeader,
   StyledRadioGroup,
   StyledRadio,

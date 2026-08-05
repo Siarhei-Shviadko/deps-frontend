@@ -1,5 +1,6 @@
 
 import { useEffect } from 'react'
+import { useWatch } from 'react-hook-form'
 import {
   batch,
   useDispatch,
@@ -38,6 +39,8 @@ const DocumentUploadSettingsForm = () => {
   const engines = useSelector(ocrEnginesSelector)
   const areEnginesFetching = useSelector(areEnginesFetchingSelector)
 
+  const selectedEngine = useWatch({ name: FormFieldCodes.ENGINE })
+
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -52,7 +55,12 @@ const DocumentUploadSettingsForm = () => {
       label: localize(Localization.PARSING_FEATURES),
       placeholder: localize(Localization.SELECT_PARSING_FEATURE),
       defaultValue: [KnownParsingFeature.TEXT],
-      render: ParsingFeaturesSwitch,
+      render: (props) => (
+        <ParsingFeaturesSwitch
+          {...props}
+          engineCode={selectedEngine}
+        />
+      ),
     },
     {
       code: FormFieldCodes.ENGINE,

@@ -84,17 +84,17 @@ test('show disabled readOnly switch in case it is not an edit mode', async () =>
   expect(screen.getByTestId(readOnlySwitchTestId)).toBeDisabled()
 })
 
-test('show disabled readOnly switch in case confidential flag is true', async () => {
+test('show enabled readOnly switch in case confidential flag is true and it is edit mode', async () => {
   render(
     <ManageDisplayModeFormSection
       fieldType={FieldType.STRING}
       isConfidentialField={true}
-      isEditMode={false}
+      isEditMode={true}
       isReadOnlyField={true}
     />,
   )
 
-  expect(screen.getByTestId(readOnlySwitchTestId)).toBeDisabled()
+  expect(screen.getByTestId(readOnlySwitchTestId)).not.toBeDisabled()
 })
 
 test('show correctly confidential switch', async () => {
@@ -161,7 +161,7 @@ test('do not show char limit input in case confidential flag is false', async ()
   expect(screen.queryByDisplayValue(mockDisplayCharLimit)).not.toBeInTheDocument()
 })
 
-test('show disabled confidential switch in case if isMaskingModeDisabled is true', async () => {
+test('do not show confidential switch when isMaskingModeDisabled is true', async () => {
   render(
     <ManageDisplayModeFormSection
       fieldType={FieldType.STRING}
@@ -172,5 +172,5 @@ test('show disabled confidential switch in case if isMaskingModeDisabled is true
     />,
   )
 
-  expect(screen.getByTestId(confidentialSwitchTestId)).toBeDisabled()
+  expect(screen.queryByTestId(confidentialSwitchTestId)).not.toBeInTheDocument()
 })

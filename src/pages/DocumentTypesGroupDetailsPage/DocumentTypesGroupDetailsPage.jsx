@@ -35,6 +35,7 @@ const DocumentTypesGroupDetailsPage = () => {
     groupId,
     extras: [
       DocumentTypesGroupExtras.CLASSIFIERS,
+      DocumentTypesGroupExtras.SPLITTERS,
     ],
   },
   {

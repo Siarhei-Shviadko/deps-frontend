@@ -24,6 +24,22 @@ jest.mock('@/containers/PdfSplitting/PdfThumbnailsMap', () => ({
   PdfThumbnailsMap: () => <div data-testid={thumbnailsMapId} />,
 }))
 
+jest.mock('@/containers/PdfSplitting/PdfSegments', () => ({
+  PdfSegments: ({ onCancel, onSave }) => (
+    <div data-testid="pdf-segments">
+      <input role="textbox" />
+      <button
+        data-testid="cancel-btn"
+        onClick={onCancel}
+      />
+      <button
+        data-testid="save-btn"
+        onClick={() => onSave(mockBatchName)}
+      />
+    </div>
+  ),
+}))
+
 const mockUnwrap = jest.fn()
 const mockCreateBatchFromFile = jest.fn(() => ({ unwrap: mockUnwrap }))
 
@@ -259,7 +275,7 @@ test('calls createBatchFromFile with correct args when click on save button', as
 
   await openDrawerWithSegments()
 
-  const saveBtn = screen.getByRole('button', { name: localize(Localization.SAVE) })
+  const saveBtn = screen.getByTestId('save-btn')
   await userEvent.click(saveBtn)
 
   expect(mockCreateBatchFromFile).nthCalledWith(1, {
@@ -290,7 +306,7 @@ test('calls notifyWarning if createBatchFromFile fails with error', async () => 
   const batchInput = screen.getByRole('textbox')
   await userEvent.type(batchInput, mockText)
 
-  const saveBtn = screen.getByRole('button', { name: localize(Localization.SAVE) })
+  const saveBtn = screen.getByTestId('save-btn')
   await userEvent.click(saveBtn)
 
   await waitFor(() => {
@@ -306,7 +322,7 @@ test('closes drawer when cancel button is clicked', async () => {
   const visibleDrawer = screen.getByTestId('drawer')
   expect(visibleDrawer).toBeInTheDocument()
 
-  const cancelBtn = screen.getByRole('button', { name: localize(Localization.CANCEL) })
+  const cancelBtn = screen.getByTestId('cancel-btn')
   await userEvent.click(cancelBtn)
 
   await waitFor(() => {

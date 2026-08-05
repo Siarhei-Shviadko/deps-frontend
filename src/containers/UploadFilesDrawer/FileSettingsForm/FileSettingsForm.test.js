@@ -1,5 +1,6 @@
 
 import { mockEnv } from '@/mocks/mockEnv'
+import { mockReactHookForm } from '@/mocks/mockReactHookForm'
 import { screen } from '@testing-library/react'
 import { fetchOCREngines } from '@/actions/engines'
 import { FIELD_FORM_CODE } from '@/containers/UploadFilesDrawer/constants'
@@ -11,6 +12,8 @@ import { FileSettingsForm } from './FileSettingsForm'
 jest.mock('@/utils/env', () => mockEnv)
 jest.mock('@/selectors/requests')
 jest.mock('@/selectors/engines')
+
+jest.mock('react-hook-form', () => mockReactHookForm)
 
 jest.mock('@/components/Form', () => ({
   ...jest.requireActual('@/components/Form'),

@@ -572,6 +572,7 @@ const apiGatewayV2 = {
     file.blob = (blobName) => `${file()}/${encodeURI(blobName)}`
 
     const files = (filters) => `${v5Root}/files` + getQueryString(filters)
+    files.split = () => `${files()}/split`
     files.file = (fileId) => `${v5Root}/files/${encodeURI(fileId)}`
     files.file.parsingInfo = (fileId) => files.file(fileId) + '/parsing-info'
     files.file.documentLayout = (fileId, parsingParams) => files.file(fileId) + '/document-layout' + getQueryString(parsingParams)
@@ -606,6 +607,7 @@ const apiGatewayV2 = {
     files.file.createDocument = (fileId) => files.file(fileId) + '/create-document'
     files.file.createBatch = (fileId) => files.file(fileId) + '/create-batch'
     files.file.restart = (fileId) => files.file(fileId) + '/restart'
+    files.file.split = (fileId) => files.file(fileId) + '/split'
     files.process = () => `${files()}/process`
     files.classify = () => `${files()}/classify`
 
@@ -618,6 +620,18 @@ const apiGatewayV2 = {
     sagas.saga.state = (entityId) => sagas.saga(entityId) + '/state'
 
     const workflowConfiguration = (documentTypeId) => `${v5Root}/workflow-configuration/${encodeURI(documentTypeId)}`
+
+    const documentFieldAnalytics = () => `${v5Root}/document-field-analytics`
+    documentFieldAnalytics.mostActiveFields = (params) => documentFieldAnalytics() + '/most-active-fields' + getQueryString(params)
+
+    const splitting = () => `${v5Root}/splitting`
+    splitting.splitters = () => splitting() + '/splitters'
+    splitting.splitter = (splitterId) => splitting.splitters() + `/${encodeURI(splitterId)}`
+    splitting.proposals = (fileId) => splitting() + '/splitting-proposals' + `/${encodeURI(fileId)}`
+    splitting.proposals.confirm = (fileId) => splitting.proposals(fileId) + '/confirm'
+
+    const litellm = () => `${v5Root}/litellm`
+    litellm.models = () => litellm() + '/models'
 
     return {
       agenticAi,
@@ -634,6 +648,9 @@ const apiGatewayV2 = {
       sagas,
       iam,
       workflowConfiguration,
+      documentFieldAnalytics,
+      splitting,
+      litellm,
     }
   })(),
   v6: (() => {

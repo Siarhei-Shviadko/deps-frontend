@@ -18,6 +18,7 @@ const BADGE_COLOR_TO_FILE_STATUS_MAPPING = {
   [FileStatus.FAILED]: theme.color.error,
   [FileStatus.NEEDS_REVIEW]: theme.color.success,
   [FileStatus.IN_REVIEW]: theme.color.success,
+  [FileStatus.SPLITTING_REVIEW]: theme.color.warning,
 }
 
 const getErrorMessage = (state) => {

@@ -1,4 +1,5 @@
 
+import { mockShallowComponent } from '@/mocks/mockComponent'
 import { mockEnv } from '@/mocks/mockEnv'
 import { mockReactHookForm } from '@/mocks/mockReactHookForm'
 import { screen } from '@testing-library/react'
@@ -18,13 +19,11 @@ jest.mock('@/components/GraduatedSlider', () => ({
   GraduatedSlider: () => <div data-testid={GRADUATED_SLIDER_TEST_ID} />,
 }))
 
-jest.mock('@/containers/PageSpanSection', () => ({
-  PageSpanSection: () => <div data-testid={PAGE_SPAN_TEST_ID} />,
-}))
+jest.mock('../AdvancedLLMSettings', () => mockShallowComponent('AdvancedLLMSettings'))
 
 const LLM_SELECT_TEST_ID = 'llm-select'
 const GRADUATED_SLIDER_TEST_ID = 'graduated-slider'
-const PAGE_SPAN_TEST_ID = 'page-span-section'
+const ADVANCED_LLM_SETTINGS_TEST_ID = 'AdvancedLLMSettings'
 
 const mockExtractor1 = new Extractor({
   id: 'extractor-1',
@@ -98,24 +97,12 @@ test('renders Top P field with label', () => {
   expect(topPSliders.length).toBeGreaterThanOrEqual(1)
 })
 
-test('renders Grouping Factor field with label and placeholder', () => {
+test('renders AdvancedLLMSettings section', () => {
   render(<ManageLLMExtractorForm {...defaultProps} />)
 
-  const groupingFactorLabel = screen.getByText(localize(Localization.GROUPING_FACTOR))
-  const groupingFactorInput = screen.getByPlaceholderText(localize(Localization.GROUPING_FACTOR_PLACEHOLDER))
+  const advancedSettings = screen.getByTestId(ADVANCED_LLM_SETTINGS_TEST_ID)
 
-  expect(groupingFactorLabel).toBeInTheDocument()
-  expect(groupingFactorInput).toBeInTheDocument()
-})
-
-test('renders Page Span field with label', () => {
-  render(<ManageLLMExtractorForm {...defaultProps} />)
-
-  const pageSpanLabel = screen.getByText(localize(Localization.PAGE_SPAN))
-  const pageSpanSection = screen.getByTestId(PAGE_SPAN_TEST_ID)
-
-  expect(pageSpanLabel).toBeInTheDocument()
-  expect(pageSpanSection).toBeInTheDocument()
+  expect(advancedSettings).toBeInTheDocument()
 })
 
 test('renders Custom Instruction field with label', () => {

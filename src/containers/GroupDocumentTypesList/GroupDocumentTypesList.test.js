@@ -21,6 +21,7 @@ jest.mock('@/selectors/documentTypesListPage')
 jest.mock('@/selectors/navigation')
 
 jest.mock('./DocumentTypeClassifier', () => mockComponent('DocumentTypeClassifier'))
+jest.mock('./DocumentTypeSplitterCell', () => mockComponent('DocumentTypeSplitterCell'))
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -59,6 +60,7 @@ const mockDocTypesGroup = new DocumentTypesGroup({
       prompt: 'Test prompt',
     }),
   ],
+  splitters: [],
   createdAt: '2012-12-12',
 })
 
@@ -76,13 +78,15 @@ test('render table with document types correctly', () => {
     groupDocTypeNameColumn,
     groupDocTypeExtractorColumn,
     groupDocTypeClassifierColumn,
+    groupDocTypeSplitterColumn,
   ] = columns
 
-  expect(columns).toHaveLength(5)
+  expect(columns).toHaveLength(6)
 
   expect(groupDocTypeNameColumn).toHaveTextContent(localize(Localization.NAME))
   expect(groupDocTypeExtractorColumn).toHaveTextContent(localize(Localization.TYPE_OF_EXTRACTOR))
   expect(groupDocTypeClassifierColumn).toHaveTextContent(localize(Localization.CLASSIFIER))
+  expect(groupDocTypeSplitterColumn).toHaveTextContent(localize(Localization.SPLITTER))
 })
 
 test('render NoData component if table data is not provided', () => {

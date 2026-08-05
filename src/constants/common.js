@@ -46,4 +46,4 @@ export const TABLE_ACTIONS_COLUMN_WIDTH = '95px'
 
 export const DEFAULT_DATE_FORMAT = '%m/%d/%Y'
 
-export const GEN_AI_PROMPT_MAX_LENGTH = 1_000
+export const GEN_AI_PROMPT_MAX_LENGTH = 10_000

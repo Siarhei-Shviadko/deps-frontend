@@ -1,7 +1,5 @@
-
 import styled from 'styled-components'
 import { Form } from '@/components/Form/ReactHookForm'
-import { InputNumber } from '@/components/InputNumber'
 
 const Wrapper = styled.div`
   display: flex;
@@ -11,6 +9,7 @@ const Wrapper = styled.div`
 const FieldsList = styled.div`
   width: 50%;
   padding: 1.6rem;
+  overflow: auto;
 `
 
 const FieldsWrapper = styled.div`
@@ -18,11 +17,6 @@ const FieldsWrapper = styled.div`
   grid-auto-flow: column;
   grid-template-columns: 1fr 1fr;
   gap: 1.6rem;
-`
-
-const StyledInputNumber = styled(InputNumber)`
-  width: 100%;
-  color: ${(props) => props.theme.color.grayscale18};
 `
 
 const StyledForm = styled(Form)`
@@ -33,6 +27,5 @@ export {
   FieldsList,
   FieldsWrapper,
   StyledForm as Form,
-  StyledInputNumber as InputNumber,
   Wrapper,
 }

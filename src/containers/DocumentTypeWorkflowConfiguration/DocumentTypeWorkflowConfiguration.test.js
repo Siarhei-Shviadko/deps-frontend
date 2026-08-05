@@ -6,6 +6,8 @@ import { screen, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { fetchDocumentType } from '@/actions/documentType'
 import { DocumentTypeExtras } from '@/enums/DocumentTypeExtras'
+import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownParsingFeature } from '@/enums/KnownParsingFeature'
 import { ReviewPolicy } from '@/enums/ReviewPolicy'
 import { Localization, localize } from '@/localization/i18n'
 import { ExtendedDocumentType } from '@/models/ExtendedDocumentType'
@@ -116,6 +118,9 @@ test('closes drawer and refreshes document type after successful submit', async 
       needsReview: ReviewPolicy.ALWAYS_REVIEW,
       needsExtraction: true,
       needsValidation: false,
+      parsingFeatures: [KnownParsingFeature.TEXT],
+      engine: KnownOCREngine.TESSERACT,
+      needsOutputExporting: false,
     })
   })
 
@@ -125,6 +130,9 @@ test('closes drawer and refreshes document type after successful submit', async 
       needsValidation: false,
       needsReview: ReviewPolicy.ALWAYS_REVIEW,
       needsExtraction: true,
+      parsingFeatures: [KnownParsingFeature.TEXT],
+      engine: KnownOCREngine.TESSERACT,
+      needsOutputExporting: false,
     },
   })
 

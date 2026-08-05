@@ -1,4 +1,3 @@
-
 import { mockEnv } from '@/mocks/mockEnv'
 import { screen } from '@testing-library/dom'
 import { PdfSegment, UserPage } from '@/containers/PdfSplitting/models'
@@ -13,6 +12,19 @@ jest.mock('@/components/Icons/XMarkIcon', () => ({
 
 jest.mock('react-pdf', () => ({
   Page: () => <div data-testid={mockPageId} />,
+}))
+
+jest.mock('@/containers/AreaSelector', () => ({
+  AreaSelector: {
+    Provider: ({ children }) => <div data-testid="AreaSelectorProvider">{children}</div>,
+    Container: ({ children }) => <div data-testid="AreaSelectorContainer">{children}</div>,
+    Overlay: () => <div data-testid="AreaSelectorOverlay" />,
+  },
+  useAreaCreate: () => ({
+    isCreating: false,
+    startCreating: jest.fn(),
+    deleteArea: jest.fn(),
+  }),
 }))
 
 const mockUserPage = new UserPage({
@@ -32,6 +44,8 @@ jest.mock('@/containers/PdfSplitting/hooks', () => ({
     setSegments: jest.fn(),
     activeUserPage: mockUserPage,
     setActiveUserPage: jest.fn(),
+    updateActiveUserPage: jest.fn(),
+    allowAreaSelection: true,
   }),
 }))
 
@@ -44,8 +58,10 @@ test('renders PageViewer correctly', () => {
   const activePage = screen.getByText(mockUserPage.page + 1)
   const page = screen.getByTestId(mockPageId)
   const closeBtn = screen.getByRole('button', { name: mockXMarkIconContent })
+  const areaSelectorOverlay = screen.getByTestId('AreaSelectorOverlay')
 
   expect(closeBtn).toBeInTheDocument()
   expect(activePage).toBeInTheDocument()
   expect(page).toBeInTheDocument()
+  expect(areaSelectorOverlay).toBeInTheDocument()
 })

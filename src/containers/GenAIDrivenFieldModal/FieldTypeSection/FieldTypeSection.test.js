@@ -69,7 +69,7 @@ test('disables Aliases field for Scalar cardinality', () => {
   expect(aliasesCheckbox).toBeDisabled()
 })
 
-test('sets Confidential field to false if field type is not String', async () => {
+test('sets Confidential field to false when field type is CHECKMARK', async () => {
   render(
     <FieldTypeSection disabled={false} />,
   )
@@ -84,6 +84,23 @@ test('sets Confidential field to false if field type is not String', async () =>
   })
 
   expect(mockSetValue).nthCalledWith(1, FORM_FIELD_CODES.CONFIDENTIAL, false)
+})
+
+test('does not set Confidential field to false when field type is DICTIONARY', async () => {
+  render(
+    <FieldTypeSection disabled={false} />,
+  )
+
+  const fieldTypeSelect = screen.getByRole('combobox')
+  await userEvent.click(fieldTypeSelect)
+
+  const option = screen.getByText(RESOURCE_FIELD_TYPE[FieldType.DICTIONARY])
+
+  await userEvent.click(option, {
+    pointerEventsCheck: PointerEventsCheckLevel.Never,
+  })
+
+  expect(mockSetValue).not.toHaveBeenCalledWith(FORM_FIELD_CODES.CONFIDENTIAL, false)
 })
 
 test('sets Include Aliases field to false if cardinality is not a "list"', async () => {

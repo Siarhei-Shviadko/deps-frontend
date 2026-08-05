@@ -2,6 +2,7 @@
 import PropTypes from 'prop-types'
 import { ExtractionType } from '@/enums/ExtractionType'
 import { genAiClassifierShape } from '@/models/DocumentTypesGroup'
+import { splitterShape } from '@/models/Splitter'
 
 class GroupDocumentType {
   constructor ({
@@ -10,12 +11,14 @@ class GroupDocumentType {
     name,
     extractionType = ExtractionType.ML,
     classifier,
+    splitter,
   }) {
     this.id = id
     this.groupId = groupId
     this.name = name
     this.extractionType = extractionType
     this.classifier = classifier
+    this.splitter = splitter
   }
 }
 
@@ -27,6 +30,7 @@ const groupDocumentTypeShape = PropTypes.shape({
     Object.values(ExtractionType),
   ).isRequired,
   classifier: genAiClassifierShape,
+  splitter: splitterShape,
 })
 
 export {

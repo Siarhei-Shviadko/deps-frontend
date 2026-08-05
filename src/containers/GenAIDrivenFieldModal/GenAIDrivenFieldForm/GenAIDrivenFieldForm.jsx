@@ -8,7 +8,7 @@ import {
   FormFieldType,
 } from '@/components/Form/ReactHookForm'
 import { FORBIDDEN_WHITE_SPACE_BEFORE_TEXT } from '@/constants/regexp'
-import { FORM_FIELD_CODES } from '@/containers/GenAIDrivenFieldModal/constants'
+import { FIELD_TYPES_WITH_DISABLED_MASKING, FORM_FIELD_CODES } from '@/containers/GenAIDrivenFieldModal/constants'
 import { ManageDisplayModeFormSection } from '@/containers/ManageDisplayModeFormSection'
 import { FieldType } from '@/enums/FieldType'
 import { Localization, localize } from '@/localization/i18n'
@@ -138,6 +138,13 @@ const GenAIDrivenFieldForm = ({
     },
   ], [extractorQuery?.workflow])
 
+  const charLimit = (
+    field?.fieldMeta?.displayCharLimit ??
+    field?.fieldMeta?.valueMeta?.displayCharLimit ??
+    field?.fieldMeta?.baseTypeMeta?.displayCharLimit ??
+    field?.fieldMeta?.baseTypeMeta?.valueMeta?.displayCharLimit
+  )
+
   return (
     <Form
       handleSubmit={handleSubmit}
@@ -155,14 +162,11 @@ const GenAIDrivenFieldForm = ({
             value={fieldTypeValue}
           />
           <ManageDisplayModeFormSection
-            displayCharLimit={
-              field?.fieldMeta?.displayCharLimit ??
-              field?.fieldMeta?.baseTypeMeta?.displayCharLimit
-            }
+            displayCharLimit={charLimit}
             fieldType={fieldType}
             isConfidentialField={field?.confidential}
             isEditMode={true}
-            isMaskingModeDisabled={fieldType !== FieldType.STRING}
+            isMaskingModeDisabled={FIELD_TYPES_WITH_DISABLED_MASKING.includes(fieldType)}
             isReadOnlyField={field?.readOnly}
           />
         </FieldsList>

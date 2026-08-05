@@ -5,13 +5,12 @@ import { useExtractorModel } from '@/containers/PromptCalibrationStudio/hooks'
 import { parsePageSpanToContent } from '@/containers/PromptCalibrationStudio/utils'
 import { extractorShape } from '@/containers/PromptCalibrationStudio/viewModels'
 import { localize, Localization } from '@/localization/i18n'
+import { DescriptionItem } from './DescriptionItem'
 import {
   CustomInstructionItem,
   CustomInstructionItemValue,
-  ExtractorSettingsItem,
   ExtractorSettingsItemLabel,
   ExtractorSettingsItemsWrapper,
-  ExtractorSettingsItemValue,
 } from './LLMExtractorDescription.styles'
 
 export const LLMExtractorDescription = ({ extractor }) => {
@@ -27,57 +26,51 @@ export const LLMExtractorDescription = ({ extractor }) => {
 
   return (
     <>
-      <ExtractorSettingsItem>
-        <ExtractorSettingsItemLabel>
-          {localize(Localization.LLM_MODEL)}
-        </ExtractorSettingsItemLabel>
-        <ExtractorSettingsItemValue>
-          <LongText
-            key={modelName}
-            text={modelName}
-          />
-          <LongText
-            key={providerName}
-            text={providerName}
-          />
-        </ExtractorSettingsItemValue>
-      </ExtractorSettingsItem>
-      <ExtractorSettingsItemsWrapper>
-        <ExtractorSettingsItem>
-          <ExtractorSettingsItemLabel>
-            {localize(Localization.TEMPERATURE)}
-          </ExtractorSettingsItemLabel>
-          <ExtractorSettingsItemValue>
-            {extractor.temperature}
-          </ExtractorSettingsItemValue>
-        </ExtractorSettingsItem>
-        <ExtractorSettingsItem>
-          <ExtractorSettingsItemLabel>
-            {localize(Localization.TOP_P)}
-          </ExtractorSettingsItemLabel>
-          <ExtractorSettingsItemValue>
-            {extractor.topP}
-          </ExtractorSettingsItemValue>
-        </ExtractorSettingsItem>
-      </ExtractorSettingsItemsWrapper>
-      <ExtractorSettingsItemsWrapper>
-        <ExtractorSettingsItem>
-          <ExtractorSettingsItemLabel>
-            {localize(Localization.GROUPING_FACTOR)}
-          </ExtractorSettingsItemLabel>
-          <ExtractorSettingsItemValue>
-            {extractor.groupingFactor}
-          </ExtractorSettingsItemValue>
-        </ExtractorSettingsItem>
-        <ExtractorSettingsItem>
-          <ExtractorSettingsItemLabel>
-            {localize(Localization.PAGE_SPAN)}
-          </ExtractorSettingsItemLabel>
-          <ExtractorSettingsItemValue>
-            {parsePageSpanToContent(extractor.pageSpan)}
-          </ExtractorSettingsItemValue>
-        </ExtractorSettingsItem>
-      </ExtractorSettingsItemsWrapper>
+      <DescriptionItem
+        label={localize(Localization.LLM_MODEL)}
+        value={
+          (
+            <>
+              <LongText
+                key={modelName}
+                text={modelName}
+              />
+              <LongText
+                key={providerName}
+                text={providerName}
+              />
+            </>
+          )
+        }
+      />
+      {
+        (extractor.temperature != null || extractor.topP != null) && (
+          <ExtractorSettingsItemsWrapper>
+            <DescriptionItem
+              label={localize(Localization.TEMPERATURE)}
+              value={extractor.temperature}
+            />
+            <DescriptionItem
+              label={localize(Localization.TOP_P)}
+              value={extractor.topP}
+            />
+          </ExtractorSettingsItemsWrapper>
+        )
+      }
+      {
+        (extractor.groupingFactor || extractor.pageSpan) && (
+          <ExtractorSettingsItemsWrapper>
+            <DescriptionItem
+              label={localize(Localization.GROUPING_FACTOR)}
+              value={extractor.groupingFactor}
+            />
+            <DescriptionItem
+              label={localize(Localization.PAGE_SPAN)}
+              value={parsePageSpanToContent(extractor.pageSpan)}
+            />
+          </ExtractorSettingsItemsWrapper>
+        )
+      }
       <CustomInstructionItem>
         <ExtractorSettingsItemLabel>
           {localize(Localization.CUSTOM_INSTRUCTION)}

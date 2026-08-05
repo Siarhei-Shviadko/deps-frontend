@@ -6,6 +6,7 @@ import { Input } from '@/components/Input'
 import { LongText } from '@/components/LongText'
 import { CustomSelect } from '@/components/Select'
 import { PrototypeFieldsViewSwitch } from '@/containers/PrototypeFieldsViewSwitch'
+import { KnownOCREngine } from '@/enums/KnownOCREngine'
 import { PrototypeViewType } from '@/enums/PrototypeViewType'
 import { Localization, localize } from '@/localization/i18n'
 import { Engine } from '@/models/Engine'
@@ -58,7 +59,7 @@ const PrototypeInfo = ({
       render: () => (
         <CustomSelect
           onChange={(val) => onFieldChange(val, FIELD_CODE.ENGINE)}
-          options={Engine.toAllEnginesOptions(engines)}
+          options={Engine.toAllEnginesOptions(engines, [KnownOCREngine.TESSERACT])}
           placeholder={localize(Localization.SELECT_ENGINE)}
           value={selectedEngine}
         />

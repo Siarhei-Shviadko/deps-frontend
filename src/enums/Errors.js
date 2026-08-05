@@ -169,6 +169,7 @@ const ErrorCode = {
   errorDuringProcessing: 'error_during_processing',
   errorDuringClassification: 'error_during_classification',
   errorDuringSplitting: 'error_during_splitting',
+  overlappingRegions: 'overlapping_regions',
 }
 
 const RESOURCE_ERROR_TO_DISPLAY = {
@@ -334,6 +335,7 @@ const RESOURCE_ERROR_TO_DISPLAY = {
   [ErrorCode.errorDuringProcessing]: localize(Localization.ERROR_DURING_PROCESSING),
   [ErrorCode.errorDuringClassification]: localize(Localization.ERROR_DURING_CLASSIFICATION),
   [ErrorCode.errorDuringSplitting]: localize(Localization.ERROR_DURING_SPLITTING),
+  [ErrorCode.overlappingRegions]: localize(Localization.OVERLAPPING_REGIONS),
 }
 
 const ERROR_STATUS_TO_URL_MAPPER = {

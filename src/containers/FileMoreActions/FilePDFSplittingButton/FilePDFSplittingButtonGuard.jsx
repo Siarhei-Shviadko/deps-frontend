@@ -20,7 +20,7 @@ export const FilePDFSplittingButtonGuard = ({ file }) => {
     return (
       <Tooltip title={tooltipTitle}>
         <Button.Text disabled>
-          {localize(Localization.SPLIT_FILE)}
+          {localize(Localization.MANUAL_FILE_SPLITTING)}
         </Button.Text>
       </Tooltip>
     )
@@ -31,7 +31,7 @@ export const FilePDFSplittingButtonGuard = ({ file }) => {
       <FilePDFSplittingButton
         file={file}
       >
-        {localize(Localization.SPLIT_FILE)}
+        {localize(Localization.MANUAL_FILE_SPLITTING)}
       </FilePDFSplittingButton>
     </PdfSegmentsProvider>
   )

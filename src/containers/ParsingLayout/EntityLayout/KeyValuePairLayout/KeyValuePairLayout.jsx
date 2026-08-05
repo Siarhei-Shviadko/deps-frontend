@@ -1,58 +1,53 @@
 
 import PropTypes from 'prop-types'
-import {
-  useCallback,
-  useState,
-} from 'react'
+import { NoData } from '@/components/NoData'
 import { DOCUMENT_LAYOUT_FEATURE, DOCUMENT_LAYOUT_PARSING_TYPE } from '@/enums/DocumentLayoutType'
-import { InfiniteScrollLayout } from '../InfiniteScrollLayout'
+import { Localization, localize } from '@/localization/i18n'
+import { usePaginatedLayout } from '../hooks'
 import { LocalErrorBoundary } from '../LocalErrorBoundary'
 import { KeyValuePairField } from './KeyValuePairField'
-import { Wrapper } from './KeyValuePairLayout.styles'
+import { Spinner, Wrapper } from './KeyValuePairLayout.styles'
 
-const KeyValuePairLayout = ({
-  parsingType,
-  total,
-}) => {
-  const [layoutData, setLayoutData] = useState([])
+const KeyValuePairLayout = ({ batchIndex, parsingType }) => {
+  const { layoutData, isFetching } = usePaginatedLayout({
+    batchIndex,
+    parsingFeature: DOCUMENT_LAYOUT_FEATURE.KEY_VALUE_PAIRS,
+    parsingType,
+  })
 
-  const setLayout = useCallback((layoutData) =>
-    setLayoutData((data) => [...data, ...layoutData]),
-  [])
+  if (isFetching) {
+    return <Spinner spinning />
+  }
+
+  if (!layoutData.length) {
+    return <NoData description={localize(Localization.NO_DATA)} />
+  }
 
   return (
     <Wrapper>
-      <InfiniteScrollLayout
-        parsingFeature={DOCUMENT_LAYOUT_FEATURE.KEY_VALUE_PAIRS}
-        parsingType={parsingType}
-        setLayout={setLayout}
-        showEmpty={!layoutData.length}
-        total={total}
-      >
-        {
-          layoutData.map(({ page, pageId, layout }, index) => (
-            <LocalErrorBoundary key={index}>
-              <KeyValuePairField
-                keyData={layout.key}
-                keyValuePairId={layout.id}
-                page={page}
-                pageId={pageId}
-                parsingType={parsingType}
-                valueData={layout.value}
-              />
-            </LocalErrorBoundary>
-          ))
-        }
-      </InfiniteScrollLayout>
+      {
+        layoutData.map(({ page, pageId, layout }, index) => (
+          <LocalErrorBoundary key={index}>
+            <KeyValuePairField
+              keyData={layout.key}
+              keyValuePairId={layout.id}
+              page={page}
+              pageId={pageId}
+              parsingType={parsingType}
+              valueData={layout.value}
+            />
+          </LocalErrorBoundary>
+        ))
+      }
     </Wrapper>
   )
 }
 
 KeyValuePairLayout.propTypes = {
+  batchIndex: PropTypes.number.isRequired,
   parsingType: PropTypes.oneOf(
     Object.values(DOCUMENT_LAYOUT_PARSING_TYPE),
   ).isRequired,
-  total: PropTypes.number.isRequired,
 }
 
 export {

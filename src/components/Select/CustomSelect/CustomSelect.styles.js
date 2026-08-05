@@ -46,7 +46,7 @@ const StyledSelect = styled(Select)`
 `
 
 const StyledTag = styled(Tag)`
-  margin: 0.3rem 0.5rem 0.3rem 0;
+  margin: 0.2rem 0.5rem 0.2rem 0;
 `
 
 export {

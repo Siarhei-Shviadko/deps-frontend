@@ -13,17 +13,15 @@ import { ExtractionLLMSelect } from '@/containers/ExtractionLLMSelect'
 import { useFieldCalibration } from '@/containers/PromptCalibrationStudio/hooks'
 import { extractorShape } from '@/containers/PromptCalibrationStudio/viewModels'
 import { Localization, localize } from '@/localization/i18n'
+import { AdvancedLLMSettings } from '../AdvancedLLMSettings'
 import {
   FIELDS_CODE,
   TemperatureFieldSettings,
   TopPFieldSettings,
-  MIN_GROUPING_FACTOR_VALUE,
 } from '../constants'
 import {
   Form,
-  InputNumber,
   TextArea,
-  StyledPageSpanSection,
 } from './ManageLLMExtractorForm.styles'
 
 const validateUniqueName = (name, id, extractors) => {
@@ -91,26 +89,6 @@ export const ManageLLMExtractorForm = ({ extractor }) => {
       ),
     },
     {
-      code: FIELDS_CODE.GROUPING_FACTOR,
-      label: localize(Localization.GROUPING_FACTOR),
-      render: (props) => (
-        <InputNumber
-          {...props}
-          min={MIN_GROUPING_FACTOR_VALUE}
-          placeholder={localize(Localization.GROUPING_FACTOR_PLACEHOLDER)}
-        />
-      ),
-    },
-    {
-      code: FIELDS_CODE.PAGE_SPAN,
-      label: localize(Localization.PAGE_SPAN),
-      render: (props) => (
-        <StyledPageSpanSection
-          {...props}
-        />
-      ),
-    },
-    {
       code: FIELDS_CODE.CUSTOM_INSTRUCTION,
       label: localize(Localization.CUSTOM_INSTRUCTION),
       render: (props) => (
@@ -136,6 +114,7 @@ export const ManageLLMExtractorForm = ({ extractor }) => {
   return (
     <Form>
       {renderFields(fields)}
+      <AdvancedLLMSettings />
     </Form>
   )
 }

@@ -24,6 +24,14 @@ jest.mock('@/actions/documentTypes', () => ({
   fetchDocumentTypes: jest.fn(),
 }))
 
+const mockCreateDocumentTypesGroupFn = jest.fn(() => ({
+  unwrap: jest.fn(() => Promise.resolve({})),
+}))
+
+const mockCreateSplitterFn = jest.fn(() => ({
+  unwrap: jest.fn(() => Promise.resolve({})),
+}))
+
 jest.mock('@/apiRTK/documentTypesGroupsApi', () => ({
   useCreateDocumentTypesGroupMutation: jest.fn(() => ([
     mockCreateDocumentTypesGroupFn,
@@ -31,8 +39,11 @@ jest.mock('@/apiRTK/documentTypesGroupsApi', () => ({
   ])),
 }))
 
-const mockCreateDocumentTypesGroupFn = jest.fn(() => ({
-  unwrap: jest.fn(() => Promise.resolve({})),
+jest.mock('@/apiRTK/splittingApi', () => ({
+  useCreateSplitterMutation: jest.fn(() => ([
+    mockCreateSplitterFn,
+    { isLoading: false },
+  ])),
 }))
 
 const mockInput = 'Test'

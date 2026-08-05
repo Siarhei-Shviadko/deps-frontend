@@ -1,13 +1,12 @@
 
 import PropTypes from 'prop-types'
-import {
-  useCallback,
-  useState,
-} from 'react'
+import { useCallback } from 'react'
+import { NoData } from '@/components/NoData'
 import { DOCUMENT_LAYOUT_FEATURE, DOCUMENT_LAYOUT_PARSING_TYPE } from '@/enums/DocumentLayoutType'
-import { InfiniteScrollLayout } from '../InfiniteScrollLayout'
+import { Localization, localize } from '@/localization/i18n'
+import { usePaginatedLayout } from '../hooks'
 import { LocalErrorBoundary } from '../LocalErrorBoundary'
-import { mergeTableChunk } from './mergeTableChunk'
+import { Spinner } from './TableLayout.styles'
 import { TableLayoutField } from './TableLayoutField'
 
 const enrichTableLayoutWithPageContext = (data) =>
@@ -26,60 +25,42 @@ const enrichTableLayoutWithPageContext = (data) =>
   }))
 
 const TableLayout = ({
+  batchIndex,
   parsingType,
-  mergedTables,
-  total,
+  mergedTables = [],
 }) => {
-  const [layoutData, setLayoutData] = useState([])
-
-  const setLayout = useCallback((layoutData) => {
-    const newTables = enrichTableLayoutWithPageContext(layoutData)
-
-    newTables.forEach((table) => {
-      const parentTableId = mergedTables.find((item) => item.tableId === table.id)?.parentId
-
-      if (!parentTableId) {
-        setLayoutData((prevData) => [...prevData, table])
-        return
-      }
-
-      setLayoutData((prevData) => mergeTableChunk(prevData, table, parentTableId))
-    })
-  }, [
-    mergedTables,
-  ])
+  const { layoutData, isFetching } = usePaginatedLayout({
+    batchIndex,
+    parsingFeature: DOCUMENT_LAYOUT_FEATURE.TABLES,
+    parsingType,
+  })
 
   const isParentTable = useCallback(
     (tableId) => !!mergedTables.find((item) => item.parentId === tableId),
     [mergedTables],
   )
 
-  return (
-    <InfiniteScrollLayout
-      parsingFeature={DOCUMENT_LAYOUT_FEATURE.TABLES}
-      parsingType={parsingType}
-      setLayout={setLayout}
-      showEmpty={!layoutData.length}
-      total={total}
-    >
-      {
-        layoutData.map((table, i) => {
-          return (
-            <LocalErrorBoundary key={i}>
-              <TableLayoutField
-                alignHeightByContent={isParentTable(table.id)}
-                parsingType={parsingType}
-                table={table}
-              />
-            </LocalErrorBoundary>
-          )
-        })
-      }
-    </InfiniteScrollLayout>
-  )
+  if (isFetching) {
+    return <Spinner spinning />
+  }
+
+  if (!layoutData.length) {
+    return <NoData description={localize(Localization.NO_DATA)} />
+  }
+
+  return enrichTableLayoutWithPageContext(layoutData).map((table, i) => (
+    <LocalErrorBoundary key={i}>
+      <TableLayoutField
+        alignHeightByContent={isParentTable(table.id)}
+        parsingType={parsingType}
+        table={table}
+      />
+    </LocalErrorBoundary>
+  ))
 }
 
 TableLayout.propTypes = {
+  batchIndex: PropTypes.number.isRequired,
   mergedTables: PropTypes.arrayOf(
     PropTypes.shape({
       parentId: PropTypes.string.isRequired,
@@ -89,7 +70,6 @@ TableLayout.propTypes = {
   parsingType: PropTypes.oneOf(
     Object.values(DOCUMENT_LAYOUT_PARSING_TYPE),
   ).isRequired,
-  total: PropTypes.number.isRequired,
 }
 
 export {

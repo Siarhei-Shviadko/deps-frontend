@@ -38,12 +38,14 @@ const ExtractionName = styled.div`
 const ExtractionParamsWrapper = styled.div`
   display: flex;
   gap: 1.2rem;
+  flex-wrap: wrap;
 `
 
 const ExtractionParam = styled.div`
   display: flex;
   gap: 0.8rem;
   padding: 1px 0;
+  align-items: center;
 
   > span {
     font-weight: 600;

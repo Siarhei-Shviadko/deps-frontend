@@ -32,15 +32,10 @@ const DocumentTypeWorkflowConfiguration = ({
   }, [dispatch, documentType.code])
 
   const handleSubmit = useCallback(async (data) => {
-    const payload = {
-      needsValidation: data.needsValidation,
-      needsReview: data.needsReview,
-      needsExtraction: data.needsExtraction,
-    }
     try {
       await updateWorkflowConfiguration({
         documentTypeId: documentType.code,
-        data: payload,
+        data,
       }).unwrap()
       notifySuccess(localize(Localization.WORKFLOW_SETTINGS_SAVED))
       closeDrawer()

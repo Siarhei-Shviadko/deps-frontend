@@ -1,0 +1,1 @@
+export { useAreaResize } from './useAreaResize'

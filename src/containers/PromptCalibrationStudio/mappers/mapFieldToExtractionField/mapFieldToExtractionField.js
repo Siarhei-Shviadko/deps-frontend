@@ -3,15 +3,25 @@ import { CHAR_TYPE } from '@/containers/FieldBusinessRuleModal/constants'
 import { MULTIPLICITY } from '@/containers/PromptCalibrationStudio/viewModels'
 import { FieldType } from '@/enums/FieldType'
 
-const getDictionaryMeta = () => ({
+const getDictionaryMeta = (displayCharLimit) => ({
   keyType: FieldType.STRING,
   valueType: FieldType.STRING,
+  ...(displayCharLimit != null && { valueMeta: { displayCharLimit } }),
 })
 
-const mapBaseTypeToCharType = {
-  [FieldType.STRING]: { charType: CHAR_TYPE.ALPHANUMERIC },
-  [FieldType.CHECKMARK]: { charType: CHAR_TYPE.BOOLEAN },
-  [FieldType.DICTIONARY]: getDictionaryMeta(),
+const getStringMeta = (displayCharLimit) => ({
+  charType: CHAR_TYPE.ALPHANUMERIC,
+  ...(displayCharLimit != null && { displayCharLimit }),
+})
+
+const getBooleanMeta = () => ({
+  charType: CHAR_TYPE.BOOLEAN,
+})
+
+const mapBaseTypeToMetaGetter = {
+  [FieldType.STRING]: getStringMeta,
+  [FieldType.CHECKMARK]: getBooleanMeta,
+  [FieldType.DICTIONARY]: getDictionaryMeta,
 }
 
 export const mapFieldToExtractionField = (field) => {
@@ -24,12 +34,13 @@ export const mapFieldToExtractionField = (field) => {
     required,
     extractorId,
     order,
+    displayCharLimit,
   } = field
 
   const isMultiple = multiplicity === MULTIPLICITY.MULTIPLE
   const fieldType = isMultiple ? FieldType.LIST : baseType
 
-  const baseTypeMeta = mapBaseTypeToCharType[baseType]
+  const baseTypeMeta = mapBaseTypeToMetaGetter[baseType](displayCharLimit)
 
   const getFieldMeta = () => {
     if (isMultiple) {
@@ -39,11 +50,7 @@ export const mapFieldToExtractionField = (field) => {
       }
     }
 
-    if (baseType === FieldType.DICTIONARY) {
-      return getDictionaryMeta()
-    }
-
-    return {}
+    return baseTypeMeta
   }
 
   const fieldMeta = getFieldMeta()

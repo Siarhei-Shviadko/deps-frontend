@@ -4,7 +4,10 @@ import { useMemo, useCallback } from 'react'
 import { AlternativeArrowsIcon } from '@/components/Icons/AlternativeArrowsIcon'
 import { CopyIcon } from '@/components/Icons/CopyIcon'
 import { OpenedEyeIcon } from '@/components/Icons/OpenedEyeIcon'
+import { PenToSquareIcon } from '@/components/Icons/PenToSquareIcon'
+import { TrashIcon } from '@/components/Icons/TrashIcon'
 import { XMarkIcon } from '@/components/Icons/XMarkIcon'
+import { useAreaCreate } from '@/containers/AreaSelector'
 import { usePdfSegments } from '@/containers/PdfSplitting/hooks'
 import { PdfSegment, userPageShape } from '@/containers/PdfSplitting/models'
 import { ComponentSize } from '@/enums/ComponentSize'
@@ -16,6 +19,7 @@ export const Controls = ({
   size = ComponentSize.DEFAULT,
   userPage,
   closable,
+  showAreaControls,
   onEnableDragging,
   disabledTooltip,
 }) => {
@@ -24,6 +28,12 @@ export const Controls = ({
     setSegments,
     setActiveUserPage,
   } = usePdfSegments()
+
+  const {
+    isCreating,
+    startCreating,
+    deleteArea,
+  } = useAreaCreate()
 
   const duplicateThumbnail = useCallback((e) => {
     e.stopPropagation()
@@ -115,6 +125,26 @@ export const Controls = ({
         />
       ),
     },
+    ...(showAreaControls && !userPage.coordinates && !isCreating ? [{
+      renderComponent: () => (
+        <StyledIconButton
+          $size={size}
+          icon={<PenToSquareIcon />}
+          onClick={startCreating}
+          tooltip={{ title: localize(Localization.SELECT_AREA) }}
+        />
+      ),
+    }] : []),
+    ...(showAreaControls && userPage.coordinates ? [{
+      renderComponent: () => (
+        <StyledIconButton
+          $size={size}
+          icon={<TrashIcon />}
+          onClick={deleteArea}
+          tooltip={{ title: localize(Localization.DELETE_AREA) }}
+        />
+      ),
+    }] : []),
     ...(closable ? [{
       renderComponent: () => (
         <StyledIconButton
@@ -126,7 +156,11 @@ export const Controls = ({
     }] : []),
   ], [
     onEnableDragging,
+    isCreating,
+    startCreating,
+    deleteArea,
     closable,
+    showAreaControls,
     size,
     disabledTooltip,
     segments,
@@ -148,6 +182,7 @@ export const Controls = ({
 Controls.propTypes = {
   closable: PropTypes.bool,
   onEnableDragging: PropTypes.func,
+  showAreaControls: PropTypes.bool,
   userPage: userPageShape.isRequired,
   isVertical: PropTypes.bool,
   size: PropTypes.oneOf([

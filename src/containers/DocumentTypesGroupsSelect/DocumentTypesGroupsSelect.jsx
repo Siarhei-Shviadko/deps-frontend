@@ -5,6 +5,7 @@ import { useMemo, useState } from 'react'
 import { CustomSelect, SelectOption } from '@/components/Select'
 import { Spin } from '@/components/Spin'
 import { DocumentTypesGroupsFilterKey, PaginationKeys } from '@/constants/navigation'
+import { DocumentTypesGroupExtras } from '@/enums/DocumentTypesGroupExtras'
 import { Localization, localize } from '@/localization/i18n'
 import { documentTypesGroupShape } from '@/models/DocumentTypesGroup'
 import {
@@ -17,18 +18,27 @@ import { useFetchGroupsInfiniteQuery } from './useFetchGroupsInfiniteQuery'
 const GROUPS_SELECT_SCROLL_THRESHOLD = 40
 const DEBOUNCE_TIME = 300
 
-const DocumentTypesGroupsSelect = ({ value, onChange }) => {
+const DocumentTypesGroupsSelect = ({
+  value,
+  onChange,
+  filterWithSplitter,
+  ...rest
+}) => {
   const [filter, setFilter] = useState(defaultFilterConfig)
   const [isSearching, setIsSearching] = useState(false)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+
+  const configFilters = useMemo(() => ({
+    ...filter,
+    extras: [DocumentTypesGroupExtras.SPLITTERS],
+  }), [filter])
 
   const {
     groups,
     total,
     isFetching,
   } = useFetchGroupsInfiniteQuery({
-    filter,
-    skip: !isDropdownOpen,
+    filter: configFilters,
   })
 
   const onGroupsScroll = ({ target }) => {
@@ -88,9 +98,13 @@ const DocumentTypesGroupsSelect = ({ value, onChange }) => {
     !isDropdownOpen && setFilter(defaultFilterConfig)
   }
 
-  const selectOptions = useMemo(() => (
-    groups?.map((group) => new SelectOption(group.id, group.name))
-  ), [groups])
+  const selectOptions = useMemo(() => {
+    const filtered = filterWithSplitter
+      ? groups?.filter((group) => !!group.splitter)
+      : groups
+
+    return filtered?.map((group) => new SelectOption(group.id, group.name))
+  }, [groups, filterWithSplitter])
 
   return (
     <CustomSelect
@@ -105,6 +119,7 @@ const DocumentTypesGroupsSelect = ({ value, onChange }) => {
       options={selectOptions || []}
       placeholder={localize(Localization.SELECT_DOCUMENT_TYPES_GROUP)}
       value={value?.id}
+      {...rest}
     />
   )
 }
@@ -112,6 +127,7 @@ const DocumentTypesGroupsSelect = ({ value, onChange }) => {
 DocumentTypesGroupsSelect.propTypes = {
   onChange: PropTypes.func.isRequired,
   value: documentTypesGroupShape,
+  filterWithSplitter: PropTypes.bool,
 }
 
 export {

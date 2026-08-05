@@ -27,10 +27,27 @@ jest.mock('@/containers/PdfSplitting/hooks', () => ({
   })),
 }))
 
+jest.mock('./PdfThumbnail.styles', () => {
+  const actual = jest.requireActual('./PdfThumbnail.styles')
+
+  return {
+    ...actual,
+    BoundingBoxOverlay: () => <div data-testid="bounding-box-overlay" />,
+  }
+})
+
 const mockContent = 'Thumbnail'
+const mockBoundingBoxOverlayId = 'bounding-box-overlay'
 const mockSetSegments = jest.fn()
 const mockSetActiveUserPage = jest.fn()
 const mockSetIsDraggable = jest.fn()
+
+const mockCoordinates = {
+  x: 0.1,
+  y: 0.2,
+  width: 0.3,
+  height: 0.4,
+}
 
 const mockUserPage = new UserPage({
   page: 0,
@@ -133,4 +150,31 @@ test('calls setIsDraggable when click on drag icon', async () => {
   await userEvent.click(closeEyeBtn)
 
   expect(mockSetIsDraggable).nthCalledWith(1, true)
+})
+
+test('renders bounding box overlay when user page has coordinates', () => {
+  const props = {
+    userPage: {
+      ...mockUserPage,
+      coordinates: mockCoordinates,
+    },
+    isActive: false,
+    isSelected: false,
+  }
+
+  render(<PdfThumbnail {...props} />)
+
+  expect(screen.getByTestId(mockBoundingBoxOverlayId)).toBeInTheDocument()
+})
+
+test('does not render bounding box overlay when user page has no coordinates', () => {
+  const props = {
+    userPage: mockUserPage,
+    isActive: false,
+    isSelected: false,
+  }
+
+  render(<PdfThumbnail {...props} />)
+
+  expect(screen.queryByTestId(mockBoundingBoxOverlayId)).not.toBeInTheDocument()
 })

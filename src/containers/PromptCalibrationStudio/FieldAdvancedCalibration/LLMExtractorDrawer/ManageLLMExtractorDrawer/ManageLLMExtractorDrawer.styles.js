@@ -3,6 +3,10 @@ import styled from 'styled-components'
 import { Drawer } from '@/components/Drawer'
 
 export const StyledDrawer = styled(Drawer)`
+  .ant-drawer-mask {
+    background-color: transparent;
+  }
+    
   .ant-drawer-content {
     display: flex;
     flex-direction: column;

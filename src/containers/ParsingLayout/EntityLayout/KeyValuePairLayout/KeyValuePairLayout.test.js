@@ -1,13 +1,31 @@
-
 import { mockEnv } from '@/mocks/mockEnv'
-import { render, screen } from '@testing-library/react'
-import React from 'react'
-import { DOCUMENT_LAYOUT_PARSING_TYPE } from '@/enums/DocumentLayoutType'
+import { screen } from '@testing-library/react'
+import { DOCUMENT_LAYOUT_FEATURE, DOCUMENT_LAYOUT_PARSING_TYPE } from '@/enums/DocumentLayoutType'
+import { Localization, localize } from '@/localization/i18n'
 import { KeyValuePairElementLayout } from '@/models/DocumentLayout'
 import { Point } from '@/models/Point'
+import { render } from '@/utils/rendererRTL'
+import { usePaginatedLayout } from '../hooks'
 import { KeyValuePairLayout as KeyValuePairLayoutComponent } from './KeyValuePairLayout'
 
 jest.mock('@/utils/env', () => mockEnv)
+
+jest.mock('@/components/Spin', () => ({
+  Spin: () => <div data-testid="spin" />,
+}))
+
+jest.mock('../hooks', () => ({
+  usePaginatedLayout: jest.fn(),
+}))
+
+jest.mock('./KeyValuePairField', () => ({
+  KeyValuePairField: jest.fn(({ keyData, valueData, page }) => (
+    <div data-testid={`kvp-field-${page}`}>
+      <span>{keyData.content}</span>
+      <span>{valueData.content}</span>
+    </div>
+  )),
+}))
 
 const mockKeyData = new KeyValuePairElementLayout(
   'keyContent',
@@ -23,6 +41,7 @@ const mockValueData = new KeyValuePairElementLayout(
     new Point(0.333, 0.444),
   ],
 )
+
 const mockData = [
   {
     layout: {
@@ -40,36 +59,57 @@ const mockData = [
   },
 ]
 
-function MockInfiniteScrollLayout ({ setLayout, children }) {
-  React.useEffect(() => {
-    setLayout(mockData)
-  }, [setLayout])
-  return children
+const defaultProps = {
+  batchIndex: 0,
+  parsingType: DOCUMENT_LAYOUT_PARSING_TYPE.AWS_TEXTRACT,
 }
 
-jest.mock('../InfiniteScrollLayout', () => ({
-  InfiniteScrollLayout: MockInfiniteScrollLayout,
-}))
+beforeEach(() => {
+  jest.clearAllMocks()
+  usePaginatedLayout.mockReturnValue({
+    layoutData: mockData,
+    isFetching: false,
+  })
+})
 
-jest.mock('./KeyValuePairField', () => ({
-  KeyValuePairField: jest.fn(({ keyData, valueData, page }) => (
-    <div data-testid={`kvp-field-${page}`}>
-      <span>{keyData.content}</span>
-      <span>{valueData.content}</span>
-    </div>
-  )),
-}))
+test('calls usePaginatedLayout with correct parameters', () => {
+  render(<KeyValuePairLayoutComponent {...defaultProps} />)
 
-test('should render correct layout for key-value pairs', () => {
-  render(
-    <KeyValuePairLayoutComponent
-      parsingType={DOCUMENT_LAYOUT_PARSING_TYPE.AWS_TEXTRACT}
-      total={1}
-    />,
-  )
+  expect(usePaginatedLayout).toHaveBeenCalledWith({
+    batchIndex: 0,
+    parsingFeature: DOCUMENT_LAYOUT_FEATURE.KEY_VALUE_PAIRS,
+    parsingType: DOCUMENT_LAYOUT_PARSING_TYPE.AWS_TEXTRACT,
+  })
+})
+
+test('renders correct layout for key-value pairs', () => {
+  render(<KeyValuePairLayoutComponent {...defaultProps} />)
 
   expect(screen.getByTestId('kvp-field-1')).toBeInTheDocument()
   expect(screen.getByTestId('kvp-field-2')).toBeInTheDocument()
   expect(screen.getAllByText('keyContent').length).toBe(2)
   expect(screen.getAllByText('valueContent').length).toBe(2)
+})
+
+test('renders spinner when layout is fetching', () => {
+  usePaginatedLayout.mockReturnValueOnce({
+    layoutData: [],
+    isFetching: true,
+  })
+
+  render(<KeyValuePairLayoutComponent {...defaultProps} />)
+
+  expect(screen.getByTestId('spin')).toBeInTheDocument()
+  expect(screen.queryByTestId('kvp-field-1')).not.toBeInTheDocument()
+})
+
+test('renders no data message when layout data is empty', () => {
+  usePaginatedLayout.mockReturnValueOnce({
+    layoutData: [],
+    isFetching: false,
+  })
+
+  render(<KeyValuePairLayoutComponent {...defaultProps} />)
+
+  expect(screen.getByText(localize(Localization.NO_DATA))).toBeInTheDocument()
 })

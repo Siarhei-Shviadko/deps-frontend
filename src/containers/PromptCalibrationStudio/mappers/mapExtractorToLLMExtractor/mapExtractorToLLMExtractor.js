@@ -9,6 +9,11 @@ export const mapExtractorToLLMExtractor = (extractor) => {
     customInstruction,
     pageSpan,
     name,
+    contextAttachments,
+    maxTokens,
+    stop,
+    seed,
+    logprobs,
   } = extractor
 
   return {
@@ -20,7 +25,12 @@ export const mapExtractorToLLMExtractor = (extractor) => {
       topP,
       groupingFactor,
       customInstruction: customInstruction || null,
-      pageSpan,
+      pageSpan: pageSpan || null,
+      contextAttachments: contextAttachments || null,
+      maxTokens,
+      stop: stop?.length ? stop : null,
+      seed,
+      logprobs,
     },
   }
 }

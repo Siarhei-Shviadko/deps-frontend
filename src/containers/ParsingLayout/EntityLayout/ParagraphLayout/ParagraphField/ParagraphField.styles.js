@@ -1,6 +1,14 @@
 
 import styled from 'styled-components'
 import { Button } from '@/components/Button'
+import { InView } from '@/containers/InView'
+
+const StyledInView = styled(InView)`
+  && > div {
+    margin: 0 0 0.5rem 0;
+    padding: 1rem;
+  }
+`
 
 const ParagraphWrapper = styled.div`
   display: flex;
@@ -25,4 +33,5 @@ export {
   ParagraphWrapper,
   LinesWrapper,
   IconButton,
+  StyledInView as InView,
 }

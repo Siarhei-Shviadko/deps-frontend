@@ -8,10 +8,12 @@ import { Tooltip } from '@/components/Tooltip'
 import { DownloadLink } from '@/containers/DownloadLink'
 import { FileGenAIModalButton } from '@/containers/FileGenAIModalButton'
 import { FileMoreActions } from '@/containers/FileMoreActions'
+import { FileStatus } from '@/enums/FileStatus'
 import { localize, Localization } from '@/localization/i18n'
 import { apiMap } from '@/utils/apiMap'
 import { ENV } from '@/utils/env'
 import { Controls } from './FileReviewControls.styles'
+import { FileReviewSplittingButton } from './FileReviewSplittingButton'
 
 const FileReviewControls = () => {
   const { fileId } = useParams()
@@ -26,6 +28,12 @@ const FileReviewControls = () => {
 
   return (
     <Controls>
+      {
+        ENV.FEATURE_PDF_SPLITTING &&
+        file.state.status === FileStatus.SPLITTING_REVIEW && (
+          <FileReviewSplittingButton file={file} />
+        )
+      }
       <DownloadLink
         apiUrl={fileUrl}
         fileName={file.name}

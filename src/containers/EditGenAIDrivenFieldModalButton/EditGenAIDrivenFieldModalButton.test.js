@@ -340,3 +340,96 @@ test('calls notifyWarning with correct message when field update fails with a kn
 
   expect(notifyWarning).toHaveBeenNthCalledWith(1, localize(Localization.INVARIANT_VIOLATION_ERROR))
 })
+
+test('calls updateExtractionField with displayCharLimit in valueMeta when editing Dictionary field', async () => {
+  const mockDictionaryField = new DocumentTypeField(
+    'dictionaryCode',
+    'Dictionary Field',
+    {
+      keyType: FieldType.STRING,
+      valueType: FieldType.STRING,
+    },
+    FieldType.DICTIONARY,
+    false,
+    1,
+    mockDocumentTypeCode,
+    1,
+  )
+
+  const mockDictionaryLLMExtractor = new LLMExtractor({
+    extractorId: 'id',
+    name: 'LLM Extractor Name 1',
+    extractionParams: mockLLMExtractor.extractionParams,
+    llmReference: mockLLMExtractor.llmReference,
+    queries: [
+      new LLMExtractionQuery({
+        code: mockDictionaryField.code,
+        shape: new LLMExtractionQueryFormat({
+          dataType: LLMQueryDataType.KAY_VALUE_PAIR,
+          cardinality: LLMQueryCardinality.SCALAR,
+          includeAliases: false,
+        }),
+        workflow: mockLlmWorkflow,
+      }),
+    ],
+  })
+
+  const mockDictionaryDocumentType = new ExtendedDocumentType({
+    code: mockDocumentTypeCode,
+    name: 'Doc Type 1',
+    engine: null,
+    fields: [mockDictionaryField],
+    llmExtractors: [mockDictionaryLLMExtractor],
+  })
+
+  documentTypeStateSelector.mockReturnValue(mockDictionaryDocumentType)
+
+  const mockDisplayCharLimit = 5
+  const dictionaryFormValues = {
+    name: 'Dictionary Field',
+    llmWorkflow: mockLlmWorkflow,
+    required: false,
+    fieldType: FieldType.DICTIONARY,
+    extractorId: mockDictionaryLLMExtractor.extractorId,
+    confidential: true,
+    cardinality: LLMQueryCardinality.SCALAR,
+    displayCharLimit: mockDisplayCharLimit,
+    readOnly: false,
+    includeAliases: false,
+  }
+
+  const props = {
+    documentTypeCode: mockDocumentTypeCode,
+    onAfterEditing: jest.fn(),
+    field: mockDictionaryField,
+  }
+
+  render(<EditGenAIDrivenFieldModalButton {...props} />)
+
+  const editButton = screen.getByTestId(editIconTestId)
+
+  await userEvent.click(editButton)
+  await act(async () => await onFieldSave(dictionaryFormValues))
+
+  expect(mockUpdateExtractionField).nthCalledWith(1, {
+    documentTypeCode: mockDocumentTypeCode,
+    extractorId: dictionaryFormValues.extractorId,
+    fieldCode: mockDictionaryField.code,
+    data: {
+      ...mockDictionaryField,
+      name: dictionaryFormValues.name,
+      confidential: dictionaryFormValues.confidential,
+      fieldMeta: {
+        keyType: FieldType.STRING,
+        valueType: FieldType.STRING,
+        valueMeta: {
+          displayCharLimit: mockDisplayCharLimit,
+        },
+      },
+      readOnly: dictionaryFormValues.readOnly,
+      required: dictionaryFormValues.required,
+    },
+  })
+
+  documentTypeStateSelector.mockReturnValue(mockDocumentType)
+})

@@ -12,6 +12,7 @@ export const BATCH_TYPE = {
 
 export const FIELD_FORM_CODE = {
   AUTOMATIC_SPLITTING: 'automaticSplitting',
+  NEEDS_SPLITTING_PROPOSAL_REVIEW: 'needsSplittingProposalReview',
   GROUP: 'group',
   BATCH_TYPE: 'batchType',
   BATCH_NAME: 'batchName',
@@ -23,6 +24,7 @@ export const FIELD_FORM_CODE = {
 
 export const DefaultFormValues = {
   [FIELD_FORM_CODE.AUTOMATIC_SPLITTING]: false,
+  [FIELD_FORM_CODE.NEEDS_SPLITTING_PROPOSAL_REVIEW]: true,
   [FIELD_FORM_CODE.GROUP]: null,
   [FIELD_FORM_CODE.BATCH_TYPE]: BATCH_TYPE.ONE_BATCH,
   [FIELD_FORM_CODE.BATCH_NAME]: '',
