@@ -15,6 +15,10 @@ test('parses model with provider correctly when model includes slash', () => {
     groupingFactor: 1,
     customInstruction: 'Test instructions',
     pageSpan: 5,
+    coordinatesEnabled: false,
+    logprobs: false,
+    seed: 42,
+    maxTokens: 1000,
   })
 
   const result = mapExtractorToLLMExtractor(extractor)
@@ -24,16 +28,19 @@ test('parses model with provider correctly when model includes slash', () => {
     provider: 'openai',
     model: 'gpt-4',
     extractionParams: {
-      temperature: 0.7,
-      topP: 0.9,
-      groupingFactor: 1,
       customInstruction: 'Test instructions',
       pageSpan: 5,
       contextAttachments: null,
-      maxTokens: undefined,
       stop: null,
-      seed: undefined,
-      logprobs: undefined,
+      id: 'extractor-1',
+      temperature: 0.7,
+      topP: 0.9,
+      groupingFactor: 1,
+      model: 'openai@gpt-4',
+      logprobs: false,
+      seed: 42,
+      maxTokens: 1000,
+      coordinatesEnabled: false,
     },
   })
 })
@@ -70,21 +77,25 @@ test('maps advanced extraction params correctly', () => {
     stop: ['stop1', 'stop2'],
     seed: 42,
     logprobs: true,
+    coordinatesEnabled: true,
   })
 
   const result = mapExtractorToLLMExtractor(extractor)
 
   expect(result.extractionParams).toEqual({
-    temperature: 0.7,
-    topP: 0.9,
-    groupingFactor: 1,
     customInstruction: 'Test instructions',
     pageSpan: null,
     contextAttachments: 'documentImages',
-    maxTokens: 2048,
     stop: ['stop1', 'stop2'],
-    seed: 42,
+    id: 'extractor-1',
+    temperature: 0.7,
+    topP: 0.9,
+    groupingFactor: 1,
+    model: 'openai@gpt-4',
     logprobs: true,
+    seed: 42,
+    maxTokens: 2048,
+    coordinatesEnabled: true,
   })
 })
 

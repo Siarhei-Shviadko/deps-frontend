@@ -52,6 +52,7 @@ const mockValues = {
   stop: DEFAULT_VALUES[FIELD_CODE.STOP],
   seed: DEFAULT_VALUES[FIELD_CODE.SEED],
   logprobs: DEFAULT_VALUES[FIELD_CODE.LOGPROBS],
+  coordinatesEnabled: DEFAULT_VALUES[FIELD_CODE.COORDINATES_ENABLED],
 }
 
 const mockLLMExtractor = new LLMExtractor({
@@ -142,16 +143,17 @@ test('calls useForm with default values if LLM Extractor is passed', async () =>
     defaultValues: {
       extractorName: mockLLMExtractor.name,
       llmModel: LLMSettings.settingsToLLMType(mockLLMExtractor.llmReference.provider, mockLLMExtractor.llmReference.model),
+      contextAttachments: '',
+      stop: DEFAULT_VALUES[FIELD_CODE.STOP],
       customInstruction: mockLLMExtractor.extractionParams.customInstruction,
       groupingFactor: mockLLMExtractor.extractionParams.groupingFactor,
       temperature: mockLLMExtractor.extractionParams.temperature,
       topP: mockLLMExtractor.extractionParams.topP,
       pageSpan: mockLLMExtractor.extractionParams.pageSpan,
-      contextAttachments: '',
       maxTokens: mockLLMExtractor.extractionParams.maxTokens,
-      stop: DEFAULT_VALUES[FIELD_CODE.STOP],
       seed: mockLLMExtractor.extractionParams.seed,
       logprobs: mockLLMExtractor.extractionParams.logprobs,
+      coordinatesEnabled: mockLLMExtractor.extractionParams.coordinatesEnabled,
     },
   })
 })
@@ -214,6 +216,7 @@ test('calls onSave with correct arguments when Create button is clicked', async 
         stop: mockValues.stop,
         seed: mockValues.seed,
         logprobs: mockValues.logprobs,
+        coordinatesEnabled: mockValues.coordinatesEnabled,
       },
     },
   )
@@ -254,16 +257,17 @@ test('calls onSave with contextAttachments when provided', async () => {
       provider: mockProvider,
       model: mockModel,
       extractionParams: {
+        contextAttachments: contextAttachmentsValue,
         customInstruction: mockValues.customInstruction,
         groupingFactor: mockValues.groupingFactor,
         temperature: mockValues.temperature,
         topP: mockValues.topP,
         pageSpan: mockValues.pageSpan,
-        contextAttachments: contextAttachmentsValue,
         maxTokens: mockValues.maxTokens,
         stop: mockValues.stop,
         seed: mockValues.seed,
         logprobs: mockValues.logprobs,
+        coordinatesEnabled: mockValues.coordinatesEnabled,
       },
     },
   )

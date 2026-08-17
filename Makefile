@@ -17,13 +17,13 @@ start: | prereq build run build-tests  shell ci clean
 
 prereq:
 	docker network create deps-network || true
-	docker-compose -f docker-compose.yml down -v
+	docker compose -f docker-compose.yml down -v
 
 build:
 	@#@ Build Frontend service
 	COMPOSE_DOCKER_CLI_BUILD=1
 	DOCKER_BUILDKIT=1
-	docker-compose build \
+	docker compose build \
 	--build-arg BUILD_HASH=$(hash) \
 	--build-arg BUILD_TAG=$(tag) \
 	--build-arg BUILD_DATE="$(date)" \
@@ -31,11 +31,11 @@ build:
 
 run: | prereq
 	@#@ Run services
-	docker-compose up -d
+	docker compose up -d
 
 build-tests:
 	@#@ Build project for tests
-	docker-compose -f docker-compose.yml build $(APP_NAME)
+	docker compose -f docker-compose.yml build $(APP_NAME)
 
 .PHONY: push
 push:
@@ -51,7 +51,7 @@ pull:
 
 shell:
 	@#@ Open shell
-	docker-compose run --rm $(APP_NAME) sh
+	docker compose run --rm $(APP_NAME) sh
 
 ci: | prereq format-check lint mypy-check tests
 	@#@ Run CI checks

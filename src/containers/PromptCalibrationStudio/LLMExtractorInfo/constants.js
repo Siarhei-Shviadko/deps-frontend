@@ -10,6 +10,7 @@ export const ExtractorSettings = {
   MAX_TOKENS: 'maxTokens',
   CONTEXT_ATTACHMENTS: 'contextAttachments',
   LOGPROBS: 'logprobs',
+  COORDINATES_ENABLED: 'coordinatesEnabled',
   SEED: 'seed',
   STOP: 'stop',
   CUSTOM_INSTRUCTION: 'customInstruction',
@@ -27,6 +28,7 @@ export const EXTRACTOR_SETTINGS_TO_LABEL = {
   [ExtractorSettings.SEED]: localize(Localization.SEED),
   [ExtractorSettings.STOP]: localize(Localization.STOP_WORDS),
   [ExtractorSettings.CUSTOM_INSTRUCTION]: localize(Localization.CUSTOM_INSTRUCTION),
+  [ExtractorSettings.COORDINATES_ENABLED]: localize(Localization.DETERMINE_FIELD_COORDINATES),
 }
 
 export const EMPTY_VALUE = '-'

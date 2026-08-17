@@ -358,6 +358,7 @@ const TRANSLATION_ES_ES = {
   FEATURE_PDF_SPLITTING: 'División de PDF',
   FEATURE_DOCUMENT_LAYOUT_EDITING: 'Edición de Diseño de Documento',
   FEATURE_FILE_LAYOUT_EDITING: 'Edición de Diseño de Archivo',
+  FEATURE_MARKDOWN_LAYOUT: 'Diseño de Markdown',
   FEATURE_BULK_RETRY_PREVIOUS_STEP: 'Reintento masivo, último paso',
   FEATURE_ENTITIES_UPLOAD: 'Carga de entidades',
   FEATURE_DOCUMENT_TYPE_IMPORT_EXPORT: 'Importación/Exportación de tipos de documentos',
@@ -1054,6 +1055,8 @@ por ejemplo, un valor de 0.49 significa 49%. Si el nivel es bajo, entonces el us
   REFERENCE_LAYOUT_DELETE_FAILED: 'La eliminación del diseño de referencia falló. Por favor, inténtalo de nuevo.',
   REFERENCE: 'Referencia',
   DOCUMENT_LAYOUT: 'Diseño del documento',
+  MARKDOWN: 'Markdown',
+  MARKDOWN_DATA_IS_EMPTY: 'Parece que no se analizó nada en Markdown para este documento.',
   ASSIGN_KEY_VALUE_TOOLTIP: 'Asignar campo y par clave-valor',
   REMOVE_LAST_LIST_ITEM_TEXT: 'No se permite la eliminación del campo. La lista requiere al menos un campo',
   AI_PROMPTED: 'Indicado por IA',
@@ -1363,6 +1366,7 @@ por ejemplo, un valor de 0.49 significa 49%. Si el nivel es bajo, entonces el us
   SEED: 'Semilla',
   SEED_PLACEHOLDER: 'Ingrese Semilla',
   LOGARITHMIC_PROBABILITIES: 'Probabilidades Logarítmicas',
+  DETERMINE_FIELD_COORDINATES: 'Determinar coordenadas de campo',
   LOG_PROBS: 'Logprobs',
   CONTEXT_FOR_EXTRACTION: 'Contexto para Extracción',
   CONTEXT: 'Contexto',
@@ -1578,6 +1582,7 @@ En caso de estar seguro de sus acciones, por favor contacte al soporte.`,
   SELECT_AREA: 'Seleccionar área',
   DELETE_AREA: 'Eliminar área',
   OVELAPING_REGIONS: 'Regiones superpuestas',
+  MARKDOWN_ERROR: 'Error al generar el contenido markdown',
 }
 
 export {

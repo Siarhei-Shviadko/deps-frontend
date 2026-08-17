@@ -139,6 +139,19 @@ export const AdvancedLLMSettings = () => {
     ),
   }), [])
 
+  const coordinatesField = useMemo(() => ({
+    code: FIELDS_CODE.COORDINATES_ENABLED,
+    label: localize(Localization.DETERMINE_FIELD_COORDINATES),
+    type: FormFieldType.CHECKMARK,
+    render: ({ value, ...rest }) => (
+      <Switch
+        {...rest}
+        checked={!!value}
+        size={ComponentSize.SMALL}
+      />
+    ),
+  }), [])
+
   const renderFields = (fields) => (
     fields.map(({ label, requiredMark, ...field }) => (
       <StyledFormItem
@@ -162,6 +175,11 @@ export const AdvancedLLMSettings = () => {
           key={logprobsField.code}
           field={logprobsField}
           label={logprobsField.label}
+        />
+        <SwitchFormItem
+          key={coordinatesField.code}
+          field={coordinatesField}
+          label={coordinatesField.label}
         />
       </Wrapper>
     </StyledCollapse>

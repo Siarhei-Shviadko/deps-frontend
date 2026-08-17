@@ -8,6 +8,11 @@ import { shallow } from 'enzyme'
 import React from 'react'
 import { GenAIModalButton } from '@/containers/GenAIModalButton'
 import {
+  DocumentParsingInfo,
+  SemanticLayoutInfo,
+  SemanticLayoutMetadata,
+} from '@/models/DocumentParsingInfo'
+import {
   documentSelector,
   documentTypeSelector,
 } from '@/selectors/documentReviewPage'
@@ -34,6 +39,9 @@ jest.mock('@/containers/DocumentExtractedData', () =>
 )
 jest.mock('@/containers/DocumentParsedData', () =>
   mockComponent('DocumentParsedData'),
+)
+jest.mock('@/containers/DocumentMarkdownData', () =>
+  mockComponent('DocumentMarkdownData'),
 )
 jest.mock('@/containers/GenAiData', () =>
   mockComponent('GenAiData'),
@@ -130,6 +138,95 @@ describe('Container: DocumentData', () => {
     const hasDocumentLayoutTab = tabs.some((tab) => tab.key === 'DOCUMENT_LAYOUT')
 
     expect(hasDocumentLayoutTab).toBe(false)
+  })
+
+  it('should render Markdown tab if FEATURE_MARKDOWN_LAYOUT is enabled and document has semanticLayoutInfo', () => {
+    ENV.FEATURE_MARKDOWN_LAYOUT = true
+    documentSelector.mockImplementationOnce(() => ({
+      ...documentSelector.getSelectorMockValue(),
+      parsingInfo: new DocumentParsingInfo({
+        semanticLayoutInfo: {
+          mockProvider: new SemanticLayoutInfo({
+            id: 'mockSemanticLayoutId',
+            createdAt: '2024-01-01T00:00:00Z',
+            provider: 'mockProvider',
+            metadata: new SemanticLayoutMetadata({
+              confidence: 0.9,
+              processingTimeMs: 100,
+              sourceProvider: 'mockProvider',
+            }),
+          }),
+        },
+      }),
+    }))
+    documentTypeSelector.mockImplementationOnce(() => ({
+      fields: [{
+        id: 1,
+        name: 'Field 1',
+      }],
+    }))
+
+    wrapper = shallow(<DocumentData />)
+    const tabs = wrapper.find(Tabs).props().tabs
+
+    const hasMarkdownTab = tabs.some((tab) => tab.key === 'MARKDOWN')
+
+    expect(hasMarkdownTab).toBe(true)
+  })
+
+  it('should not render Markdown tab if FEATURE_MARKDOWN_LAYOUT is disabled', () => {
+    ENV.FEATURE_MARKDOWN_LAYOUT = false
+    documentSelector.mockImplementationOnce(() => ({
+      ...documentSelector.getSelectorMockValue(),
+      parsingInfo: new DocumentParsingInfo({
+        semanticLayoutInfo: {
+          mockProvider: new SemanticLayoutInfo({
+            id: 'mockSemanticLayoutId',
+            createdAt: '2024-01-01T00:00:00Z',
+            provider: 'mockProvider',
+            metadata: new SemanticLayoutMetadata({
+              confidence: 0.9,
+              processingTimeMs: 100,
+              sourceProvider: 'mockProvider',
+            }),
+          }),
+        },
+      }),
+    }))
+    documentTypeSelector.mockImplementationOnce(() => ({
+      fields: [{
+        id: 1,
+        name: 'Field 1',
+      }],
+    }))
+
+    wrapper = shallow(<DocumentData />)
+    const tabs = wrapper.find(Tabs).props().tabs
+
+    const hasMarkdownTab = tabs.some((tab) => tab.key === 'MARKDOWN')
+
+    expect(hasMarkdownTab).toBe(false)
+  })
+
+  it('should not render Markdown tab if document has no semanticLayoutInfo', () => {
+    ENV.FEATURE_MARKDOWN_LAYOUT = true
+    documentSelector.mockImplementationOnce(() => ({
+      ...documentSelector.getSelectorMockValue(),
+      parsingInfo: new DocumentParsingInfo({}),
+    }))
+    documentTypeSelector.mockImplementationOnce(() => ({
+      fields: [{
+        id: 1,
+        name: 'Field 1',
+      }],
+    }))
+
+    wrapper = shallow(<DocumentData />)
+    const tabs = wrapper.find(Tabs).props().tabs
+
+    const hasMarkdownTab = tabs.some((tab) => tab.key === 'MARKDOWN')
+
+    expect(hasMarkdownTab).toBe(false)
   })
 
   it('should render GenAI Fields tab if both FEATURE_GEN_AI_KEY_VALUE_FIELDS and FEATURE_GEN_AI_CHAT are enabled', () => {

@@ -13,7 +13,10 @@ jest.mock('@/utils/env', () => mockEnv)
 jest.mock('@/utils/notification', () => mockNotification)
 
 jest.mock('@/containers/PdfSplitting/PdfThumbnailsMap', () => ({
-  PdfThumbnailsMap: () => <div data-testid={thumbnailsMapId} />,
+  PdfThumbnailsMap: (props) => {
+    mockPdfThumbnailsMap(props)
+    return <div data-testid={thumbnailsMapId} />
+  },
 }))
 
 jest.mock('@/components/Spin', () => ({
@@ -79,6 +82,7 @@ jest.mock('@/containers/PdfSplitting/hooks', () => ({
   }),
 }))
 
+const mockPdfThumbnailsMap = jest.fn()
 const thumbnailsMapId = 'thumbnails-id'
 const mockPdf = 'mockPdf'
 const mockBatchName = 'test-batch'
@@ -389,4 +393,21 @@ test('calls notifyWarning with overlapping regions message when update fails wit
   await waitFor(() => {
     expect(notifyWarning).toHaveBeenNthCalledWith(1, localize(Localization.OVERLAPPING_REGIONS))
   })
+})
+
+test('renders PdfThumbnailsMap with fillMissingPages when drawer content is shown', async () => {
+  render(<FileReviewSplittingButton {...defaultProps} />)
+
+  await openDrawerWithSegments()
+
+  await waitFor(() => {
+    expect(screen.getByTestId(thumbnailsMapId)).toBeInTheDocument()
+  })
+
+  expect(mockPdfThumbnailsMap).toHaveBeenCalledWith(
+    expect.objectContaining({
+      fillMissingPages: true,
+      withTitle: true,
+    }),
+  )
 })

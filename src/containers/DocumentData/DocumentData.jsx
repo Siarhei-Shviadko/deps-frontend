@@ -12,6 +12,7 @@ import { Tab } from '@/components/Tabs'
 import { DocumentConsolidatedData } from '@/containers/DocumentConsolidatedData'
 import { DocumentEnrichment } from '@/containers/DocumentEnrichment'
 import { DocumentExtractedData } from '@/containers/DocumentExtractedData'
+import { DocumentMarkdownData } from '@/containers/DocumentMarkdownData'
 import { DocumentParsedData } from '@/containers/DocumentParsedData'
 import { GenAiData } from '@/containers/GenAiData'
 import { GenAIModalButton } from '@/containers/GenAIModalButton'
@@ -86,6 +87,19 @@ const DocumentData = () => {
         )
       }
 
+      if (
+        ENV.FEATURE_MARKDOWN_LAYOUT &&
+        document.parsingInfo?.semanticLayoutInfo
+      ) {
+        tabs.push(
+          new Tab(
+            Localization.MARKDOWN,
+            localize(Localization.MARKDOWN),
+            <DocumentMarkdownData />,
+          ),
+        )
+      }
+
       if (ENV.FEATURE_ENRICHMENT) {
         tabs.push(
           new Tab(
@@ -119,6 +133,7 @@ const DocumentData = () => {
       documentType.extraFields,
       document._id,
       document.state,
+      document.parsingInfo?.semanticLayoutInfo,
     ],
   )
 

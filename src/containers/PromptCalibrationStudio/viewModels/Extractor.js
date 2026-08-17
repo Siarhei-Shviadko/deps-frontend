@@ -17,6 +17,7 @@ export class Extractor {
     stop,
     contextAttachments,
     maxTokens,
+    coordinatesEnabled,
   }) {
     this.id = id
     this.customInstruction = customInstruction
@@ -31,6 +32,7 @@ export class Extractor {
     this.stop = stop
     this.contextAttachments = contextAttachments
     this.maxTokens = maxTokens
+    this.coordinatesEnabled = coordinatesEnabled
   }
 
   static isValid = (extractor) => (
@@ -59,4 +61,5 @@ export const extractorShape = PropTypes.exact({
   stop: PropTypes.arrayOf(PropTypes.string),
   contextAttachments: PropTypes.string,
   maxTokens: PropTypes.number,
+  coordinatesEnabled: PropTypes.bool,
 })

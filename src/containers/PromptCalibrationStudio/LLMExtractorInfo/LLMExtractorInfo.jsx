@@ -42,6 +42,7 @@ export const LLMExtractorInfo = () => {
     LOGPROBS,
     STOP,
     CONTEXT_ATTACHMENTS,
+    COORDINATES_ENABLED,
     ...restSettings
   } = ExtractorSettings
 
@@ -61,6 +62,13 @@ export const LLMExtractorInfo = () => {
       label: EXTRACTOR_SETTINGS_TO_LABEL[LOGPROBS],
       value: (
         <LongText text={extractor.logprobs ? localize(Localization.YES) : localize(Localization.NO)} />
+      ),
+    },
+    {
+      key: ExtractorSettings.COORDINATES_ENABLED,
+      label: EXTRACTOR_SETTINGS_TO_LABEL[COORDINATES_ENABLED],
+      value: (
+        <LongText text={extractor.coordinatesEnabled ? localize(Localization.YES) : localize(Localization.NO)} />
       ),
     },
     {

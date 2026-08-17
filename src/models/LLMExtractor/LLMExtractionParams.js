@@ -14,6 +14,7 @@ class LLMExtractionParams {
     stop,
     seed,
     logprobs,
+    coordinatesEnabled,
   }) {
     this.customInstruction = customInstruction
     this.groupingFactor = groupingFactor
@@ -25,6 +26,7 @@ class LLMExtractionParams {
     this.stop = stop
     this.seed = seed
     this.logprobs = logprobs
+    this.coordinatesEnabled = coordinatesEnabled
   }
 }
 
@@ -65,6 +67,7 @@ const llmExtractionParamsShape = PropTypes.shape({
   stop: PropTypes.arrayOf(PropTypes.string),
   seed: PropTypes.number,
   logprobs: PropTypes.bool,
+  coordinatesEnabled: PropTypes.bool,
 })
 
 export {

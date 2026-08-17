@@ -633,6 +633,8 @@ const apiGatewayV2 = {
     const litellm = () => `${v5Root}/litellm`
     litellm.models = () => litellm() + '/models'
 
+    const semanticLayout = (layoutId) => `${v5Root}/semantic-layout/${encodeURI(layoutId)}`
+
     return {
       agenticAi,
       batches,
@@ -651,6 +653,7 @@ const apiGatewayV2 = {
       documentFieldAnalytics,
       splitting,
       litellm,
+      semanticLayout,
     }
   })(),
   v6: (() => {
