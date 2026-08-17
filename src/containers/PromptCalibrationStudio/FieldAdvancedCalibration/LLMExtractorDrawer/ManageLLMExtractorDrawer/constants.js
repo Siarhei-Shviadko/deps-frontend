@@ -14,6 +14,7 @@ export const FIELDS_CODE = {
   SEED: 'seed',
   LOGPROBS: 'logprobs',
   CONTEXT_ATTACHMENTS: 'contextAttachments',
+  COORDINATES_ENABLED: 'coordinatesEnabled',
 }
 
 export const MIN_GROUPING_FACTOR_VALUE = 1
@@ -67,4 +68,5 @@ export const DefaultValues = {
   [FIELDS_CODE.SEED]: DEFAULT_SEED_VALUE,
   [FIELDS_CODE.LOGPROBS]: false,
   [FIELDS_CODE.CONTEXT_ATTACHMENTS]: '',
+  [FIELDS_CODE.COORDINATES_ENABLED]: false,
 }

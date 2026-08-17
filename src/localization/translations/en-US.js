@@ -360,6 +360,7 @@ const TRANSLATION_EN_US = {
   FEATURE_PDF_SPLITTING: 'PDF Splitting',
   FEATURE_DOCUMENT_LAYOUT_EDITING: 'Document Layout Editing',
   FEATURE_FILE_LAYOUT_EDITING: 'File Layout Editing',
+  FEATURE_MARKDOWN_LAYOUT: 'Markdown Layout',
   FEATURE_BULK_RETRY_PREVIOUS_STEP: 'Bulk Retry Last Step',
   FEATURE_ENTITIES_UPLOAD: 'Entities Upload',
   FEATURE_DOCUMENT_TYPE_IMPORT_EXPORT: 'Document Type Import/Export',
@@ -1048,6 +1049,8 @@ const TRANSLATION_EN_US = {
   REFERENCE_LAYOUT_DELETE_FAILED: 'Reference layout deletion failed. Please try again.',
   REFERENCE: 'Reference',
   DOCUMENT_LAYOUT: 'Document Layout',
+  MARKDOWN: 'Markdown',
+  MARKDOWN_DATA_IS_EMPTY: 'It looks like nothing was parsed into Markdown for this document.',
   ASSIGN_KEY_VALUE_TOOLTIP: 'Assign Field and Key-Value Pair',
   REMOVE_LAST_LIST_ITEM_TEXT: 'Deletion of the field is not permitted. The list requires at least one field',
   AI_PROMPTED: 'AI-Prompted',
@@ -1327,6 +1330,7 @@ const TRANSLATION_EN_US = {
   SEED: 'Seed',
   SEED_PLACEHOLDER: 'Enter Seed',
   LOGARITHMIC_PROBABILITIES: 'Logarithmic Probabilities',
+  DETERMINE_FIELD_COORDINATES: 'Determine field coordinates',
   LOG_PROBS: 'Logprobs',
   CONTEXT_FOR_EXTRACTION: 'Context for Extraction',
   CONTEXT: 'Context',
@@ -1539,6 +1543,7 @@ const TRANSLATION_EN_US = {
   SELECT_AREA: 'Select area',
   DELETE_AREA: 'Delete area',
   OVERLAPPING_REGIONS: 'Overlapping regions',
+  MARKDOWN_ERROR: 'Error occurred while generating markdown content',
 }
 
 export {

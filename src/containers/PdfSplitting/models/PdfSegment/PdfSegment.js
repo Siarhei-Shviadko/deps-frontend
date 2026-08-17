@@ -259,6 +259,70 @@ export class PdfSegment {
       PdfSegment.getIncludedUserPages(segment).length <= 1
     )
   }
+
+  static withExcludedPages = (segment, pages) => {
+    const excludedPages = pages.map((page) => new UserPage({
+      page,
+      segmentId: segment.id,
+      isExcluded: true,
+    }))
+
+    return new PdfSegment({
+      ...segment,
+      userPages: [
+        ...segment.userPages,
+        ...excludedPages,
+      ].sort((a, b) => a.page - b.page),
+    })
+  }
+
+  static withMissingPages = (segments, totalPages) => {
+    const allUserPages = segments.flatMap((segment) => segment.userPages)
+    const coveredPages = new Set(allUserPages.map((up) => up.page))
+
+    const missingPages = (
+      Array
+        .from({ length: totalPages }, (_, i) => i)
+        .filter((page) => !coveredPages.has(page))
+    )
+
+    if (!missingPages.length) {
+      return segments
+    }
+
+    const candidates = segments.flatMap((segment, i) => (
+      segment.userPages.map((up) => ({
+        page: up.page,
+        segmentIndex: i,
+      }))
+    ))
+
+    const extraPagesPerSegment = new Map(segments.map((_, i) => [i, []]))
+
+    for (const page of missingPages) {
+      const bestIndex = candidates
+        .filter(({ page: p }) => p < page)
+        .reduce(
+          (best, curr) => (curr.page >= best.page ? curr : best),
+          {
+            page: -Infinity,
+            segmentIndex: 0,
+          },
+        )
+        .segmentIndex
+
+      extraPagesPerSegment.get(bestIndex).push(page)
+    }
+
+    return segments.map((segment, i) => {
+      const extraPages = extraPagesPerSegment.get(i)
+      return (
+        extraPages.length
+          ? PdfSegment.withExcludedPages(segment, extraPages)
+          : segment
+      )
+    })
+  }
 }
 
 export const coordinatesShape = PropTypes.shape({

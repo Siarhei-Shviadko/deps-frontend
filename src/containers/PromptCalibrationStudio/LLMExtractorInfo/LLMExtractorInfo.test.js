@@ -35,6 +35,7 @@ const mockExtractor = new Extractor({
     end: 10,
   },
   logprobs: true,
+  coordinatesEnabled: true,
   contextAttachments: 'documentImages',
   stop: ['stop1', 'stop2'],
   maxTokens: 2048,
@@ -70,6 +71,7 @@ test('renders LLM extractor info correctly with all info items provided', async 
     modelItem,
     pageSpanItem,
     logprobsItem,
+    coordinatesItem,
     contextAttachmentsItem,
     stopItem,
     temperatureItem,
@@ -88,6 +90,9 @@ test('renders LLM extractor info correctly with all info items provided', async 
 
   expect(logprobsItem).toHaveTextContent(localize(Localization.LOG_PROBS))
   expect(logprobsItem).toHaveTextContent(localize(Localization.YES))
+
+  expect(coordinatesItem).toHaveTextContent(localize(Localization.DETERMINE_FIELD_COORDINATES))
+  expect(coordinatesItem).toHaveTextContent(localize(Localization.YES))
 
   expect(contextAttachmentsItem).toHaveTextContent(localize(Localization.CONTEXT_FOR_EXTRACTION))
   expect(contextAttachmentsItem).toHaveTextContent(localize(Localization.AI_CONTEXT_TEXT_AND_IMAGES))
@@ -131,7 +136,7 @@ test('popover opens and shows all info items', async () => {
 
   await userEvent.click(btn)
   const listItems = screen.getAllByRole('listitem')
-  expect(listItems.length).toBe(11)
+  expect(listItems.length).toBe(12)
 
   expect(screen.getByText(localize(Localization.LLM_MODEL))).toBeInTheDocument()
 })
@@ -190,9 +195,9 @@ test('shows empty value placeholder for missing optional settings', async () => 
   const btn = screen.getByRole('button')
   await userEvent.click(btn)
 
-  const stopItem = screen.getAllByRole('listitem')[4]
-  const maxTokensItem = screen.getAllByRole('listitem')[8]
-  const seedItem = screen.getAllByRole('listitem')[9]
+  const stopItem = screen.getAllByRole('listitem')[5]
+  const maxTokensItem = screen.getAllByRole('listitem')[9]
+  const seedItem = screen.getAllByRole('listitem')[10]
 
   expect(stopItem).toHaveTextContent(EMPTY_VALUE)
   expect(maxTokensItem).toHaveTextContent(EMPTY_VALUE)
@@ -223,6 +228,35 @@ test('shows text-only context when contextAttachments is not set', async () => {
   const btn = screen.getByRole('button')
   await userEvent.click(btn)
 
-  const contextAttachmentsItem = screen.getAllByRole('listitem')[3]
+  const contextAttachmentsItem = screen.getAllByRole('listitem')[4]
   expect(contextAttachmentsItem).toHaveTextContent(localize(Localization.AI_CONTEXT_TEXT_ONLY))
+})
+
+test('shows No for coordinates when coordinatesEnabled is not set', async () => {
+  const extractorWithoutCoordinates = new Extractor({
+    id: 'extractor-no-coordinates',
+    name: 'No Coordinates Extractor',
+    model: 'gpt-4@openai',
+    temperature: 0.7,
+    topP: 0.9,
+    groupingFactor: 5,
+  })
+
+  mockUseFieldCalibration.mockReturnValue({
+    activeField: new Field({
+      id: 'field-5',
+      name: 'Test Field 5',
+      extractorId: 'extractor-no-coordinates',
+    }),
+    extractors: [extractorWithoutCoordinates],
+  })
+
+  render(<LLMExtractorInfo />)
+
+  const btn = screen.getByRole('button')
+  await userEvent.click(btn)
+
+  const coordinatesItem = screen.getAllByRole('listitem')[3]
+  expect(coordinatesItem).toHaveTextContent(localize(Localization.DETERMINE_FIELD_COORDINATES))
+  expect(coordinatesItem).toHaveTextContent(localize(Localization.NO))
 })

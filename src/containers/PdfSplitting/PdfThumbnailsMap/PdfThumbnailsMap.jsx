@@ -20,7 +20,7 @@ import { SegmentsSeparator } from './SegmentsSeparator'
 
 initPdfWorker()
 
-export const PdfThumbnailsMap = ({ pdfFile, withTitle }) => {
+export const PdfThumbnailsMap = ({ pdfFile, withTitle, fillMissingPages }) => {
   const {
     segments,
     setSegments,
@@ -35,11 +35,13 @@ export const PdfThumbnailsMap = ({ pdfFile, withTitle }) => {
   const onDocumentLoadSuccess = useCallback(({ numPages }) => {
     const segment = PdfSegment.fromPagesCount(numPages)
     !segments.length && setSegments([segment])
+    fillMissingPages && setSegments(PdfSegment.withMissingPages(segments, numPages))
     setInitialSegment(clone(segment))
   }, [
     setSegments,
     segments,
     setInitialSegment,
+    fillMissingPages,
   ],
   )
 
@@ -114,4 +116,5 @@ export const PdfThumbnailsMap = ({ pdfFile, withTitle }) => {
 PdfThumbnailsMap.propTypes = {
   pdfFile: PropTypes.instanceOf(Blob),
   withTitle: PropTypes.bool,
+  fillMissingPages: PropTypes.bool,
 }

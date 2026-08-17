@@ -43,7 +43,7 @@ jest.mock('react-pdf', () => ({
         file
           ? (
             <>
-              <button onClick={() => onLoadSuccess({ numPages: 1 })}>
+              <button onClick={() => onLoadSuccess({ numPages: mockNumPages })}>
                 {mockLoadButton}
               </button>
               {children}
@@ -55,13 +55,18 @@ jest.mock('react-pdf', () => ({
   Page: () => <div data-testid={mockPageId} />,
 }))
 
-jest.mock('../models', () => ({
-  ...jest.requireActual('../models'),
-  PdfSegment: {
-    fromPagesCount: jest.fn(() => mockSegments[0]),
-    isPageExcludeDisabled: jest.fn(() => false),
-  },
-}))
+jest.mock('../models', () => {
+  const actual = jest.requireActual('../models')
+
+  return {
+    ...actual,
+    PdfSegment: {
+      fromPagesCount: jest.fn(() => mockSegments[0]),
+      isPageExcludeDisabled: jest.fn(() => false),
+      withMissingPages: jest.fn((...args) => actual.PdfSegment.withMissingPages(...args)),
+    },
+  }
+})
 
 jest.mock('../hooks', () => ({
   useUserPageDnD: jest.fn(() => ({
@@ -89,6 +94,7 @@ const mockSeparatorId = 'segments-separator'
 const mockThumbnailId = 'pdf-thumbnail'
 const mockPageId = 'page'
 const mockLoadButton = 'Load'
+const mockNumPages = 2
 
 const mockSegments = [{
   id: '1',
@@ -104,6 +110,8 @@ const mockSegments = [{
     }),
   ],
 }]
+
+const { PdfSegment } = jest.requireMock('../models')
 
 test('renders PdfThumbnailsMap correctly', () => {
   const props = {
@@ -167,4 +175,79 @@ test('shows no data if pdfFile is not provided', () => {
   const noData = screen.getByTestId('no-data')
 
   expect(noData).toBeInTheDocument()
+})
+
+test('calls setSegments with filled missing pages when fillMissingPages is true and document loads', async () => {
+  jest.clearAllMocks()
+
+  const segmentsWithGaps = [{
+    id: '1',
+    documentTypeId: '1',
+    userPages: [
+      new UserPage({
+        page: 0,
+        segmentId: '1',
+      }),
+      new UserPage({
+        page: 2,
+        segmentId: '1',
+      }),
+    ],
+  }]
+
+  const mockFilledSegments = [{
+    ...segmentsWithGaps[0],
+    userPages: [
+      ...segmentsWithGaps[0].userPages,
+      new UserPage({
+        page: 1,
+        segmentId: '1',
+        isExcluded: true,
+      }),
+    ],
+  }]
+
+  PdfSegment.withMissingPages.mockReturnValueOnce(mockFilledSegments)
+
+  const mockValue = {
+    segments: segmentsWithGaps,
+    setSegments: mockSetSegments,
+    setInitialSegment: mockSetInitialSegment,
+    initialSegment: segmentsWithGaps[0],
+    activeUserPage: null,
+    setActiveUserPage: mockSetActiveUserPage,
+    isDraggable: true,
+    setIsDraggable: mockSetIsDraggable,
+  }
+
+  usePdfSegments.mockReturnValueOnce(mockValue)
+  usePdfSegments.mockReturnValueOnce(mockValue)
+
+  const props = {
+    pdfFile: new File(['content'], 'file'),
+    fillMissingPages: true,
+  }
+
+  render(<PdfThumbnailsMap {...props} />)
+
+  const btn = screen.getByRole('button', { name: mockLoadButton })
+  await userEvent.click(btn)
+
+  expect(PdfSegment.withMissingPages).toHaveBeenNthCalledWith(1, segmentsWithGaps, mockNumPages)
+  expect(mockSetSegments).toHaveBeenNthCalledWith(1, mockFilledSegments)
+})
+
+test('does not call withMissingPages when fillMissingPages is not provided and document loads', async () => {
+  jest.clearAllMocks()
+
+  const props = {
+    pdfFile: new File(['content'], 'file'),
+  }
+
+  render(<PdfThumbnailsMap {...props} />)
+
+  const btn = screen.getByRole('button', { name: mockLoadButton })
+  await userEvent.click(btn)
+
+  expect(PdfSegment.withMissingPages).not.toHaveBeenCalled()
 })

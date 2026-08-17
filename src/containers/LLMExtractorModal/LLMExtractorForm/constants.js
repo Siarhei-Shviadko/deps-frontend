@@ -8,6 +8,7 @@ export const FIELD_CODE = {
   STOP: 'stop',
   SEED: 'seed',
   LOGPROBS: 'logprobs',
+  COORDINATES_ENABLED: 'coordinatesEnabled',
 }
 
 export const MIN_GROUPING_FACTOR_VALUE = 1
@@ -26,4 +27,5 @@ export const DEFAULT_VALUES = {
   [FIELD_CODE.STOP]: [],
   [FIELD_CODE.LOGPROBS]: false,
   [FIELD_CODE.CONTEXT_ATTACHMENTS]: '',
+  [FIELD_CODE.COORDINATES_ENABLED]: false,
 }

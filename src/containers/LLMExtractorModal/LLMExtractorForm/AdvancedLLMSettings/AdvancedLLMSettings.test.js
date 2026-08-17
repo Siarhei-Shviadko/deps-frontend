@@ -79,4 +79,5 @@ test('renders advanced LLM fields with labels and placeholders', () => {
   expect(screen.getByText(localize(Localization.PAGE_SPAN))).toBeInTheDocument()
   expect(screen.getByTestId('page-span-section')).toBeInTheDocument()
   expect(screen.getByText(localize(Localization.LOGARITHMIC_PROBABILITIES))).toBeInTheDocument()
+  expect(screen.getByText(localize(Localization.DETERMINE_FIELD_COORDINATES))).toBeInTheDocument()
 })

@@ -758,3 +758,161 @@ test('returns segment by userPage id when object reference differs when call get
 
   expect(result).toEqual(mockSegment)
 })
+
+test('adds excluded pages and sorts by page number when call withExcludedPages', () => {
+  const segment = new PdfSegment({
+    id: 'segment-1',
+    userPages: [
+      new UserPage({
+        page: 0,
+        segmentId: 'segment-1',
+      }),
+      new UserPage({
+        page: 3,
+        segmentId: 'segment-1',
+      }),
+    ],
+  })
+
+  const result = PdfSegment.withExcludedPages(segment, [2, 1])
+
+  expect(result.userPages).toEqual([
+    expect.objectContaining({
+      page: 0,
+      isExcluded: false,
+      segmentId: 'segment-1',
+    }),
+    expect.objectContaining({
+      page: 1,
+      isExcluded: true,
+      segmentId: 'segment-1',
+    }),
+    expect.objectContaining({
+      page: 2,
+      isExcluded: true,
+      segmentId: 'segment-1',
+    }),
+    expect.objectContaining({
+      page: 3,
+      isExcluded: false,
+      segmentId: 'segment-1',
+    }),
+  ])
+})
+
+test('returns same segments when all pages are covered when call withMissingPages', () => {
+  const segment = new PdfSegment({
+    id: 'segment-1',
+    userPages: [
+      new UserPage({
+        page: 0,
+        segmentId: 'segment-1',
+      }),
+      new UserPage({
+        page: 1,
+        segmentId: 'segment-1',
+      }),
+    ],
+  })
+
+  const segments = [segment]
+  const result = PdfSegment.withMissingPages(segments, 2)
+
+  expect(result).toBe(segments)
+})
+
+test('adds missing pages as excluded to nearest preceding segment when call withMissingPages', () => {
+  const segment1 = new PdfSegment({
+    id: 'segment-1',
+    userPages: [
+      new UserPage({
+        page: 0,
+        segmentId: 'segment-1',
+      }),
+      new UserPage({
+        page: 2,
+        segmentId: 'segment-1',
+      }),
+    ],
+  })
+
+  const segment2 = new PdfSegment({
+    id: 'segment-2',
+    userPages: [
+      new UserPage({
+        page: 4,
+        segmentId: 'segment-2',
+      }),
+    ],
+  })
+
+  const result = PdfSegment.withMissingPages([segment1, segment2], 6)
+
+  expect(result[0].userPages).toEqual([
+    expect.objectContaining({
+      page: 0,
+      isExcluded: false,
+      segmentId: 'segment-1',
+    }),
+    expect.objectContaining({
+      page: 1,
+      isExcluded: true,
+      segmentId: 'segment-1',
+    }),
+    expect.objectContaining({
+      page: 2,
+      isExcluded: false,
+      segmentId: 'segment-1',
+    }),
+    expect.objectContaining({
+      page: 3,
+      isExcluded: true,
+      segmentId: 'segment-1',
+    }),
+  ])
+
+  expect(result[1].userPages).toEqual([
+    expect.objectContaining({
+      page: 4,
+      isExcluded: false,
+      segmentId: 'segment-2',
+    }),
+    expect.objectContaining({
+      page: 5,
+      isExcluded: true,
+      segmentId: 'segment-2',
+    }),
+  ])
+})
+
+test('assigns missing pages without preceding pages to first segment when call withMissingPages', () => {
+  const segment = new PdfSegment({
+    id: 'segment-1',
+    userPages: [
+      new UserPage({
+        page: 2,
+        segmentId: 'segment-1',
+      }),
+    ],
+  })
+
+  const result = PdfSegment.withMissingPages([segment], 3)
+
+  expect(result[0].userPages).toEqual([
+    expect.objectContaining({
+      page: 0,
+      isExcluded: true,
+      segmentId: 'segment-1',
+    }),
+    expect.objectContaining({
+      page: 1,
+      isExcluded: true,
+      segmentId: 'segment-1',
+    }),
+    expect.objectContaining({
+      page: 2,
+      isExcluded: false,
+      segmentId: 'segment-1',
+    }),
+  ])
+})

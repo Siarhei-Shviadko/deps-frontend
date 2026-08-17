@@ -1,6 +1,8 @@
-
+import { mockEnv } from '@/mocks/mockEnv'
 import { TableInfo } from '@/models/DocumentParsingInfo'
 import { calculateTablesSizeToFetchAtOnce } from './calculateTablesSizeToFetchAtOnce'
+
+jest.mock('@/utils/env', () => mockEnv)
 
 test('should calculate the correct fetch sizes', () => {
   const tables = [

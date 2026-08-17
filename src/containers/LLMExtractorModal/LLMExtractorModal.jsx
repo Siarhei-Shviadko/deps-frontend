@@ -18,7 +18,7 @@ import {
 } from './LLMExtractorModal.styles'
 
 const MODAL_WIDTH = '98%'
-const MODAL_HEIGHT = '85%'
+const MODAL_HEIGHT = '90%'
 
 const mapLLMExtractorToFieldValues = ({
   name,
@@ -27,31 +27,17 @@ const mapLLMExtractorToFieldValues = ({
 }) => {
   const { provider, model } = llmReference
   const {
-    customInstruction,
-    groupingFactor,
-    pageSpan,
-    temperature,
-    topP,
     contextAttachments,
-    maxTokens,
     stop,
-    seed,
-    logprobs,
+    ...rest
   } = extractionParams
 
   return {
     extractorName: name,
     llmModel: LLMSettings.settingsToLLMType(provider, model),
-    groupingFactor,
-    temperature,
-    topP,
-    pageSpan,
-    customInstruction,
     contextAttachments: contextAttachments ?? '',
-    maxTokens,
     stop: stop == null ? DEFAULT_VALUES[FIELD_CODE.STOP] : stop,
-    seed,
-    logprobs,
+    ...rest,
   }
 }
 

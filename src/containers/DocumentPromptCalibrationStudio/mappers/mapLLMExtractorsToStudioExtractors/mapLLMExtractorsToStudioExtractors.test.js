@@ -120,6 +120,7 @@ test('maps advanced extraction params to studio extractor', () => {
         stop: ['stop1'],
         seed: 42,
         logprobs: true,
+        coordinatesEnabled: true,
       },
     },
   ]
@@ -132,5 +133,6 @@ test('maps advanced extraction params to studio extractor', () => {
     stop: ['stop1'],
     seed: 42,
     logprobs: true,
+    coordinatesEnabled: true,
   }))
 })

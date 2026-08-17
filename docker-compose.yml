@@ -2,7 +2,7 @@ version: "3.2"
 
 services:
   frontend:
-    image: ${REPOSITORY_URL}/ci/frontend:${CI_PIPELINE_ID:-1.0.0}
+    image: ${REPOSITORY_URL:+$REPOSITORY_URL/}deps-frontend:${CI_PIPELINE_ID:-local}
     build:
       context: .
       dockerfile: ./etc/api/frontend.Dockerfile

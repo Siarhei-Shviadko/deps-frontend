@@ -37,6 +37,7 @@ export const getEnvToRender = () => ({
   ),
   FEATURE_DOCUMENT_LAYOUT_EDITING: BoolSwitch,
   FEATURE_FILE_LAYOUT_EDITING: BoolSwitch,
+  FEATURE_MARKDOWN_LAYOUT: BoolSwitch,
   FEATURE_PDF_VIEWER: BoolSwitch,
   ...(
     !!BackendServicesManager.getServiceEnv(KnownBackendService.FILES_BATCH) &&

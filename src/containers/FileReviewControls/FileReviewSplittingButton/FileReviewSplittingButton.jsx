@@ -160,6 +160,7 @@ export const FileReviewSplittingButton = ({ file }) => {
     return (
       <>
         <PdfThumbnailsMap
+          fillMissingPages
           pdfFile={pdfFile}
           withTitle
         />
