@@ -36,9 +36,7 @@ class NoAuth {
     window.location.replace(window.location.origin)
   }
 
-  signInSilentCallback = () => {
-    throw new Error('NoAuth doesn\'t support iframe silent token renewal')
-  }
+  signInSilentCallback = () => {}
 
   signInRedirectCallback = () => {
     sessionStorageWrapper.setItem(USER_STORE_KEY, JSON.stringify(DefaultUserData))
