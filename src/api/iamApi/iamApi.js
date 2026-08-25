@@ -51,12 +51,14 @@ const getMe = () => {
 
 const getOrganisations = () => {
   if (ENV.AUTH_TYPE === AuthType.NO_AUTH) {
-    return [
-      new Organisation(
-        '1111',
-        'Organisation',
-      ),
-    ]
+    return {
+      organisations: [
+        new Organisation(
+          '1111',
+          'Organisation',
+        ),
+      ],
+    }
   }
 
   return apiRequest.get(apiMap.apiGatewayV2.v5.iam.organisations())

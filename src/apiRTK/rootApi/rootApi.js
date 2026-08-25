@@ -1,6 +1,7 @@
 
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { authenticationProvider } from '@/authentication'
+import { AuthType } from '@/enums/AuthType'
 import { MimeType } from '@/enums/MimeType'
 import { RequestHeader } from '@/enums/RequestHeader'
 import { RequestMethod } from '@/enums/RequestMethod'
@@ -67,7 +68,7 @@ const query = async (args, api, extraOptions) => {
 
   const result = await baseQuery(args, api, extraOptions)
 
-  if (result.error?.status === StatusCode.UNAUTHORIZED) {
+  if (result.error?.status === StatusCode.UNAUTHORIZED && ENV.AUTH_TYPE !== AuthType.NO_AUTH) {
     await authenticationProvider.signIn()
   }
 
