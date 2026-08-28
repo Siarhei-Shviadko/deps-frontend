@@ -5,11 +5,11 @@ import {
   useEffect,
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchOCREngines } from '@/actions/engines'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { fetchProcessingEngines } from '@/actions/engines'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { localize, Localization } from '@/localization/i18n'
 import { Engine } from '@/models/Engine'
-import { ocrEnginesSelector } from '@/selectors/engines'
+import { processingEnginesSelector } from '@/selectors/engines'
 import { areEnginesFetchingSelector } from '@/selectors/requests'
 import {
   CustomSelect,
@@ -21,13 +21,13 @@ const LayoutEngine = ({
   engine,
   updateProfile,
 }) => {
-  const engines = useSelector(ocrEnginesSelector)
+  const engines = useSelector(processingEnginesSelector)
   const areEnginesFetching = useSelector(areEnginesFetchingSelector)
 
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(fetchOCREngines())
+    dispatch(fetchProcessingEngines())
   }, [dispatch])
 
   const onChange = useCallback((engine) => {
@@ -63,7 +63,7 @@ const LayoutEngine = ({
 }
 
 LayoutEngine.propTypes = {
-  engine: PropTypes.oneOf(Object.values(KnownOCREngine)),
+  engine: PropTypes.oneOf(Object.values(KnownProcessingEngines)),
   updateProfile: PropTypes.func.isRequired,
 }
 

@@ -9,7 +9,7 @@ import { useState } from 'react'
 import { clearKeyToAssign, setActiveTable } from '@/actions/prototypePage'
 import { FieldType } from '@/enums/FieldType'
 import { KnownLanguage } from '@/enums/KnownLanguage'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { MappingType } from '@/enums/MappingType'
 import { DocumentTypeField } from '@/models/DocumentTypeField'
 import { TableFieldColumn, TableFieldMeta } from '@/models/DocumentTypeFieldMeta'
@@ -139,7 +139,7 @@ const mockModifiedTableField = {
 const mockPrototype = new Prototype({
   id: 'testId',
   name: 'testName',
-  engine: KnownOCREngine.TESSERACT,
+  engine: KnownProcessingEngines.TESSERACT,
   language: KnownLanguage.ENGLISH,
   createdAt: '2023-12-22T07:25:56.466801',
   description: null,
@@ -150,7 +150,7 @@ const mockPrototype = new Prototype({
 const mockModifiedPrototype = new Prototype({
   id: 'testId',
   name: 'testName',
-  engine: KnownOCREngine.AWS_TEXTRACT,
+  engine: KnownProcessingEngines.AWS_TEXTRACT,
   language: KnownLanguage.ENGLISH,
   createdAt: '2023-12-22T07:25:56.466801',
   description: null,

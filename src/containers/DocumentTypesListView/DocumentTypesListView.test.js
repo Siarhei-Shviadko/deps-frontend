@@ -10,7 +10,7 @@ import {
 } from '@/constants/navigation'
 import { ExtractionType } from '@/enums/ExtractionType'
 import { KnownLanguage } from '@/enums/KnownLanguage'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { DocumentType } from '@/models/DocumentType'
 import { DocumentTypesFilterConfig } from '@/models/DocumentTypesFilterConfig'
 import { navigationMap } from '@/utils/navigationMap'
@@ -45,7 +45,7 @@ jest.mock('@/utils/window', () => ({
 const mockDocumentType = new DocumentType(
   'DocType1',
   'Doc Type 1',
-  KnownOCREngine.TESSERACT,
+  KnownProcessingEngines.TESSERACT,
   KnownLanguage.ENGLISH,
   ExtractionType.TEMPLATE,
 )
@@ -73,7 +73,7 @@ test('should render correct layout with custom columns list', () => {
   const azureExtractorDocumentType = new DocumentType(
     'DocType1',
     'Doc Type 1',
-    KnownOCREngine.TESSERACT,
+    KnownProcessingEngines.TESSERACT,
     KnownLanguage.ENGLISH,
     ExtractionType.AZURE_CLOUD_EXTRACTOR,
   )

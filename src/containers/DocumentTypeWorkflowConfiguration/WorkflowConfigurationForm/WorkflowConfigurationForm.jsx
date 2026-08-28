@@ -7,7 +7,7 @@ import {
 } from 'react'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchOCREngines } from '@/actions/engines'
+import { fetchProcessingEngines } from '@/actions/engines'
 import { FormFieldType } from '@/components/Form'
 import { Form } from '@/components/Form/ReactHookForm'
 import { CustomSelect } from '@/components/Select'
@@ -19,7 +19,7 @@ import { REVIEW_POLICY_TO_LABEL } from '@/enums/ReviewPolicy'
 import { Localization, localize } from '@/localization/i18n'
 import { Engine } from '@/models/Engine'
 import { documentTypeStateSelector } from '@/selectors/documentType'
-import { ocrEnginesSelector } from '@/selectors/engines'
+import { processingEnginesSelector } from '@/selectors/engines'
 import { areEnginesFetchingSelector } from '@/selectors/requests'
 import { DEFAULT_FORM_VALUES, WORKFLOW_FORM_FIELD_CODES } from '../constants'
 import { WorkflowFormItem } from './WorkflowConfigurationForm.styles'
@@ -45,7 +45,7 @@ const WorkflowConfigurationForm = ({
 }) => {
   const documentType = useSelector(documentTypeStateSelector)
   const areEnginesFetching = useSelector(areEnginesFetchingSelector)
-  const engines = useSelector(ocrEnginesSelector)
+  const engines = useSelector(processingEnginesSelector)
   const { setValue } = useFormContext()
 
   const {
@@ -65,7 +65,7 @@ const WorkflowConfigurationForm = ({
   const dispatch = useDispatch()
 
   useEffect(() => {
-    !engines.length && dispatch(fetchOCREngines())
+    !engines.length && dispatch(fetchProcessingEngines())
   }, [dispatch, engines])
 
   const handleNeedsExtractionChange = useCallback((onChange) => (value) => {

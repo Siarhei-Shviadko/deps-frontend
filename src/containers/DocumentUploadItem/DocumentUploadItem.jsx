@@ -52,7 +52,7 @@ class DocumentUploadItem extends PureComponent {
       {
         this.getDocumentEngineName() && (
           <OverrideDocumentOption>
-            {localize(Localization.DOCUMENT_OCR_ENGINE) + this.getDocumentEngineName()}
+            {localize(Localization.DOCUMENT_ENGINE) + this.getDocumentEngineName()}
           </OverrideDocumentOption>
         )
       }

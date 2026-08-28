@@ -1,8 +1,8 @@
 
 import { mockEnv } from '@/mocks/mockEnv'
 import { screen } from '@testing-library/react'
-import { fetchOCREngines } from '@/actions/engines'
-import { ocrEnginesSelector } from '@/selectors/engines'
+import { fetchProcessingEngines } from '@/actions/engines'
+import { processingEnginesSelector } from '@/selectors/engines'
 import { render } from '@/utils/rendererRTL'
 import { EngineSelect } from './EngineSelect'
 
@@ -16,7 +16,7 @@ jest.mock('react-redux', () => ({
 }))
 
 jest.mock('@/actions/engines', () => ({
-  fetchOCREngines: jest.fn(),
+  fetchProcessingEngines: jest.fn(),
 }))
 
 const mockDispatch = jest.fn()
@@ -32,8 +32,8 @@ test('should render select with options', () => {
   expect(screen.getByTestId('CustomSelect')).toBeInTheDocument()
 })
 
-test('calls fetchOCREngines when select is rendered if engines are empty', () => {
-  ocrEnginesSelector.mockReturnValueOnce([])
+test('calls fetchProcessingEngines when select is rendered if engines are empty', () => {
+  processingEnginesSelector.mockReturnValueOnce([])
 
   render(
     <EngineSelect
@@ -42,5 +42,5 @@ test('calls fetchOCREngines when select is rendered if engines are empty', () =>
     />,
   )
 
-  expect(mockDispatch).toHaveBeenCalledWith(fetchOCREngines())
+  expect(mockDispatch).toHaveBeenCalledWith(fetchProcessingEngines())
 })

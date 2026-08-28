@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Component } from 'react'
 import { connect } from 'react-redux'
 import { fetchDocumentTypes } from '@/actions/documentTypes'
-import { fetchOCREngines } from '@/actions/engines'
+import { fetchProcessingEngines } from '@/actions/engines'
 import { fetchLabels } from '@/actions/labels'
 import { fetchAvailableLanguages } from '@/actions/languages'
 import {
@@ -31,7 +31,7 @@ import { Language, languageShape } from '@/models/Language'
 import { DefaultPaginationConfig, paginationConfigShape } from '@/models/PaginationConfig'
 import { documentsSelector } from '@/selectors/documentsListPage'
 import { documentTypesSelector } from '@/selectors/documentTypesListPage'
-import { ocrEnginesSelector } from '@/selectors/engines'
+import { processingEnginesSelector } from '@/selectors/engines'
 import { labelsSelector } from '@/selectors/labels'
 import { languagesSelector } from '@/selectors/languages'
 import { selectionSelector } from '@/selectors/navigation'
@@ -115,7 +115,7 @@ class DocumentsTable extends Component {
     setFilters: PropTypes.func.isRequired,
     setSelection: PropTypes.func.isRequired,
     tableColumns: PropTypes.arrayOf(PropTypes.string).isRequired,
-    fetchOCREngines: PropTypes.func.isRequired,
+    fetchProcessingEngines: PropTypes.func.isRequired,
     fetchDocumentTypes: PropTypes.func.isRequired,
     fetchAvailableLanguages: PropTypes.func.isRequired,
     fetchLabels: PropTypes.func.isRequired,
@@ -135,7 +135,7 @@ class DocumentsTable extends Component {
   }
 
   componentDidMount () {
-    this.props.fetchOCREngines()
+    this.props.fetchProcessingEngines()
     this.props.fetchDocumentTypes()
     this.props.fetchLabels()
     this.props.fetchAvailableLanguages()
@@ -282,7 +282,7 @@ class DocumentsTable extends Component {
 
 const mapStateToProps = (state) => ({
   documents: documentsSelector(state),
-  engines: ocrEnginesSelector(state),
+  engines: processingEnginesSelector(state),
   languages: languagesSelector(state),
   documentTypes: documentTypesSelector(state),
   selectedDocuments: selectionSelector(state),
@@ -305,7 +305,7 @@ const mapStateToProps = (state) => ({
 const ConnectedComponent = connect(
   mapStateToProps,
   {
-    fetchOCREngines,
+    fetchProcessingEngines,
     fetchDocumentTypes,
     fetchLabels,
     fetchAvailableLanguages,

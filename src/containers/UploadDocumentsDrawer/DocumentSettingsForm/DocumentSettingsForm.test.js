@@ -4,12 +4,12 @@ import { mockReactHookForm } from '@/mocks/mockReactHookForm'
 import { screen } from '@testing-library/react'
 import { useWatch } from 'react-hook-form'
 import { fetchDocumentTypes } from '@/actions/documentTypes'
-import { fetchOCREngines } from '@/actions/engines'
+import { fetchProcessingEngines } from '@/actions/engines'
 import { FIELD_FORM_CODE } from '@/containers/UploadDocumentsDrawer/constants'
 import { AuthType } from '@/enums/AuthType'
 import { Localization, localize } from '@/localization/i18n'
 import { documentTypesSelector } from '@/selectors/documentTypesListPage'
-import { ocrEnginesSelector } from '@/selectors/engines'
+import { processingEnginesSelector } from '@/selectors/engines'
 import { ENV } from '@/utils/env'
 import { render } from '@/utils/rendererRTL'
 import { DocumentSettingsForm } from './DocumentSettingsForm'
@@ -40,7 +40,7 @@ jest.mock('react-redux', () => ({
 }))
 
 jest.mock('@/actions/engines', () => ({
-  fetchOCREngines: jest.fn(),
+  fetchProcessingEngines: jest.fn(),
 }))
 
 jest.mock('@/actions/documentTypes', () => ({
@@ -118,12 +118,12 @@ test('renders document types groups select field when form is rendered and shoul
   expect(documentTypesGroupsField).toHaveTextContent(localize(Localization.GROUP))
 })
 
-test('calls fetchOCREngines when form is rendered if engines are empty', () => {
-  ocrEnginesSelector.mockReturnValueOnce([])
+test('calls fetchProcessingEngines when form is rendered if engines are empty', () => {
+  processingEnginesSelector.mockReturnValueOnce([])
 
   render(<DocumentSettingsForm />)
 
-  expect(mockDispatch).toHaveBeenCalledWith(fetchOCREngines())
+  expect(mockDispatch).toHaveBeenCalledWith(fetchProcessingEngines())
 })
 
 test('calls fetchDocumentTypes when form is rendered if document types are empty', () => {

@@ -28,7 +28,7 @@ import {
   fetchDocumentType,
 } from '@/actions/documentType'
 import { fetchDocumentTypes } from '@/actions/documentTypes'
-import { fetchOCREngines } from '@/actions/engines'
+import { fetchProcessingEngines } from '@/actions/engines'
 import { deleteFields as deleteGenAiFields, fetchGenAiFields } from '@/actions/genAiData'
 import { fetchLabels, createLabel } from '@/actions/labels'
 import { fetchAvailableLanguages } from '@/actions/languages'
@@ -92,7 +92,7 @@ describe('Selectors: requests', () => {
           fetchDocumentType.toString(),
           fetchDocumentTypes.toString(),
           fetchDocumentStates.toString(),
-          fetchOCREngines.toString(),
+          fetchProcessingEngines.toString(),
           fetchLabels.toString(),
           createLabel.toString(),
           fetchAvailableLanguages.toString(),

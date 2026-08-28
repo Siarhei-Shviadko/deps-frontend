@@ -5,7 +5,7 @@ import { EXTRACTION_TYPE_FILTER_KEY } from '@/constants/navigation'
 import { DocumentTypesListView } from '@/containers/DocumentTypesListView'
 import { ExtractionType } from '@/enums/ExtractionType'
 import { KnownLanguage } from '@/enums/KnownLanguage'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { DocumentType } from '@/models/DocumentType'
 import { filterSelector } from '@/selectors/navigation'
 import { render } from '@/utils/rendererRTL'
@@ -24,7 +24,7 @@ jest.mock('@/containers/DocumentTypesListView', () => ({
 const engLanguageDocumentType = new DocumentType(
   'DocType1',
   'Doc Type 1',
-  KnownOCREngine.TESSERACT,
+  KnownProcessingEngines.TESSERACT,
   KnownLanguage.ENGLISH,
   ExtractionType.TEMPLATE,
 )
@@ -34,7 +34,7 @@ const mockDocumentTypes = [
   new DocumentType(
     'DocType2',
     'Doc Type 2',
-    KnownOCREngine.TESSERACT,
+    KnownProcessingEngines.TESSERACT,
     KnownLanguage.DEUTSCH,
     ExtractionType.TEMPLATE,
   ),

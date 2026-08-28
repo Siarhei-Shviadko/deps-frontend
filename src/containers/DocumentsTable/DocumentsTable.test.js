@@ -22,7 +22,7 @@ import { PaginationConfig } from '@/models/PaginationConfig'
 import { documentSelector } from '@/selectors/documentReviewPage'
 import { documentsSelector } from '@/selectors/documentsListPage'
 import { documentTypesSelector } from '@/selectors/documentTypesListPage'
-import { ocrEnginesSelector } from '@/selectors/engines'
+import { processingEnginesSelector } from '@/selectors/engines'
 import { labelsSelector } from '@/selectors/labels'
 import { languagesSelector } from '@/selectors/languages'
 import { selectionSelector } from '@/selectors/navigation'
@@ -45,7 +45,7 @@ import { DocumentColumn } from './columns/DocumentColumn'
 import { DocumentsTable } from '.'
 
 jest.mock('@/actions/engines', () => ({
-  fetchOCREngines: jest.fn(),
+  fetchProcessingEngines: jest.fn(),
 }))
 jest.mock('@/actions/documentTypes', () => ({
   fetchDocumentTypes: jest.fn(),
@@ -130,9 +130,9 @@ describe('Container: DocumentsTable', () => {
       expect(mapStateToProps().props.documents).toEqual(documentsSelector.getSelectorMockValue())
     })
 
-    it('should call to ocrEnginesSelector and pass the result as engines prop', () => {
-      expect(ocrEnginesSelector).toHaveBeenCalled()
-      expect(mapStateToProps().props.engines).toEqual(ocrEnginesSelector.getSelectorMockValue())
+    it('should call to processingEnginesSelector and pass the result as engines prop', () => {
+      expect(processingEnginesSelector).toHaveBeenCalled()
+      expect(mapStateToProps().props.engines).toEqual(processingEnginesSelector.getSelectorMockValue())
     })
 
     it('should call to languagesSelector and pass the result as engines prop', () => {
@@ -190,7 +190,7 @@ describe('Container: DocumentsTable', () => {
       setFilters: jest.fn(),
       setSelection: jest.fn(),
       refreshData: jest.fn(),
-      fetchOCREngines: jest.fn(),
+      fetchProcessingEngines: jest.fn(),
       fetchDocumentTypes: jest.fn(),
       fetchAvailableLanguages: jest.fn(),
       fetchLabels: jest.fn(),
@@ -269,8 +269,8 @@ describe('Container: DocumentsTable', () => {
     })
   })
 
-  it('should call props.fetchOCREngines when component did mount', () => {
-    expect(defaultProps.fetchOCREngines).toHaveBeenCalled()
+  it('should call props.fetchProcessingEngines when component did mount', () => {
+    expect(defaultProps.fetchProcessingEngines).toHaveBeenCalled()
   })
 
   it('should call props.fetchAvailableLanguages when component did mount', () => {

@@ -1,9 +1,8 @@
 
 import { mockEnv } from '@/mocks/mockEnv'
-import { Engine } from '@/models/Engine'
 import {
   enginesSelector,
-  ocrEnginesSelector,
+  processingEnginesSelector,
   tableEnginesSelector,
 } from './engines'
 
@@ -15,12 +14,8 @@ describe('Selectors: engines', () => {
   beforeEach(() => {
     state = {
       engines: {
-        ocr: [
-          new Engine('TESSERACT', 'Tesseract'),
-          new Engine('GCP_VISION', 'AI Vision'),
-          new Engine('AWS_TEXTRACT', 'AWS Textract'),
-        ],
         table: 'mockTable',
+        processing: 'mockProcessing',
       },
     }
   })
@@ -29,11 +24,11 @@ describe('Selectors: engines', () => {
     expect(enginesSelector(state)).toBe(state.engines)
   })
 
-  it('selector: ocrEnginesSelector', () => {
-    expect(ocrEnginesSelector(state)).toBe(state.engines.ocr)
-  })
-
   it('selector: tableEnginesSelector', () => {
     expect(tableEnginesSelector(state)).toBe(state.engines.table)
+  })
+
+  it('selector: processingEnginesSelector', () => {
+    expect(processingEnginesSelector(state)).toBe(state.engines.processing)
   })
 })

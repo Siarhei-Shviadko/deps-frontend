@@ -7,9 +7,11 @@ import {
   useMemo,
 } from 'react'
 import { useDispatch } from 'react-redux'
-import { setActivePdfPage, setHighlightedField } from '@/actions/documentReviewPage'
+import { setUi } from '@/actions/navigation'
 import { NoData } from '@/components/NoData'
 import { RadioOptionType, RadioButtonStyle } from '@/components/Radio'
+import { UiKeys } from '@/constants/navigation'
+import { useReviewActions } from '@/containers/ParsingLayout/hooks/useReviewActions'
 import {
   DOCUMENT_LAYOUT_FEATURE_TO_LAYOUT_TYPE,
   DOCUMENT_LAYOUT_TYPE,
@@ -65,15 +67,19 @@ const getMergedTablesList = (mergedTables = []) => mergedTables
 
 export const EntityLayout = ({ rawParsingInfoData }) => {
   const dispatch = useDispatch()
+  const { setHighlightedField } = useReviewActions()
   const [selectedParsingType, setSelectedParsingType] = useState('')
   const [activeFeature, setActiveFeature] = useState('')
   const [currentPage, setCurrentPage] = useState(INITIAL_PAGE)
 
   const handlePageChange = useCallback((page) => {
     setCurrentPage(page)
-    dispatch(setActivePdfPage(page))
+    dispatch(setUi({
+      [UiKeys.ACTIVE_PAGE]: page,
+      [UiKeys.ACTIVE_SOURCE_ID]: null,
+    }))
     dispatch(setHighlightedField(null))
-  }, [dispatch])
+  }, [dispatch, setHighlightedField])
 
   const parsingInfoData = useMemo(() => {
     if (

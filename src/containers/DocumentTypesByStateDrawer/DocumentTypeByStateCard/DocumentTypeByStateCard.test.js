@@ -9,7 +9,7 @@ import { documentsApi } from '@/api/documentsApi'
 import { StatisticCard } from '@/components/StatisticCard'
 import { DocumentFilterKeys, PaginationKeys } from '@/constants/navigation'
 import { DocumentState } from '@/enums/DocumentState'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { useAbortRequest } from '@/hooks/useAbortRequest'
 import { Localization, localize } from '@/localization/i18n'
 import { DocumentType } from '@/models/DocumentType'
@@ -20,7 +20,7 @@ import { DocumentTypeByStateCard } from './DocumentTypeByStateCard'
 const mockDocumentType = new DocumentType(
   'code',
   'name',
-  KnownOCREngine.TESSERACT,
+  KnownProcessingEngines.TESSERACT,
 )
 
 const mockResponse = {

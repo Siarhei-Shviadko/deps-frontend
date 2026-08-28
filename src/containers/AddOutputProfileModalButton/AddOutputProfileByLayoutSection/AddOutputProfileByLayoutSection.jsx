@@ -10,7 +10,7 @@ import {
   FILE_EXTENSION_TO_DOWNLOAD_FORMAT,
   FileExtension,
 } from '@/enums/FileExtension'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { StatusCode } from '@/enums/StatusCode'
 import { Localization, localize } from '@/localization/i18n'
 import { DocumentLayoutSchema } from '@/models/OutputProfile'
@@ -32,7 +32,7 @@ const AddOutputProfileByLayoutSection = () => {
     name: '',
     schema: new DocumentLayoutSchema({
       features: [],
-      parsingType: documentType.engine ?? KnownOCREngine.TESSERACT,
+      parsingType: documentType.engine ?? KnownProcessingEngines.TESSERACT,
     }),
     format: FILE_EXTENSION_TO_DOWNLOAD_FORMAT[FileExtension.XLSX],
   }

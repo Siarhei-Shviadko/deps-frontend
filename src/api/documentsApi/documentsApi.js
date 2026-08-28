@@ -2,7 +2,7 @@
 import isObject from 'lodash/isObject'
 import { documentTypesApi } from '@/api/documentTypesApi'
 import { DocumentExtras } from '@/enums/DocumentExtras'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { StatusCode } from '@/enums/StatusCode'
 import { Document } from '@/models/Document'
 import { ExtractedDataFieldV2 } from '@/models/ExtractedData'
@@ -409,7 +409,7 @@ const omrArea = (area, blobFile) => apiRequest.post(
   },
 )
 
-const extractTableData = (table, blobFile, ocrEngine = KnownOCREngine.TESSERACT, language) => {
+const extractTableData = (table, blobFile, ocrEngine = KnownProcessingEngines.TESSERACT, language) => {
   let body = {
     ocrEngine,
     table,

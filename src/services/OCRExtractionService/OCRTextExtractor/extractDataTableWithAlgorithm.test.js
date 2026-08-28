@@ -2,7 +2,7 @@
 import { mockEnv } from '@/mocks/mockEnv'
 import { Table } from 'labeling-tool/lib/models/Table'
 import { KnownLanguage } from '@/enums/KnownLanguage'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { Cell, TableData } from '@/models/ExtractedData'
 import { Rect } from '@/models/Rect'
 import { SourceBboxCoordinates } from '@/models/SourceCoordinates'
@@ -60,7 +60,7 @@ const mockTable = new Table(
 const mockPage2text = getPage2Text()
 const page = '1'
 const language = KnownLanguage.ENGLISH
-const engine = KnownOCREngine.TESSERACT
+const engine = KnownProcessingEngines.TESSERACT
 const blobName = 'test.png'
 
 jest.mock('./getOCRTextLines', () => ({

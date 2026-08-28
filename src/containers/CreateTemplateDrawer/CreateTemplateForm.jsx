@@ -13,12 +13,12 @@ import {
 import { CustomSelect, getEmptyOption } from '@/components/Select'
 import { FORBIDDEN_WHITE_SPACE_BEFORE_TEXT } from '@/constants/regexp'
 import { ExtractionType } from '@/enums/ExtractionType'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { Localization, localize } from '@/localization/i18n'
 import { Engine } from '@/models/Engine'
 import { Template } from '@/models/Template'
 import { documentTypesStateSelector } from '@/selectors/documentTypes'
-import { ocrEnginesSelector } from '@/selectors/engines'
+import { processingEnginesSelector } from '@/selectors/engines'
 import { ENV } from '@/utils/env'
 import {
   StyledTooltip,
@@ -42,7 +42,7 @@ const renderWithTooltip = (Component, tooltipTitle) => (
 )
 
 const CreateTemplateForm = () => {
-  const engines = useSelector(ocrEnginesSelector)
+  const engines = useSelector(processingEnginesSelector)
   const documentTypes = Object.values(useSelector(documentTypesStateSelector))
 
   const templates = useMemo(() =>
@@ -60,7 +60,7 @@ const CreateTemplateForm = () => {
 
   const isAutoLabelingDisabled = ENV.FEATURE_AUTO_LABELING && !!baseTemplateId
   const isDuplicateFieldsDisabled = !templates.length || !!isMarkupAutomatically
-  const enginesOptions = Engine.toAllEnginesOptionsWithDefault(engines, KnownOCREngine.TESSERACT)
+  const enginesOptions = Engine.toAllEnginesOptionsWithDefault(engines, KnownProcessingEngines.TESSERACT)
 
   const baseTemplateOptions = () => ([
     getEmptyOption(localize(Localization.NOT_SELECTED)),
@@ -87,7 +87,7 @@ const CreateTemplateForm = () => {
       code: FIELD_PROPERTY.ENGINE,
       label: localize(Localization.ENGINE),
       placeholder: localize(Localization.SELECT_ENGINE),
-      defaultValue: KnownOCREngine.TESSERACT,
+      defaultValue: KnownProcessingEngines.TESSERACT,
       render: (props) => (
         <CustomSelect
           {...props}

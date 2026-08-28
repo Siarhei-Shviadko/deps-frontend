@@ -19,7 +19,7 @@ import {
 } from '@/actions/documentReviewPage'
 import { fetchDocumentData } from '@/actions/documents'
 import { fetchDocumentType } from '@/actions/documentType'
-import { fetchOCREngines } from '@/actions/engines'
+import { fetchProcessingEngines } from '@/actions/engines'
 import { fetchAvailableLanguages } from '@/actions/languages'
 import { documentsApi } from '@/api/documentsApi'
 import { Tool, Panel, Feature, Mode } from '@/components/LabelingTool'
@@ -38,7 +38,7 @@ import {
   documentSelector,
 } from '@/selectors/documentReviewPage'
 import { documentTypeStateSelector } from '@/selectors/documentType'
-import { ocrEnginesSelector } from '@/selectors/engines'
+import { processingEnginesSelector } from '@/selectors/engines'
 import { languagesSelector } from '@/selectors/languages'
 import { uiSelector } from '@/selectors/navigation'
 import { FileCache } from '@/services/FileCache'
@@ -107,7 +107,7 @@ jest.mock('@/actions/documents', () => ({
 }))
 
 jest.mock('@/actions/engines', () => ({
-  fetchOCREngines: jest.fn(),
+  fetchProcessingEngines: jest.fn(),
 }))
 
 jest.mock('@/actions/languages', () => ({
@@ -165,7 +165,7 @@ describe('Container: DocumentLabelingTool', () => {
     })
 
     it('should map engines property from the application state', () => {
-      expect(props.engines).toBe(ocrEnginesSelector.getSelectorMockValue())
+      expect(props.engines).toBe(processingEnginesSelector.getSelectorMockValue())
     })
 
     it('should map languages property from the application state', () => {
@@ -189,9 +189,9 @@ describe('Container: DocumentLabelingTool', () => {
       expect(extractTable).toHaveBeenCalledTimes(1)
     })
 
-    it('should pass fetchOCREngines action as fetchOCREngines property', () => {
-      props.fetchOCREngines()
-      expect(fetchOCREngines).toHaveBeenCalledTimes(1)
+    it('should pass fetchProcessingEngines action as fetchProcessingEngines property', () => {
+      props.fetchProcessingEngines()
+      expect(fetchProcessingEngines).toHaveBeenCalledTimes(1)
     })
 
     it('should pass fetchAvailableLanguages action as fetchAvailableLanguages property', () => {
@@ -244,14 +244,14 @@ describe('Container: DocumentLabelingTool', () => {
         omrArea: jest.fn(() => Promise.resolve(mockBoolRecognized)),
         document: documentSelector.getSelectorMockValue(),
         documentId: 'mockDocumentId',
-        engines: ocrEnginesSelector.getSelectorMockValue(),
+        engines: processingEnginesSelector.getSelectorMockValue(),
         languages: languagesSelector.getSelectorMockValue(),
         documentType: documentTypeStateSelector.getSelectorMockValue(),
         fetchDocumentType: jest.fn(),
         fetchDocumentData: jest.fn(() =>
           Promise.resolve(documentSelector.getSelectorMockValue()),
         ),
-        fetchOCREngines: jest.fn(),
+        fetchProcessingEngines: jest.fn(),
         fetchAvailableLanguages: jest.fn(),
         initialPage: uiSelector.getSelectorMockValue()[UiKeys.ACTIVE_PAGE],
       }
@@ -262,8 +262,8 @@ describe('Container: DocumentLabelingTool', () => {
       wrapper = shallow(<ConnectedComponent {...defaultProps} />)
     })
 
-    it('should call props.fetchOCREngines when component did mount', () => {
-      expect(defaultProps.fetchOCREngines).toHaveBeenCalled()
+    it('should call props.fetchProcessingEngines when component did mount', () => {
+      expect(defaultProps.fetchProcessingEngines).toHaveBeenCalled()
     })
 
     it('should call props.fetchAvailableLanguages when component did mount', () => {
@@ -336,16 +336,7 @@ describe('Container: DocumentLabelingTool', () => {
           ocrTable: wrapper.instance().ocrTable,
         },
         ocr: {
-          engines: [
-            new Engine(
-              'GCP_VISION',
-              'AI Vision',
-            ),
-            new Engine(
-              'AWS_TEXTRACT',
-              'AWS Textract',
-            ),
-          ],
+          engines: Engine.getAvailableEngines(processingEnginesSelector.getSelectorMockValue()),
           languages: defaultProps.languages,
         },
         markup: mockMarkup,

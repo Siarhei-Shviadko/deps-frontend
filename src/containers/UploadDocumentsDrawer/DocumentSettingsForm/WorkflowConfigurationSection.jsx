@@ -15,7 +15,7 @@ import { Placement } from '@/enums/Placement'
 import { REVIEW_POLICY_TO_LABEL } from '@/enums/ReviewPolicy'
 import { Localization, localize } from '@/localization/i18n'
 import { Engine } from '@/models/Engine'
-import { ocrEnginesSelector } from '@/selectors/engines'
+import { processingEnginesSelector } from '@/selectors/engines'
 import { areEnginesFetchingSelector } from '@/selectors/requests'
 import {
   CollapseContent,
@@ -63,7 +63,7 @@ const renderParsingFeaturesLabel = () => {
 }
 
 export const WorkflowConfigurationSection = () => {
-  const engines = useSelector(ocrEnginesSelector)
+  const engines = useSelector(processingEnginesSelector)
   const areEnginesFetching = useSelector(areEnginesFetchingSelector)
   const { setValue } = useFormContext()
 

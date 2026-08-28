@@ -6,7 +6,7 @@ import { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { refreshDocuments } from '@/actions/documentsListPage'
 import { fetchDocumentTypes } from '@/actions/documentTypes'
-import { fetchOCREngines } from '@/actions/engines'
+import { fetchProcessingEngines } from '@/actions/engines'
 import { Button, ButtonType } from '@/components/Button'
 import { CommandBar } from '@/components/CommandBar'
 import { ArrowRightOutlined } from '@/components/Icons/ArrowRightOutlined'
@@ -31,7 +31,7 @@ import { localize, Localization } from '@/localization/i18n'
 import { DocumentType, documentTypeShape } from '@/models/DocumentType'
 import { Engine, engineShape } from '@/models/Engine'
 import { documentTypesSelector } from '@/selectors/documentTypesListPage'
-import { ocrEnginesSelector } from '@/selectors/engines'
+import { processingEnginesSelector } from '@/selectors/engines'
 import {
   areEnginesFetchingSelector,
   areTypesFetchingSelector,
@@ -85,7 +85,7 @@ class DocumentUpload extends PureComponent {
     documentTypes: PropTypes.arrayOf(documentTypeShape).isRequired,
     documentTypesFetching: PropTypes.bool,
     refreshDocuments: PropTypes.func.isRequired,
-    fetchOCREngines: PropTypes.func.isRequired,
+    fetchProcessingEngines: PropTypes.func.isRequired,
     fetchDocumentTypes: PropTypes.func.isRequired,
     onClose: PropTypes.func,
     isVisible: PropTypes.bool.isRequired,
@@ -135,7 +135,7 @@ class DocumentUpload extends PureComponent {
   }
 
   componentDidMount () {
-    this.props.fetchOCREngines()
+    this.props.fetchProcessingEngines()
     this.props.fetchDocumentTypes()
   }
 
@@ -792,7 +792,7 @@ class DocumentUpload extends PureComponent {
 }
 
 const mapStateToProps = (state) => ({
-  engines: ocrEnginesSelector(state),
+  engines: processingEnginesSelector(state),
   enginesFetching: areEnginesFetchingSelector(state),
   documentTypes: documentTypesSelector(state),
   documentTypesFetching: areTypesFetchingSelector(state),
@@ -800,7 +800,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = {
-  fetchOCREngines,
+  fetchProcessingEngines,
   fetchDocumentTypes,
   refreshDocuments,
 }

@@ -5,7 +5,7 @@ import { mockReactRedux } from '@/mocks/mockReactRedux'
 import { shallow } from 'enzyme'
 import { CustomMenu } from '@/components/Menu/CustomMenu'
 import { DocumentState } from '@/enums/DocumentState'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { File } from '@/models/Document'
 import { DocumentType } from '@/models/DocumentType'
 import { DownloadMenu } from '.'
@@ -13,7 +13,7 @@ import { DownloadMenu } from '.'
 const mockDocumentType = new DocumentType(
   'code',
   'name',
-  KnownOCREngine.TESSERACT,
+  KnownProcessingEngines.TESSERACT,
 )
 
 jest.mock('react', () => mockReact())

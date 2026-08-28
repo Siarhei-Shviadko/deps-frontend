@@ -5,7 +5,7 @@ import { storeDocumentTypes } from '@/actions/documentTypes'
 import { ExtractionType } from '@/enums/ExtractionType'
 import { FieldType } from '@/enums/FieldType'
 import { KnownLanguage } from '@/enums/KnownLanguage'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { DocumentType } from '@/models/DocumentType'
 import { DocumentTypeField } from '@/models/DocumentTypeField'
 import { documentTypesReducer, initialState } from '@/reducers/documentTypes'
@@ -16,7 +16,7 @@ const mockDocumentTypes = [
   new DocumentType(
     'MarketingContract',
     '',
-    KnownOCREngine.TESSERACT,
+    KnownProcessingEngines.TESSERACT,
     KnownLanguage.ENGLISH,
     ExtractionType.ML,
     [

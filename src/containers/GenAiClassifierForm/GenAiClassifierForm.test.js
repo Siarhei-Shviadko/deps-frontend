@@ -7,7 +7,7 @@ import { fetchDocumentType } from '@/actions/documentType'
 import { DocumentTypeExtras } from '@/enums/DocumentTypeExtras'
 import { ExtractionType } from '@/enums/ExtractionType'
 import { KnownLanguage } from '@/enums/KnownLanguage'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { Localization, localize } from '@/localization/i18n'
 import { DocumentType } from '@/models/DocumentType'
 import { GenAiClassifier } from '@/models/DocumentTypesGroup'
@@ -60,14 +60,14 @@ const mockDocTypeId2 = 'id2'
 const mockDocType1 = new DocumentType(
   mockDocTypeId1,
   'Doc Type Name 1',
-  KnownOCREngine.TESSERACT,
+  KnownProcessingEngines.TESSERACT,
   KnownLanguage.ENGLISH,
   ExtractionType.TEMPLATE,
 )
 const mockDocType2 = new DocumentType(
   mockDocTypeId2,
   'Doc Type Name 2',
-  KnownOCREngine.TESSERACT,
+  KnownProcessingEngines.TESSERACT,
   KnownLanguage.ENGLISH,
   ExtractionType.TEMPLATE,
 )

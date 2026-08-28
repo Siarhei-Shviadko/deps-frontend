@@ -3,7 +3,7 @@ import { mockEnv } from '@/mocks/mockEnv'
 import { fireEvent, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { FileExtension, FILE_EXTENSION_TO_DOWNLOAD_FORMAT } from '@/enums/FileExtension'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { localize, Localization } from '@/localization/i18n'
 import { DocumentLayoutSchema, OutputProfile } from '@/models/OutputProfile'
 import { render } from '@/utils/rendererRTL'
@@ -19,7 +19,7 @@ const mockProfile = new OutputProfile({
   version: 'profileVersion',
   schema: new DocumentLayoutSchema({
     features: [],
-    parsingType: KnownOCREngine.TESSERACT,
+    parsingType: KnownProcessingEngines.TESSERACT,
   }),
 })
 

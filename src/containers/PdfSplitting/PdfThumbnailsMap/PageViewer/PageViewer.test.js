@@ -1,8 +1,14 @@
+/* eslint-disable no-undef */
 import { mockEnv } from '@/mocks/mockEnv'
-import { screen } from '@testing-library/dom'
+import { screen, waitFor } from '@testing-library/dom'
 import { PdfSegment, UserPage } from '@/containers/PdfSplitting/models'
 import { render } from '@/utils/rendererRTL'
 import { PageViewer } from './PageViewer'
+
+const mockPageId = 'page-id'
+const mockPageWidth = 800
+const mockXMarkIconContent = 'x-mark'
+const mockPage = jest.fn(() => <div data-testid={mockPageId} />)
 
 jest.mock('@/utils/env', () => mockEnv)
 
@@ -11,7 +17,7 @@ jest.mock('@/components/Icons/XMarkIcon', () => ({
 }))
 
 jest.mock('react-pdf', () => ({
-  Page: () => <div data-testid={mockPageId} />,
+  Page: (props) => mockPage(props),
 }))
 
 jest.mock('@/containers/AreaSelector', () => ({
@@ -49,8 +55,19 @@ jest.mock('@/containers/PdfSplitting/hooks', () => ({
   }),
 }))
 
-const mockPageId = 'page-id'
-const mockXMarkIconContent = 'x-mark'
+beforeEach(() => {
+  jest.clearAllMocks()
+
+  global.ResizeObserver = jest.fn((onResize) => ({
+    observe: jest.fn(() => {
+      onResize([{
+        contentRect: { width: mockPageWidth },
+      }])
+    }),
+    unobserve: jest.fn(),
+    disconnect: jest.fn(),
+  }))
+})
 
 test('renders PageViewer correctly', () => {
   render(<PageViewer />)
@@ -64,4 +81,14 @@ test('renders PageViewer correctly', () => {
   expect(activePage).toBeInTheDocument()
   expect(page).toBeInTheDocument()
   expect(areaSelectorOverlay).toBeInTheDocument()
+})
+
+test('passes container width to Page component when page wrapper is resized', async () => {
+  render(<PageViewer />)
+
+  await waitFor(() => {
+    expect(mockPage).toHaveBeenLastCalledWith(expect.objectContaining({
+      width: mockPageWidth,
+    }))
+  })
 })

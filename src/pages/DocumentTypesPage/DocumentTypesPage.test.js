@@ -4,7 +4,7 @@ import { mockEnv } from '@/mocks/mockEnv'
 import { mockReactRedux } from '@/mocks/mockReactRedux'
 import { shallow } from 'enzyme'
 import { fetchDocumentTypes } from '@/actions/documentTypes'
-import { fetchOCREngines } from '@/actions/engines'
+import { fetchProcessingEngines } from '@/actions/engines'
 import { fetchAvailableLanguages } from '@/actions/languages'
 import { setFilters, setPagination } from '@/actions/navigation'
 import { Spin } from '@/components/Spin'
@@ -39,7 +39,7 @@ jest.mock('@/actions/navigation', () => ({
 }))
 
 jest.mock('@/actions/engines', () => ({
-  fetchOCREngines: jest.fn(() => mockAction),
+  fetchProcessingEngines: jest.fn(() => mockAction),
 }))
 
 jest.mock('@/actions/languages', () => ({
@@ -84,12 +84,12 @@ test('should call dispatch with fetchDocumentTypes action when render component'
   expect(mockDispatch).nthCalledWith(1, fetchDocumentTypes())
 })
 
-test('should call dispatch fetchOCREngines action when render component', () => {
+test('should call dispatch fetchProcessingEngines action when render component', () => {
   jest.clearAllMocks()
 
   shallow(<DocumentTypesPage />)
 
-  expect(mockDispatch).nthCalledWith(1, fetchOCREngines())
+  expect(mockDispatch).nthCalledWith(1, fetchProcessingEngines())
 })
 
 test('should call dispatch fetchAvailableLanguages action when render component', () => {

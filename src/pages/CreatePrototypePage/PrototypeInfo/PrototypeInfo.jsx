@@ -8,12 +8,12 @@ import {
   FormItem,
   RequiredValidator,
 } from '@/components/Form/ReactHookForm'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { PrototypeViewType } from '@/enums/PrototypeViewType'
 import { Localization, localize } from '@/localization/i18n'
 import { Engine } from '@/models/Engine'
 import { Language } from '@/models/Language'
-import { ocrEnginesSelector } from '@/selectors/engines'
+import { processingEnginesSelector } from '@/selectors/engines'
 import { languagesSelector } from '@/selectors/languages'
 import {
   FieldsWrapper,
@@ -34,7 +34,7 @@ const PrototypeInfo = ({
   fieldsViewType,
   setFieldsViewType,
 }) => {
-  const engines = useSelector(ocrEnginesSelector)
+  const engines = useSelector(processingEnginesSelector)
   const languages = useSelector(languagesSelector)
 
   const { setValue } = useFormContext()
@@ -61,7 +61,7 @@ const PrototypeInfo = ({
       requiredMark: true,
       placeholder: localize(Localization.SELECT_ENGINE),
       type: FormFieldType.ENUM,
-      options: Engine.toAllEnginesOptions(engines, [KnownOCREngine.TESSERACT]),
+      options: Engine.toAllEnginesOptions(engines, [KnownProcessingEngines.TESSERACT]),
       rules: new RequiredValidator(),
     }, {
       code: FIELD_CODE.LANGUAGE,

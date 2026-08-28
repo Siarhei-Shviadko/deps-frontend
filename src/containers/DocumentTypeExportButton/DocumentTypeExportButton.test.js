@@ -6,7 +6,7 @@ import { EXPORT_FIELDS } from '@/constants/documentType'
 import { ExtractionType } from '@/enums/ExtractionType'
 import { FieldType } from '@/enums/FieldType'
 import { KnownLanguage } from '@/enums/KnownLanguage'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { ValidationRuleSeverity } from '@/enums/ValidationRuleSeverity'
 import { Localization, localize } from '@/localization/i18n'
 import { CrossFieldValidator, IssueMessage } from '@/models/CrossFieldValidator'
@@ -181,7 +181,7 @@ const mockDocumentType = new ExtendedDocumentType({
   code: mockDocumentTypeCode,
   name: 'Doc Type 1',
   extractionType: ExtractionType.PROTOTYPE,
-  engine: KnownOCREngine.TESSERACT,
+  engine: KnownProcessingEngines.TESSERACT,
   fields: [
     mockExtractionField1,
     mockExtractionField2,

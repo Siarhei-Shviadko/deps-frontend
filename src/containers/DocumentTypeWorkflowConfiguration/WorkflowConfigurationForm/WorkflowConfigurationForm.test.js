@@ -5,16 +5,16 @@ import { mockReactHookForm } from '@/mocks/mockReactHookForm'
 import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useFormContext, useWatch } from 'react-hook-form'
-import { fetchOCREngines } from '@/actions/engines'
+import { fetchProcessingEngines } from '@/actions/engines'
 import { WORKFLOW_FORM_FIELD_CODES } from '@/containers/DocumentTypeWorkflowConfiguration/constants'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
 import { KnownParsingFeature } from '@/enums/KnownParsingFeature'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { ReviewPolicy } from '@/enums/ReviewPolicy'
 import { Localization, localize } from '@/localization/i18n'
 import { ExtendedDocumentType } from '@/models/ExtendedDocumentType'
 import { WorkflowConfiguration } from '@/models/WorkflowConfiguration'
 import { documentTypeStateSelector } from '@/selectors/documentType'
-import { ocrEnginesSelector } from '@/selectors/engines'
+import { processingEnginesSelector } from '@/selectors/engines'
 import { areEnginesFetchingSelector } from '@/selectors/requests'
 import { render } from '@/utils/rendererRTL'
 import { WorkflowConfigurationForm } from './WorkflowConfigurationForm'
@@ -32,7 +32,7 @@ jest.mock('react-redux', () => ({
 }))
 
 jest.mock('@/actions/engines', () => ({
-  fetchOCREngines: jest.fn(),
+  fetchProcessingEngines: jest.fn(),
 }))
 
 jest.mock('@/containers/ParsingFeaturesSwitch', () => mockShallowComponent('ParsingFeaturesSwitch'))
@@ -77,7 +77,7 @@ const mockDocumentType = new ExtendedDocumentType({
 beforeEach(() => {
   jest.clearAllMocks()
   documentTypeStateSelector.mockReturnValue(mockDocumentType)
-  ocrEnginesSelector.mockReturnValue([])
+  processingEnginesSelector.mockReturnValue([])
   areEnginesFetchingSelector.mockReturnValue(false)
   useFormContext.mockImplementation(() => ({
     control: {},
@@ -125,12 +125,12 @@ test('renders parsing features field with hint and columnView prop', () => {
 })
 
 test('passes selected engine to ParsingFeaturesSwitch when engine is set in form', () => {
-  useWatch.mockReturnValue(KnownOCREngine.TESSERACT)
+  useWatch.mockReturnValue(KnownProcessingEngines.TESSERACT)
 
   render(<WorkflowConfigurationForm {...defaultProps} />)
 
   const parsingFeaturesSwitch = screen.getByTestId('ParsingFeaturesSwitch')
-  expect(parsingFeaturesSwitch).toHaveAttribute('data-enginecode', KnownOCREngine.TESSERACT)
+  expect(parsingFeaturesSwitch).toHaveAttribute('data-enginecode', KnownProcessingEngines.TESSERACT)
 })
 
 test('renders needs review field with hint', () => {
@@ -177,10 +177,10 @@ test('renders needs output exporting field with hint', () => {
   expect(hint).toHaveTextContent(localize(Localization.WORKFLOW_NEEDS_OUTPUT_EXPORTING_HINT))
 })
 
-test('calls fetchOCREngines when form is rendered if engines are empty', () => {
+test('calls fetchProcessingEngines when form is rendered if engines are empty', () => {
   render(<WorkflowConfigurationForm {...defaultProps} />)
 
-  expect(mockDispatch).toHaveBeenCalledWith(fetchOCREngines())
+  expect(mockDispatch).toHaveBeenCalledWith(fetchProcessingEngines())
 })
 
 test('sets needs output exporting to true when output exporting switch is enabled', async () => {

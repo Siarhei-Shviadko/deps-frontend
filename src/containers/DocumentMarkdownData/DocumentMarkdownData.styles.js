@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import 'katex/dist/katex.min.css'
 
 export const LocalBoundary = styled.div`
   display: grid;
@@ -49,6 +50,14 @@ export const MarkdownContent = styled.div`
     padding-left: 2.4rem;
   }
 
+  ul {
+    list-style: initial;
+  }
+
+  ol {
+    list-style: decimal;
+  }
+
   li {
     margin-bottom: 0.4rem;
   }
@@ -62,8 +71,8 @@ export const MarkdownContent = styled.div`
   }
 
   table {
-    width: max-content;
-    max-width: none;
+    width: 100%;
+    max-width: 100%;
     margin: 0 0 1.6rem;
     border-collapse: collapse;
   }
@@ -73,13 +82,18 @@ export const MarkdownContent = styled.div`
     padding: 0.8rem 1.2rem;
     border: 0.1rem solid ${({ theme }) => theme.color.grayscale1};
     text-align: left;
-    vertical-align: top;
-    white-space: nowrap;
+    vertical-align: center;
   }
 
   th {
     background: ${({ theme }) => theme.color.grayscale14};
     font-weight: 600;
+    white-space: normal;
+    min-width: 8rem;
+  }
+
+  td {
+    white-space: nowrap;
   }
 
   img {
@@ -114,6 +128,12 @@ export const MarkdownContent = styled.div`
 
   a {
     color: ${({ theme }) => theme.color.primary2};
+  }
+
+  .katex-display {
+    margin: 1.2rem 0;
+    overflow-x: auto;
+    overflow-y: hidden;
   }
 
   blockquote {

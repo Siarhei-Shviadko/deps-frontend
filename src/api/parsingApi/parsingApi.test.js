@@ -1,6 +1,6 @@
 
 import { mockEnv } from '@/mocks/mockEnv'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { apiMap } from '@/utils/apiMap'
 import { apiRequest } from '@/utils/apiRequest'
 import { getTabularLayout } from './parsingApi'
@@ -13,7 +13,7 @@ const FAKE_API_URI = 'FAKE_API_URI'
 const MOCK_DOCUMENT_ID = 'id'
 const mockResponse = {
   parsingFeatures: {
-    [KnownOCREngine.TESSERACT]: [],
+    [KnownProcessingEngines.TESSERACT]: [],
   },
   pages: [],
 }

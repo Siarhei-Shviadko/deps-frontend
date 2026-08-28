@@ -7,7 +7,7 @@ import { fetchTemplateMarkupState, fetchTemplateVersions } from '@/api/templates
 import { ASYNC_OPERATION_STATE } from '@/enums/AsyncOperationState'
 import { ExtractionType } from '@/enums/ExtractionType'
 import { KnownLanguage } from '@/enums/KnownLanguage'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { Localization, localize } from '@/localization/i18n'
 import { DocumentType } from '@/models/DocumentType'
 import { TemplateVersion } from '@/models/TemplateVersion'
@@ -21,7 +21,7 @@ import { EditDocumentTypeButton } from './EditDocumentTypeButton'
 const mockDocumentType = new DocumentType(
   'DocType1',
   'Doc Type 1',
-  KnownOCREngine.TESSERACT,
+  KnownProcessingEngines.TESSERACT,
   KnownLanguage.ENGLISH,
   ExtractionType.TEMPLATE,
 )

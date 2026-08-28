@@ -8,7 +8,7 @@ import { PROJECT_CREATION_DATE } from '@/constants/common'
 import { DocumentFilterKeys, PaginationKeys } from '@/constants/navigation'
 import { DOCUMENT_STATISTIC_STATE_TO_DOCUMENT_STATE } from '@/enums/DocumentStatisticState'
 import { KnownLanguage } from '@/enums/KnownLanguage'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { Localization, localize } from '@/localization/i18n'
 import { Template } from '@/models/Template'
 import { navigationMap } from '@/utils/navigationMap'
@@ -66,7 +66,7 @@ const defaultProps = {
     id: 'mockId',
     name: 'mockName',
     language: KnownLanguage.ENGLISH,
-    engine: KnownOCREngine.TESSERACT,
+    engine: KnownProcessingEngines.TESSERACT,
     groupId: 'testId1',
     createdAt: PROJECT_CREATION_DATE,
     description: 'mocked description',

@@ -1,14 +1,14 @@
 
 import { mockEnv } from '@/mocks/mockEnv'
 import { KnownLanguage } from '@/enums/KnownLanguage'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { FieldData } from '@/models/ExtractedData'
 import { Rect } from '@/models/Rect'
 import { ENV } from '@/utils/env'
 import { getFieldData } from './getFieldData'
 
 const language = KnownLanguage.ENGLISH
-const engine = KnownOCREngine.TESSERACT
+const engine = KnownProcessingEngines.TESSERACT
 const blobName = 'test.png'
 const mockExtractedData = {
   content: 'test',

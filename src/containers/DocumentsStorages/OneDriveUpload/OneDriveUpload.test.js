@@ -8,7 +8,7 @@ import flushPromises from 'flush-promises'
 import { documentsApi } from '@/api/documentsApi'
 import { FilesStorage } from '@/enums/FilesStorage'
 import { KnownLanguage } from '@/enums/KnownLanguage'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { MimeType } from '@/enums/MimeType'
 import { UploadStatus } from '@/enums/UploadStatus'
 import { Localization, localize } from '@/localization/i18n'
@@ -46,7 +46,7 @@ const mockFileImportConfig = new FileImportConfig(
     paths: [mockFile.id],
     source: FilesStorage.GOOGLE_DRIVE,
     language: KnownLanguage.ENGLISH,
-    engine: KnownOCREngine.TESSERACT,
+    engine: KnownProcessingEngines.TESSERACT,
     documentType: 'mockDocTypeCode',
     invokeExtraction: true,
     assignedToMe: true,

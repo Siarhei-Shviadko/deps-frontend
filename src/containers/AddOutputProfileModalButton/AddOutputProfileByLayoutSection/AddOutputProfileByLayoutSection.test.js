@@ -8,7 +8,7 @@ import { fetchDocumentType } from '@/actions/documentType'
 import { createOutputProfile } from '@/api/outputProfilesApi'
 import { DocumentTypeExtras } from '@/enums/DocumentTypeExtras'
 import { FILE_EXTENSION_TO_DOWNLOAD_FORMAT, FileExtension } from '@/enums/FileExtension'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { StatusCode } from '@/enums/StatusCode'
 import { Localization, localize } from '@/localization/i18n'
 import { ExtendedDocumentType } from '@/models/ExtendedDocumentType'
@@ -40,7 +40,7 @@ jest.mock('@/containers/OutputProfileByLayoutDrawer', () => ({
 }))
 
 const mockDocumentTypeCode = 'DocType1'
-const mockEngine = KnownOCREngine.TESSERACT
+const mockEngine = KnownProcessingEngines.TESSERACT
 
 const mockDocumentType = new ExtendedDocumentType({
   code: mockDocumentTypeCode,

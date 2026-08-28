@@ -2,7 +2,7 @@
 import { mockEnv } from '@/mocks/mockEnv'
 import { LabelType, Label } from 'labeling-tool/lib/models/Label'
 import { KnownLanguage } from '@/enums/KnownLanguage'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { FieldData } from '@/models/ExtractedData'
 import { FieldCoordinates } from '@/models/FieldCoordinates'
 import { Rect } from '@/models/Rect'
@@ -40,7 +40,7 @@ const getLabel = ({ labelCoords, fieldCoordinates, sourceBboxCoordinates }) => {
 const blobName = 'test1.png'
 const sourceId = 'testId'
 const language = KnownLanguage.ENGLISH
-const engine = KnownOCREngine.TESSERACT
+const engine = KnownProcessingEngines.TESSERACT
 const page = 1
 
 const mockUnifiedData = {

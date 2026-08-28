@@ -2,7 +2,7 @@
 import { useEffect } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchOCREngines } from '@/actions/engines'
+import { fetchProcessingEngines } from '@/actions/engines'
 import { FormFieldType, FormItem, RequiredValidator } from '@/components/Form'
 import { CustomSelect } from '@/components/Select'
 import { DocumentTypesGroupsSelect } from '@/containers/DocumentTypesGroupsSelect'
@@ -10,14 +10,14 @@ import { ExtractionLLMSelect } from '@/containers/ExtractionLLMSelect'
 import { ParsingFeaturesSwitch } from '@/containers/ParsingFeaturesSwitch'
 import { Localization, localize } from '@/localization/i18n'
 import { Engine } from '@/models/Engine'
-import { ocrEnginesSelector } from '@/selectors/engines'
+import { processingEnginesSelector } from '@/selectors/engines'
 import { areEnginesFetchingSelector } from '@/selectors/requests'
 import { ENV } from '@/utils/env'
 import { FIELD_CODE } from '../constants'
 import { StyledForm } from './AutoFileSplittingForm.styles'
 
 export const AutoFileSplittingForm = () => {
-  const engines = useSelector(ocrEnginesSelector)
+  const engines = useSelector(processingEnginesSelector)
   const areEnginesFetching = useSelector(areEnginesFetchingSelector)
 
   const dispatch = useDispatch()
@@ -27,7 +27,7 @@ export const AutoFileSplittingForm = () => {
 
   useEffect(() => {
     if (!engines.length) {
-      dispatch(fetchOCREngines())
+      dispatch(fetchProcessingEngines())
     }
   }, [
     dispatch,

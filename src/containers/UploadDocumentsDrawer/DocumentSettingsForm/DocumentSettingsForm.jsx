@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchDocumentTypes } from '@/actions/documentTypes'
-import { fetchOCREngines } from '@/actions/engines'
+import { fetchProcessingEngines } from '@/actions/engines'
 import { CustomSelect } from '@/components/Select'
 import { Switch } from '@/components/Switch'
 import { AddLabelsPicker } from '@/containers/AddLabelsPicker'
@@ -16,7 +16,7 @@ import { FieldType } from '@/enums/FieldType'
 import { Localization, localize } from '@/localization/i18n'
 import { DocumentType } from '@/models/DocumentType'
 import { documentTypesSelector } from '@/selectors/documentTypesListPage'
-import { ocrEnginesSelector } from '@/selectors/engines'
+import { processingEnginesSelector } from '@/selectors/engines'
 import { areTypesFetchingSelector } from '@/selectors/requests'
 import { ENV } from '@/utils/env'
 import {
@@ -30,7 +30,7 @@ import { WorkflowConfigurationSection } from './WorkflowConfigurationSection'
 
 export const DocumentSettingsForm = () => {
   const documentTypes = useSelector(documentTypesSelector)
-  const engines = useSelector(ocrEnginesSelector)
+  const engines = useSelector(processingEnginesSelector)
   const areDocumentTypesFetching = useSelector(areTypesFetchingSelector)
 
   const shouldClassify = useWatch({ name: FIELD_FORM_CODE.SHOULD_CLASSIFY })
@@ -38,7 +38,7 @@ export const DocumentSettingsForm = () => {
   const { setValue } = useFormContext()
 
   useEffect(() => {
-    !engines.length && dispatch(fetchOCREngines())
+    !engines.length && dispatch(fetchProcessingEngines())
     !documentTypes?.length && dispatch(fetchDocumentTypes())
   }, [
     dispatch,

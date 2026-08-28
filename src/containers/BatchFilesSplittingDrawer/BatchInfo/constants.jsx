@@ -1,8 +1,8 @@
 
 import { LongText } from '@/components/LongText'
 import { DocumentLLMType } from '@/containers/DocumentLLMType'
-import { RESOURCE_OCR_ENGINE } from '@/enums/KnownOCREngine'
 import { RESOURCE_PARSING_FEATURE } from '@/enums/KnownParsingFeature'
+import { RESOURCE_PROCESSING_ENGINE } from '@/enums/KnownProcessingEngines'
 import { Localization, localize } from '@/localization/i18n'
 
 const parsingFeaturesToString = (parsingFeatures) => (
@@ -26,7 +26,7 @@ export const BATCH_SETTINGS_TO_LABEL = {
 export const BATCH_SETTINGS_TO_CONTENT = {
   [BatchSettings.GROUP]: (group) => !!group && <LongText text={group?.name} />,
   [BatchSettings.LLM_TYPE]: (llmType) => !!llmType && <DocumentLLMType llmType={llmType} />,
-  [BatchSettings.ENGINE]: (engine) => !!engine && <LongText text={RESOURCE_OCR_ENGINE[engine]} />,
+  [BatchSettings.ENGINE]: (engine) => !!engine && <LongText text={RESOURCE_PROCESSING_ENGINE[engine]} />,
   [BatchSettings.PARSING_FEATURES]: (parsingFeatures) => (
     !!parsingFeatures.length && <LongText text={parsingFeaturesToString(parsingFeatures)} />
   ),

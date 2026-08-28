@@ -4,11 +4,11 @@ import { mockNotification } from '@/mocks/mockNotification'
 import { mockReactRedux } from '@/mocks/mockReactRedux'
 import { shallow } from 'enzyme'
 import { extractData } from '@/actions/documents'
-import { fetchOCREngines } from '@/actions/engines'
+import { fetchProcessingEngines } from '@/actions/engines'
 import { DocumentState } from '@/enums/DocumentState'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { Engine } from '@/models/Engine'
-import { ocrEnginesSelector } from '@/selectors/engines'
+import { processingEnginesSelector } from '@/selectors/engines'
 import { areEnginesFetchingSelector } from '@/selectors/requests'
 import {
   notifySuccess,
@@ -20,7 +20,7 @@ jest.mock('@/actions/documents', () => ({
   extractData: jest.fn(),
 }))
 jest.mock('@/actions/engines', () => ({
-  fetchOCREngines: jest.fn(),
+  fetchProcessingEngines: jest.fn(),
 }))
 jest.mock('@/utils/notification', () => ({
   notifyWarning: jest.fn(),
@@ -36,10 +36,10 @@ const { mergeProps, mapStateToProps, ConnectedComponent } = ExtractData
 
 describe('Component: ExtractData', () => {
   describe('mapStateToProps', () => {
-    it('should call to ocrEnginesSelector with state and pass the result as engines prop', () => {
+    it('should call to processingEnginesSelector with state and pass the result as engines prop', () => {
       const { props } = mapStateToProps()
-      expect(ocrEnginesSelector).toHaveBeenCalled()
-      expect(props.engines).toEqual(ocrEnginesSelector.getSelectorMockValue())
+      expect(processingEnginesSelector).toHaveBeenCalled()
+      expect(props.engines).toEqual(processingEnginesSelector.getSelectorMockValue())
     })
 
     it('should call to areEnginesFetchingSelector with state and pass the result as enginesFetching prop', () => {
@@ -57,11 +57,11 @@ describe('Component: ExtractData', () => {
       expect(extractData).toHaveBeenCalled()
     })
 
-    it('should pass fetchOCREngines action as fetchOCREngines property', () => {
+    it('should pass fetchProcessingEngines action as fetchProcessingEngines property', () => {
       const { props: stateProps } = mapStateToProps()
       const { props } = mergeProps(stateProps)
-      props.fetchOCREngines()
-      expect(fetchOCREngines).toHaveBeenCalled()
+      props.fetchProcessingEngines()
+      expect(fetchProcessingEngines).toHaveBeenCalled()
     })
   })
 
@@ -78,13 +78,13 @@ describe('Component: ExtractData', () => {
         children: 'ExtractData',
         disabled: false,
         documentState: DocumentState.IN_REVIEW,
-        initialEngine: KnownOCREngine.TESSERACT,
+        initialEngine: KnownProcessingEngines.TESSERACT,
         extractData: jest.fn(() => Promise.resolve(mockData)),
         documentIds: ['123', '456'],
         engines: [
           new Engine('code1', 'name1'),
         ],
-        fetchOCREngines: jest.fn(),
+        fetchProcessingEngines: jest.fn(),
       }
 
       wrapper = shallow(<ConnectedComponent {...defaultProps} />)

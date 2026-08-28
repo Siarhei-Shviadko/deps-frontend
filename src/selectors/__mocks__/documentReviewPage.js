@@ -7,7 +7,7 @@ import { DocumentState } from '@/enums/DocumentState'
 import { ExtractionType } from '@/enums/ExtractionType'
 import { GROUPING_TYPE } from '@/enums/GroupingTypeTabs'
 import { KnownLanguage } from '@/enums/KnownLanguage'
-import { KnownOCREngine } from '@/enums/KnownOCREngine.js'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines.js'
 import { Comment } from '@/models/Comment'
 import { Document } from '@/models/Document'
 import {
@@ -319,7 +319,7 @@ const documentSelector = mockSelector(
     state: DocumentState.IN_REVIEW,
     title: 'Mock Title.pdf',
     error: null,
-    engine: KnownOCREngine.TESSERACT,
+    engine: KnownProcessingEngines.TESSERACT,
     llmType: null,
     files: [
       {

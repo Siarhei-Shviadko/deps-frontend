@@ -28,7 +28,7 @@ import {
   fetchDocumentType,
 } from '@/actions/documentType'
 import { fetchDocumentTypes } from '@/actions/documentTypes'
-import { fetchOCREngines } from '@/actions/engines'
+import { fetchProcessingEngines } from '@/actions/engines'
 import { deleteFields as deleteGenAiFields, fetchGenAiFields } from '@/actions/genAiData'
 import { fetchLabels, createLabel } from '@/actions/labels'
 import { fetchAvailableLanguages } from '@/actions/languages'
@@ -49,7 +49,7 @@ const isFetchingSelector = (action) => createSelector(
 const areLanguagesFetchingSelector = isFetchingSelector(fetchAvailableLanguages)
 
 const areLabelsFetchingSelector = isFetchingSelector(fetchLabels)
-const areEnginesFetchingSelector = isFetchingSelector(fetchOCREngines)
+const areEnginesFetchingSelector = isFetchingSelector(fetchProcessingEngines)
 const areDocumentStatesFetchingSelector = isFetchingSelector(fetchDocumentStates)
 const areTypesFetchingSelector = isFetchingSelector(fetchDocumentTypes)
 const isDocumentTypeFetchingSelector = isFetchingSelector(fetchDocumentType)

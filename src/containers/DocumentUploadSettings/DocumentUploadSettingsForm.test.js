@@ -6,7 +6,7 @@ import { mockReactHookForm } from '@/mocks/mockReactHookForm'
 import { mockReactRedux } from '@/mocks/mockReactRedux'
 import { shallow } from 'enzyme'
 import React from 'react'
-import { fetchOCREngines } from '@/actions/engines'
+import { fetchProcessingEngines } from '@/actions/engines'
 import { AuthType } from '@/enums/AuthType'
 import {
   Localization,
@@ -30,7 +30,7 @@ jest.mock('react-redux', () => ({
 }))
 
 jest.mock('@/actions/engines', () => ({
-  fetchOCREngines: jest.fn(),
+  fetchProcessingEngines: jest.fn(),
 }))
 
 describe('Container: DocumentUploadSettingsForm', () => {
@@ -45,8 +45,8 @@ describe('Container: DocumentUploadSettingsForm', () => {
     expect(wrapper).toMatchSnapshot()
   })
 
-  it('should call dispatch with fetchOCREngines when component did mount', () => {
-    expect(mockDispatch).nthCalledWith(1, fetchOCREngines)
+  it('should call dispatch with fetchProcessingEngines when component did mount', () => {
+    expect(mockDispatch).nthCalledWith(1, fetchProcessingEngines)
   })
 
   it('should render "Assign to me" option, if ENV.AUTH_TYPE is not equal to AuthType.NO_AUTH ', () => {

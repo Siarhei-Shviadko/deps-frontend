@@ -56,8 +56,8 @@ export const PdfSegments = ({
     const nextSegment = segments[segmentIndex + 1]
     const prevSegment = segments[segmentIndex - 1]
 
-    const segmentMergeWith = segmentIndex > 0 ? currentSegment : nextSegment
-    const segmentMergeTo = segmentIndex > 0 ? prevSegment : currentSegment
+    const segmentMergeWith = currentSegment
+    const segmentMergeTo = segmentIndex > 0 ? prevSegment : nextSegment
 
     const newSegments = segments.reduce((a, c) => {
       if (c === segmentMergeWith) {

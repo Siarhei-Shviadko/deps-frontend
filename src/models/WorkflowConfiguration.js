@@ -1,11 +1,11 @@
 
 import PropTypes from 'prop-types'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { ReviewPolicy } from '@/enums/ReviewPolicy'
 
 class WorkflowConfiguration {
   constructor ({
-    engine = KnownOCREngine.TESSERACT,
+    engine = KnownProcessingEngines.TESSERACT,
     parsingFeatures = [],
     needsPostprocessing = false,
     needsExtraction = false,

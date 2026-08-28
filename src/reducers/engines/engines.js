@@ -1,31 +1,31 @@
 
 import { handleActions } from 'redux-actions'
 import {
-  storeOCREngines,
+  storeProcessingEngines,
   storeTableEngines,
 } from '@/actions/engines'
 
 const initialState = {
-  ocr: [],
   table: [],
+  processing: [],
 }
 
 const enginesReducer = handleActions(
   new Map([
     [
-      storeOCREngines,
-      (state, action) => (
-        {
-          ...state,
-          ocr: action.payload,
-        }
-      ),
-    ], [
       storeTableEngines,
       (state, action) => (
         {
           ...state,
           table: action.payload,
+        }
+      ),
+    ], [
+      storeProcessingEngines,
+      (state, action) => (
+        {
+          ...state,
+          processing: action.payload,
         }
       ),
     ],

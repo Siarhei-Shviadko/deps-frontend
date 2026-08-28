@@ -2,55 +2,41 @@
 import { mockEnv } from '@/mocks/mockEnv'
 import {
   storeTableEngines,
-  storeOCREngines,
   fetchTableEngines,
-  fetchOCREngines,
+  storeProcessingEngines,
+  fetchProcessingEngines,
 } from '@/actions/engines'
 import { enginesApi } from '@/api/enginesApi'
-import { KnownOCREngine, RESOURCE_OCR_ENGINE } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
+import { localize, Localization } from '@/localization/i18n'
 import { Engine } from '@/models/Engine'
 
 const mockEngines = [
-  new Engine(
-    KnownOCREngine.TESSERACT,
-    RESOURCE_OCR_ENGINE[KnownOCREngine.TESSERACT],
-  ),
+  new Engine('TESSERACT', 'Tesseract'),
 ]
+
+const mockProcessingEnginesResponse = {
+  engines: [
+    {
+      code: KnownProcessingEngines.TESSERACT,
+      name: 'Tesseract',
+    },
+    {
+      code: KnownProcessingEngines.GCP_VISION,
+      name: 'GCP Vision',
+    },
+  ],
+}
 
 const mockError = new Error('Mock Error Message')
 
 jest.mock('@/api/enginesApi', () => ({
   enginesApi: {
-    getEngines: jest.fn(() => Promise.resolve({ engines: mockEngines })),
     getTableEngines: jest.fn(() => Promise.resolve(mockEngines)),
+    getProcessingEngines: jest.fn(() => Promise.resolve(mockProcessingEnginesResponse)),
   },
 }))
 jest.mock('@/utils/env', () => mockEnv)
-
-describe('Action creator: getEngines', () => {
-  let dispatch
-
-  beforeEach(() => {
-    dispatch = jest.fn()
-  })
-
-  it('should call getEngines once', async () => {
-    await fetchOCREngines()(dispatch)
-    expect(enginesApi.getEngines).toHaveBeenCalledTimes(1)
-  })
-
-  it('should call dispatch second time with enginesFetchSuccess from response in case of success', async () => {
-    await fetchOCREngines()(dispatch)
-    expect(dispatch).nthCalledWith(2, storeOCREngines(mockEngines))
-  })
-
-  it('should throw error', async () => {
-    console.warn = jest.fn()
-    console.error = jest.fn()
-    enginesApi.getEngines.mockImplementationOnce(() => Promise.reject(mockError))
-    await expect(fetchOCREngines()(dispatch)).rejects.toThrowError(mockError)
-  })
-})
 
 describe('Action creator: getTableEngines', () => {
   let dispatch
@@ -74,5 +60,41 @@ describe('Action creator: getTableEngines', () => {
     console.error = jest.fn()
     enginesApi.getTableEngines.mockImplementationOnce(() => Promise.reject(mockError))
     await expect(fetchTableEngines()(dispatch)).rejects.toThrowError(mockError)
+  })
+})
+
+describe('Action creator: fetchProcessingEngines', () => {
+  let dispatch
+
+  beforeEach(() => {
+    dispatch = jest.fn()
+    jest.clearAllMocks()
+  })
+
+  it('should call getProcessingEngines once', async () => {
+    await fetchProcessingEngines()(dispatch)
+    expect(enginesApi.getProcessingEngines).toHaveBeenCalledTimes(1)
+  })
+
+  it('should call dispatch with storeProcessingEngines with localized engine names', async () => {
+    await fetchProcessingEngines()(dispatch)
+
+    expect(dispatch).nthCalledWith(2, storeProcessingEngines([
+      {
+        code: KnownProcessingEngines.TESSERACT,
+        name: localize(Localization.TESSERACT),
+      },
+      {
+        code: KnownProcessingEngines.GCP_VISION,
+        name: localize(Localization.GCP_DOCUMENT_AI),
+      },
+    ]))
+  })
+
+  it('should throw error', async () => {
+    console.warn = jest.fn()
+    console.error = jest.fn()
+    enginesApi.getProcessingEngines.mockImplementationOnce(() => Promise.reject(mockError))
+    await expect(fetchProcessingEngines()(dispatch)).rejects.toThrowError(mockError)
   })
 })

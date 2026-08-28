@@ -30,12 +30,14 @@ exports[`Component: LabelingTool should render correct layout 1`] = `
         },
       ],
       "markup": null,
-      "ocrEngines": Array [
-        Engine {
-          "code": "mock engine code",
-          "name": "mock engine title",
-        },
-      ],
+      "ocr": Object {
+        "engines": Array [
+          Engine {
+            "code": "mock engine code",
+            "name": "mock engine title",
+          },
+        ],
+      },
       "settings": Object {
         "features": Array [
           "autoSave",

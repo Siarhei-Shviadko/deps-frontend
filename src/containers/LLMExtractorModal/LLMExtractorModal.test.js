@@ -27,6 +27,7 @@ jest.mock('react-hook-form', () => ({
     formState: {
       isValid: true,
     },
+    reset: mockReset,
   })),
 }))
 
@@ -34,6 +35,7 @@ jest.mock('./LLMExtractorForm', () => ({
   LLMExtractorForm: () => <form data-testid={'llm-extractor-form'} />,
 }))
 
+const mockReset = jest.fn()
 const mockProvider = 'Provider'
 const mockModel = 'Model'
 
@@ -73,11 +75,14 @@ const mockLLMExtractor = new LLMExtractor({
 })
 
 beforeEach(() => {
+  jest.clearAllMocks()
+
   useForm.mockImplementation(() => ({
     formState: {
       isValid: true,
     },
     getValues: jest.fn(() => mockValues),
+    reset: mockReset,
   }))
 })
 
@@ -125,8 +130,6 @@ test('renders modal with correct title and form if LLM Extractor is passed', asy
 })
 
 test('calls useForm with default values if LLM Extractor is passed', async () => {
-  jest.clearAllMocks()
-
   render(
     <LLMExtractorModal
       isLoading={false}
@@ -164,6 +167,7 @@ test('disables Create button when form data is invalid', async () => {
       isValid: false,
     },
     getValues: jest.fn(() => mockValues),
+    reset: mockReset,
   }))
 
   render(
@@ -233,6 +237,7 @@ test('calls onSave with contextAttachments when provided', async () => {
       ...mockValues,
       contextAttachments: contextAttachmentsValue,
     })),
+    reset: mockReset,
   }))
 
   render(
@@ -271,4 +276,24 @@ test('calls onSave with contextAttachments when provided', async () => {
       },
     },
   )
+})
+
+test('resets form with submitted values when save succeeds', async () => {
+  const mockOnSave = jest.fn()
+  const props = {
+    isLoading: false,
+    isVisible: true,
+    onCancel: jest.fn(),
+    onSave: mockOnSave,
+  }
+
+  render(<LLMExtractorModal {...props} />)
+
+  const createButton = screen.getByRole('button', {
+    name: localize(Localization.CREATE),
+  })
+
+  await userEvent.click(createButton)
+
+  expect(mockReset).toHaveBeenNthCalledWith(1, mockValues)
 })

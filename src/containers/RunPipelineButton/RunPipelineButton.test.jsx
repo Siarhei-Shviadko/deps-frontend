@@ -5,7 +5,7 @@ import { screen } from '@testing-library/react'
 import { Menu } from '@/components/Menu'
 import { PipelineStepModal } from '@/containers/PipelineStepModal'
 import { DocumentState } from '@/enums/DocumentState'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { render } from '@/utils/rendererRTL'
 import { RunPipelineButton } from './RunPipelineButton'
 
@@ -34,7 +34,7 @@ beforeEach(() => {
 test('renders PipelineStepModal components for all pipeline steps', () => {
   render(
     <RunPipelineButton
-      documentEngine={KnownOCREngine.TESSERACT}
+      documentEngine={KnownProcessingEngines.TESSERACT}
       documentId={mockDocumentId}
       documentLLMType={mockLLMType}
       documentState={DocumentState.COMPLETED}
@@ -49,7 +49,7 @@ test('renders PipelineStepModal components for all pipeline steps', () => {
 test('renders MenuItem components for all pipeline steps', () => {
   render(
     <RunPipelineButton
-      documentEngine={KnownOCREngine.TESSERACT}
+      documentEngine={KnownProcessingEngines.TESSERACT}
       documentId={mockDocumentId}
       documentLLMType={mockLLMType}
       documentState={DocumentState.COMPLETED}
@@ -64,7 +64,7 @@ test('renders MenuItem components for all pipeline steps', () => {
 test('passes correct eventKey to MenuItem components', () => {
   render(
     <RunPipelineButton
-      documentEngine={KnownOCREngine.TESSERACT}
+      documentEngine={KnownProcessingEngines.TESSERACT}
       documentId={mockDocumentId}
       documentLLMType={mockLLMType}
       documentState={DocumentState.COMPLETED}
@@ -82,7 +82,7 @@ test('passes correct eventKey to MenuItem components', () => {
 test('passes correct step to PipelineStepModal components', () => {
   render(
     <RunPipelineButton
-      documentEngine={KnownOCREngine.TESSERACT}
+      documentEngine={KnownProcessingEngines.TESSERACT}
       documentId={mockDocumentId}
       documentLLMType={mockLLMType}
       documentState={DocumentState.COMPLETED}
@@ -102,7 +102,7 @@ test('passes correct props to PipelineStepModal components', () => {
 
   render(
     <RunPipelineButton
-      documentEngine={KnownOCREngine.TESSERACT}
+      documentEngine={KnownProcessingEngines.TESSERACT}
       documentId={mockDocumentId}
       documentLLMType={mockLLMType}
       documentState={DocumentState.COMPLETED}
@@ -116,7 +116,7 @@ test('passes correct props to PipelineStepModal components', () => {
 
   calls.forEach((call) => {
     const props = call[0]
-    expect(props.documentEngine).toBe(KnownOCREngine.TESSERACT)
+    expect(props.documentEngine).toBe(KnownProcessingEngines.TESSERACT)
     expect(props.documentId).toBe(mockDocumentId)
     expect(props.documentLLMType).toBe(mockLLMType)
     expect(props.documentState).toBe(DocumentState.COMPLETED)

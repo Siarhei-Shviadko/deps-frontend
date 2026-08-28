@@ -5,7 +5,7 @@ import { render, screen } from '@testing-library/react'
 import { useParams } from 'react-router'
 import { clearFileStore } from '@/actions/fileReviewPage'
 import { useFetchFileQuery } from '@/apiRTK/filesApi'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { KnownBusinessEvent } from '@/hooks/useEventSource'
 import { ENV } from '@/utils/env'
 import { goBack } from '@/utils/routerActions'
@@ -68,7 +68,7 @@ const mockFile = {
     classificationEnabled: false,
     workflowParams: {
       documentTypeId: 'test-doc-type',
-      engine: KnownOCREngine.TESSERACT,
+      engine: KnownProcessingEngines.TESSERACT,
       language: 'en',
       llmType: null,
       parsingFeatures: [],

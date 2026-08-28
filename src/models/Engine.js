@@ -1,7 +1,7 @@
 
 import PropTypes from 'prop-types'
 import { SelectOption } from '@/components/Select'
-import { KnownOCREngine, RESOURCE_OCR_ENGINE } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines, RESOURCE_PROCESSING_ENGINE } from '@/enums/KnownProcessingEngines'
 import { Localization, localize } from '@/localization/i18n'
 import { ENV } from '@/utils/env'
 
@@ -28,7 +28,7 @@ class Engine {
     return engines.map((e) =>
       new SelectOption(
         e.code,
-        RESOURCE_OCR_ENGINE[e.code],
+        e.name,
         null,
       ),
     )
@@ -48,10 +48,10 @@ class Engine {
   }
 
   static toAllEngines = () => {
-    return Object.values(KnownOCREngine).map((engineCode) =>
+    return Object.values(KnownProcessingEngines).map((engineCode) =>
       new Engine(
         engineCode,
-        RESOURCE_OCR_ENGINE[engineCode],
+        RESOURCE_PROCESSING_ENGINE[engineCode],
       ),
     )
   }

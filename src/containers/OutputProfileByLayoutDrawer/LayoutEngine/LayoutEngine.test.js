@@ -2,14 +2,14 @@
 import { mockEnv } from '@/mocks/mockEnv'
 import { screen } from '@testing-library/react'
 import userEvent, { PointerEventsCheckLevel } from '@testing-library/user-event'
-import { fetchOCREngines } from '@/actions/engines'
-import { KnownOCREngine, RESOURCE_OCR_ENGINE } from '@/enums/KnownOCREngine'
+import { fetchProcessingEngines } from '@/actions/engines'
+import { KnownProcessingEngines, RESOURCE_PROCESSING_ENGINE } from '@/enums/KnownProcessingEngines'
 import { Localization, localize } from '@/localization/i18n'
 import { render } from '@/utils/rendererRTL'
 import { LayoutEngine } from './LayoutEngine'
 
 const mockAction = {
-  fetchOCREngines: 'fetchOCREngines',
+  fetchProcessingEngines: 'fetchProcessingEngines',
 }
 
 const mockDispatch = jest.fn((action) => action)
@@ -20,17 +20,17 @@ jest.mock('react-redux', () => ({
 }))
 
 jest.mock('@/actions/engines', () => ({
-  fetchOCREngines: jest.fn(() => mockAction.fetchOCREngines),
+  fetchProcessingEngines: jest.fn(() => mockAction.fetchProcessingEngines),
 }))
 
 jest.mock('@/selectors/engines')
 jest.mock('@/selectors/requests')
 jest.mock('@/utils/env', () => mockEnv)
 
-const mockEngine = KnownOCREngine.AWS_TEXTRACT
-const mockEngineTitle = RESOURCE_OCR_ENGINE[mockEngine]
+const mockEngine = KnownProcessingEngines.AWS_TEXTRACT
+const mockEngineTitle = RESOURCE_PROCESSING_ENGINE[mockEngine]
 
-test('should call dispatch with fetchOCREngines action', () => {
+test('should call dispatch with fetchProcessingEngines action', () => {
   render(
     <LayoutEngine
       engine={mockEngine}
@@ -38,7 +38,7 @@ test('should call dispatch with fetchOCREngines action', () => {
     />,
   )
 
-  expect(mockDispatch).nthCalledWith(1, fetchOCREngines())
+  expect(mockDispatch).nthCalledWith(1, fetchProcessingEngines())
 })
 
 test('shows correct engines selector', () => {

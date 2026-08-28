@@ -2,29 +2,9 @@
 import { createAction } from 'redux-actions'
 import { createRequestAction } from '@/actions/requests'
 import { enginesApi } from '@/api/enginesApi'
-import { RESOURCE_OCR_ENGINE } from '@/enums/KnownOCREngine'
+import { RESOURCE_PROCESSING_ENGINE } from '@/enums/KnownProcessingEngines'
 
 export const FEATURE_NAME = 'ENGINES'
-
-const storeOCREngines = createAction(
-  `${FEATURE_NAME}/STORE_OCR`,
-)
-
-const fetchOCREngines = createRequestAction(
-  'fetchOCREngines',
-  () => async (dispatch) => {
-    const { engines } = await enginesApi.getEngines()
-
-    dispatch(
-      storeOCREngines(
-        engines.map((engine) => ({
-          ...engine,
-          name: RESOURCE_OCR_ENGINE[engine.code],
-        })),
-      ),
-    )
-  },
-)
 
 const storeTableEngines = createAction(
   `${FEATURE_NAME}/STORE_TABLE`,
@@ -41,9 +21,29 @@ const fetchTableEngines = createRequestAction(
   },
 )
 
+const storeProcessingEngines = createAction(
+  `${FEATURE_NAME}/STORE_PROCESSING`,
+)
+
+const fetchProcessingEngines = createRequestAction(
+  'fetchProcessingEngines',
+  () => async (dispatch) => {
+    const { engines } = await enginesApi.getProcessingEngines()
+
+    dispatch(
+      storeProcessingEngines(
+        engines.map(({ code, name }) => ({
+          code,
+          name: RESOURCE_PROCESSING_ENGINE[code] ?? name,
+        })),
+      ),
+    )
+  },
+)
+
 export {
   storeTableEngines,
-  storeOCREngines,
   fetchTableEngines,
-  fetchOCREngines,
+  storeProcessingEngines,
+  fetchProcessingEngines,
 }

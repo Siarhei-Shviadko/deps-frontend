@@ -2,8 +2,8 @@ import { mockShallowComponent } from '@/mocks/mockComponent'
 import { mockEnv } from '@/mocks/mockEnv'
 import { screen } from '@testing-library/react'
 import { BatchFileStatus } from '@/enums/BatchFileStatus'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
 import { KnownParsingFeature } from '@/enums/KnownParsingFeature'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { KnownBusinessEvent } from '@/hooks/useEventSource'
 import {
   Batch as MockBatchModel,
@@ -82,7 +82,7 @@ const mockFilterConfig = new BatchFilesFilterConfig({
   name: 'hola',
   documentType: 'man',
   status: [BatchFileStatus.NEW],
-  engine: KnownOCREngine.AWS_TEXTRACT,
+  engine: KnownProcessingEngines.AWS_TEXTRACT,
   llmModel: 'gpt-4',
   parsingFeatures: [KnownParsingFeature.KEY_VALUE_PAIRS, KnownParsingFeature.TABLES],
   sortField: 'name',

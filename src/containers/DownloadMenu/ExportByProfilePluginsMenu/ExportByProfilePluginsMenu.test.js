@@ -7,7 +7,7 @@ import { createProfileOutputV2 } from '@/api/outputProfilesApi'
 import { ExtractionType } from '@/enums/ExtractionType'
 import { FILE_EXTENSION_TO_DOWNLOAD_FORMAT, FileExtension } from '@/enums/FileExtension'
 import { KnownLanguage } from '@/enums/KnownLanguage'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { Localization, localize } from '@/localization/i18n'
 import { DocumentType } from '@/models/DocumentType'
 import { ExtractedDataSchema, OutputProfile, ExportingType } from '@/models/OutputProfile'
@@ -84,7 +84,7 @@ jest.mock('./ExportByProfilePluginsMenu.styles.js', () => ({
 const mockDocumentType = new DocumentType(
   'DocType1',
   'Doc Type 1',
-  KnownOCREngine.TESSERACT,
+  KnownProcessingEngines.TESSERACT,
   KnownLanguage.ENGLISH,
   ExtractionType.TEMPLATE,
 )

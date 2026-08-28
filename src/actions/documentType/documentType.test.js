@@ -9,7 +9,7 @@ import { DocumentTypeExtras } from '@/enums/DocumentTypeExtras'
 import { ExtractionType } from '@/enums/ExtractionType'
 import { FILE_EXTENSION_TO_DOWNLOAD_FORMAT, FileExtension } from '@/enums/FileExtension'
 import { KnownLanguage } from '@/enums/KnownLanguage'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { DocumentTypeExtraField } from '@/models/DocumentTypeExtraField'
 import { ExtendedDocumentType } from '@/models/ExtendedDocumentType'
 import { ExportingType, ExtractedDataSchema, OutputProfile } from '@/models/OutputProfile'
@@ -21,7 +21,7 @@ const mockDocumentTypeCode = 'mockDocumentTypeCode'
 const mockDocumentType = new ExtendedDocumentType({
   code: 'mockDocumentTypeCode',
   name: 'mockDocumentTypeName',
-  engine: KnownOCREngine.TESSERACT,
+  engine: KnownProcessingEngines.TESSERACT,
   language: KnownLanguage.ENGLISH,
   extractionType: ExtractionType.ML,
   extraFields: [

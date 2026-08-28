@@ -3,14 +3,14 @@ import { mockEnv } from '@/mocks/mockEnv'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import React from 'react'
-import { fetchOCREngines } from '@/actions/engines'
+import { fetchProcessingEngines } from '@/actions/engines'
 import { useLayoutData } from '@/containers/ParsingLayout/EntityLayout/hooks'
 import { DOCUMENT_LAYOUT_PARSING_TYPE } from '@/enums/DocumentLayoutType'
 import { DocumentState } from '@/enums/DocumentState'
 import { KnownParsingFeature } from '@/enums/KnownParsingFeature'
 import { localize, Localization } from '@/localization/i18n'
 import { documentSelector } from '@/selectors/documentReviewPage'
-import { ocrEnginesSelector } from '@/selectors/engines'
+import { processingEnginesSelector } from '@/selectors/engines'
 import { areEnginesFetchingSelector } from '@/selectors/requests'
 import { render } from '@/utils/rendererRTL'
 import { LayoutSelect } from './LayoutSelect'
@@ -79,7 +79,7 @@ jest.mock('@/components/Dropdown', () => ({
 }))
 
 jest.mock('@/actions/engines', () => ({
-  fetchOCREngines: jest.fn(),
+  fetchProcessingEngines: jest.fn(),
 }))
 
 const mockHandleEditAction = jest.fn().mockResolvedValue(true)
@@ -149,7 +149,7 @@ const defaultProps = {
 beforeEach(() => {
   jest.clearAllMocks()
 
-  ocrEnginesSelector.mockReturnValue(MOCK_ENGINES)
+  processingEnginesSelector.mockReturnValue(MOCK_ENGINES)
   documentSelector.mockReturnValue(MOCK_DOCUMENT)
   areEnginesFetchingSelector.mockReturnValue(false)
 })
@@ -623,7 +623,7 @@ test('disables dropdown when engines are fetching', () => {
 })
 
 test('fetches engines when component is rendered', () => {
-  ocrEnginesSelector.mockReturnValueOnce([])
+  processingEnginesSelector.mockReturnValueOnce([])
 
   render(
     <LayoutSelect
@@ -632,5 +632,5 @@ test('fetches engines when component is rendered', () => {
     />,
   )
 
-  expect(mockDispatch).nthCalledWith(1, fetchOCREngines())
+  expect(mockDispatch).nthCalledWith(1, fetchProcessingEngines())
 })

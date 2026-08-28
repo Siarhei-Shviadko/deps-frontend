@@ -6,7 +6,7 @@ import userEvent from '@testing-library/user-event'
 import { FIELD_FORM_CODE, TEST_IDS } from '@/containers/UploadDocumentsDrawer/constants'
 import { FILE_EXTENSION_TO_DISPLAY_TEXT, FileExtension } from '@/enums/FileExtension'
 import { Localization, localize } from '@/localization/i18n'
-import { ocrEnginesSelector } from '@/selectors/engines'
+import { processingEnginesSelector } from '@/selectors/engines'
 import { areEnginesFetchingSelector } from '@/selectors/requests'
 import { render } from '@/utils/rendererRTL'
 import { WorkflowConfigurationSection } from './WorkflowConfigurationSection'
@@ -43,7 +43,7 @@ jest.mock('@/components/Collapse/CustomCollapse', () => ({
 
 beforeEach(() => {
   jest.clearAllMocks()
-  ocrEnginesSelector.mockReturnValue([])
+  processingEnginesSelector.mockReturnValue([])
   areEnginesFetchingSelector.mockReturnValue(false)
 })
 
