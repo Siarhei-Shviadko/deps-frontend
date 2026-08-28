@@ -567,6 +567,8 @@ const apiGatewayV2 = {
     tools.ocr.languages = () => tools.ocr() + '/languages'
     tools.ocr.extractArea = () => tools.ocr() + '/extract-area'
     tools.ocr.extractImagePage = () => tools.ocr() + '/extract-image-page'
+    tools.parsing = () => tools() + '/parsing'
+    tools.parsing.engines = () => tools.parsing() + '/engines'
 
     const file = () => `${v5Root}/file`
     file.blob = (blobName) => `${file()}/${encodeURI(blobName)}`

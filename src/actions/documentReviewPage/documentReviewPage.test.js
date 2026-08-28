@@ -41,7 +41,7 @@ import { documentsApi } from '@/api/documentsApi'
 import { UiKeys } from '@/constants/navigation'
 import { DocumentState } from '@/enums/DocumentState'
 import { KnownLanguage } from '@/enums/KnownLanguage'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { KnownTableEngine } from '@/enums/KnownTableEngine'
 import { Document } from '@/models/Document'
 import { TableField } from '@/models/ExtractedData'
@@ -268,7 +268,7 @@ describe('Action creator: runPipelineFromStep', () => {
   const mockStep = 'testStep'
   const mockSettings = {
     llmType: 'testLLMType',
-    engine: KnownOCREngine.TESSERACT,
+    engine: KnownProcessingEngines.TESSERACT,
     parsingFeatures: [],
   }
 
@@ -444,25 +444,25 @@ describe('Action creator: extractArea', () => {
   documentsApi.extractDataArea = jest.fn(() => Promise.resolve([[]]))
 
   it('should call documentsApi.extractDataArea with correct args in case all args were passed', async () => {
-    await extractArea(blobName, mockCoordinates, KnownOCREngine.TESSERACT, KnownLanguage.ENGLISH)(dispatch, getState)
+    await extractArea(blobName, mockCoordinates, KnownProcessingEngines.TESSERACT, KnownLanguage.ENGLISH)(dispatch, getState)
     expect(documentsApi.extractDataArea).nthCalledWith(
       1,
       mockCoordinates,
       blobName,
-      KnownOCREngine.TESSERACT,
+      KnownProcessingEngines.TESSERACT,
       KnownLanguage.ENGLISH,
     )
   })
 
   it('should call documentsApi.extractDataArea with correct args in case language was not passed but document.language is not empty', async () => {
-    await extractArea(blobName, mockCoordinates, KnownOCREngine.TESSERACT)(dispatch, getState)
+    await extractArea(blobName, mockCoordinates, KnownProcessingEngines.TESSERACT)(dispatch, getState)
     const document = documentSelector.getSelectorMockValue()
     const language = document.language
     expect(documentsApi.extractDataArea).nthCalledWith(
       1,
       mockCoordinates,
       blobName,
-      KnownOCREngine.TESSERACT,
+      KnownProcessingEngines.TESSERACT,
       language,
     )
   })
@@ -473,13 +473,13 @@ describe('Action creator: extractArea', () => {
       language: null,
     }))
 
-    await extractArea(blobName, mockCoordinates, KnownOCREngine.TESSERACT)(dispatch, getState)
+    await extractArea(blobName, mockCoordinates, KnownProcessingEngines.TESSERACT)(dispatch, getState)
     const language = documentTypeSelector.getSelectorMockValue().language
     expect(documentsApi.extractDataArea).nthCalledWith(
       1,
       mockCoordinates,
       blobName,
-      KnownOCREngine.TESSERACT,
+      KnownProcessingEngines.TESSERACT,
       language,
     )
   })
@@ -532,7 +532,7 @@ describe('Action creator: extractArea', () => {
       1,
       mockCoordinates,
       blobName,
-      KnownOCREngine.TESSERACT,
+      KnownProcessingEngines.TESSERACT,
       document.language,
     )
   })
@@ -544,7 +544,7 @@ describe('Action creator: detectTables', () => {
   const page = '100'
   const detectCoords = new Rect(0.2, 0.3, 0.1, 0.1)
   const detectEngine = KnownTableEngine.DEPS_DETECTOR
-  const ocrEngine = KnownOCREngine.TESSERACT
+  const processingEngine = KnownProcessingEngines.TESSERACT
   const lang = KnownLanguage.ENGLISH
   const rotation = 90
 
@@ -560,7 +560,7 @@ describe('Action creator: detectTables', () => {
       page,
       detectCoords,
       detectEngine,
-      ocrEngine,
+      processingEngine,
       lang,
       rotation,
     )(dispatch, getState)
@@ -573,7 +573,7 @@ describe('Action creator: detectTables', () => {
       page,
       detectCoords,
       detectEngine,
-      ocrEngine,
+      processingEngine,
       lang,
       rotation,
     )(dispatch, getState)
@@ -584,7 +584,7 @@ describe('Action creator: detectTables', () => {
       page,
       detectCoords,
       detectEngine,
-      ocrEngine,
+      processingEngine,
       lang,
       rotation,
     )
@@ -596,7 +596,7 @@ describe('Action creator: detectTables', () => {
       page,
       detectCoords,
       detectEngine,
-      ocrEngine,
+      processingEngine,
       undefined,
       rotation,
     )(dispatch, getState)
@@ -610,7 +610,7 @@ describe('Action creator: detectTables', () => {
       page,
       detectCoords,
       detectEngine,
-      ocrEngine,
+      processingEngine,
       language,
       rotation,
     )
@@ -623,7 +623,7 @@ describe('Action creator: detectTables', () => {
       page,
       detectCoords,
       detectEngine,
-      ocrEngine,
+      processingEngine,
       undefined,
       rotation,
     )(dispatch, getState)
@@ -636,13 +636,13 @@ describe('Action creator: detectTables', () => {
       page,
       detectCoords,
       detectEngine,
-      ocrEngine,
+      processingEngine,
       language,
       rotation,
     )
   })
 
-  it('should call documentsApi.detectTables once with correct arguments in case ocrEngine is not provided to action - engine from document', async () => {
+  it('should call detectTables on with correct arguments in case processingEngine is not provided to action - engine from document', async () => {
     await detectTables(
       blobFile,
       page,
@@ -668,7 +668,7 @@ describe('Action creator: detectTables', () => {
   })
 
   it(
-    'should call documentsApi.detectTables once with correct arguments in case ocrEngine is not provided to action and no engine in doc - engine form type',
+    'should call detectTables once with correct arguments in case processingEngine is not provided to action and no engine in doc - engine form type',
     async () => {
       documentSelector.mockImplementationOnce(() => ({}))
       await detectTables(
@@ -696,7 +696,7 @@ describe('Action creator: detectTables', () => {
     })
 
   it(
-    'should call documentsApi.detectTables once with correct arguments in case ocrEngine is not provided and no engine in document and no engine in type',
+    'should call detectTables once with correct arguments in case processingEngine is not provided and no engine in document and no engine in type',
     async () => {
       documentSelector.mockImplementationOnce(() => ({}))
       documentTypeSelector.mockImplementationOnce(() => ({}))
@@ -710,7 +710,7 @@ describe('Action creator: detectTables', () => {
         rotation,
       )(dispatch, getState)
 
-      const engine = KnownOCREngine.TESSERACT
+      const engine = KnownProcessingEngines.TESSERACT
       expect(documentsApi.detectTables).toHaveBeenCalledTimes(1)
       expect(documentsApi.detectTables).nthCalledWith(
         1,
@@ -1057,14 +1057,14 @@ describe('Action creator: extractTable', () => {
   })
 
   it('should call documentsApi.extractTableData with correct args in case of correct document language', async () => {
-    await extractTable(blobName, mockCoordinates, KnownOCREngine.TESSERACT)(dispatch, getState)
+    await extractTable(blobName, mockCoordinates, KnownProcessingEngines.TESSERACT)(dispatch, getState)
     const document = documentSelector.getSelectorMockValue()
     const language = document.language
     expect(documentsApi.extractTableData).nthCalledWith(
       1,
       mockCoordinates,
       blobName,
-      KnownOCREngine.TESSERACT,
+      KnownProcessingEngines.TESSERACT,
       language,
     )
   })
@@ -1075,25 +1075,25 @@ describe('Action creator: extractTable', () => {
       language: null,
     }))
 
-    await extractTable(blobName, mockCoordinates, KnownOCREngine.TESSERACT)(dispatch, getState)
+    await extractTable(blobName, mockCoordinates, KnownProcessingEngines.TESSERACT)(dispatch, getState)
     const language = documentTypeSelector.getSelectorMockValue().language
     expect(documentsApi.extractTableData).nthCalledWith(
       1,
       mockCoordinates,
       blobName,
-      KnownOCREngine.TESSERACT,
+      KnownProcessingEngines.TESSERACT,
       language,
     )
   })
 
   it('should call documentsApi.extractTableData with correct args in case of language as prop', async () => {
     const language = 'someLanguage'
-    await extractTable(blobName, mockCoordinates, KnownOCREngine.TESSERACT, language)(dispatch, getState)
+    await extractTable(blobName, mockCoordinates, KnownProcessingEngines.TESSERACT, language)(dispatch, getState)
     expect(documentsApi.extractTableData).nthCalledWith(
       1,
       mockCoordinates,
       blobName,
-      KnownOCREngine.TESSERACT,
+      KnownProcessingEngines.TESSERACT,
       language,
     )
   })

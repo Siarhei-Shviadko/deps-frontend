@@ -39,10 +39,12 @@ describe('Component: LabelingTool', () => {
           saveMarkup: jest.fn(),
           recognize: jest.fn(),
         },
-        ocrEngines: [
-          new Engine('mock engine code',
-            'mock engine title'),
-        ],
+        ocr: {
+          engines: [
+            new Engine('mock engine code',
+              'mock engine title'),
+          ],
+        },
         markup: null,
         settings: {
           mode: Mode.MARKUP,

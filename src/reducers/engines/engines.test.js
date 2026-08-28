@@ -1,6 +1,6 @@
 
 import { mockEnv } from '@/mocks/mockEnv'
-import { storeOCREngines, storeTableEngines } from '@/actions/engines'
+import { storeProcessingEngines, storeTableEngines } from '@/actions/engines'
 import { Engine } from '@/models/Engine'
 import { enginesReducer } from './engines'
 
@@ -15,8 +15,8 @@ describe('Reducer: engines', () => {
 
   beforeAll(() => {
     state = {
-      ocr: [],
       table: [],
+      processing: [],
     }
   })
 
@@ -28,17 +28,6 @@ describe('Reducer: engines', () => {
     expect(enginesReducer(state, unknownAction)).toEqual(state)
   })
 
-  it('should correctly handle fetchOCREnginesSuccess action', () => {
-    const mockEngines = [
-      new Engine('TESSERACT', 'Tesseract'),
-    ]
-    const action = storeOCREngines(mockEngines)
-    expect(enginesReducer(state, action)).toEqual({
-      ...state,
-      ocr: mockEngines,
-    })
-  })
-
   it('should correctly handle fetchTableEnginesSuccess action', () => {
     const mockEngines = [
       new Engine('GCP_VISION', 'AI Vision'),
@@ -48,6 +37,18 @@ describe('Reducer: engines', () => {
     expect(enginesReducer(state, action)).toEqual({
       ...state,
       table: mockEngines,
+    })
+  })
+
+  it('should correctly handle storeProcessingEngines action', () => {
+    const mockEngines = [
+      new Engine('GCP_VISION', 'AI Vision'),
+      new Engine('TESSERACT', 'TESSERACT'),
+    ]
+    const action = storeProcessingEngines(mockEngines)
+    expect(enginesReducer(state, action)).toEqual({
+      ...state,
+      processing: mockEngines,
     })
   })
 })

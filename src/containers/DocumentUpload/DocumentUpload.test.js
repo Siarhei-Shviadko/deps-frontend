@@ -21,7 +21,7 @@ import { DocumentType } from '@/models/DocumentType'
 import { DocumentTypesGroup } from '@/models/DocumentTypesGroup'
 import { Label } from '@/models/Label'
 import { documentTypesSelector } from '@/selectors/documentTypesListPage'
-import { ocrEnginesSelector } from '@/selectors/engines'
+import { processingEnginesSelector } from '@/selectors/engines'
 import { getDocumentUploadService } from '@/services/DocumentUploadService'
 import { ENV } from '@/utils/env'
 import { navigationMap } from '@/utils/navigationMap'
@@ -69,7 +69,7 @@ jest.mock('@/actions/documentTypes', () => ({
   fetchDocumentTypes: jest.fn(),
 }))
 jest.mock('@/actions/engines', () => ({
-  fetchOCREngines: jest.fn(),
+  fetchProcessingEngines: jest.fn(),
 }))
 
 const mockDocumentUploadMethod = jest.fn()
@@ -107,11 +107,11 @@ describe('Component: DocumentUpload', () => {
       expect(props.documentTypes).toEqual(expectedResult)
     })
 
-    it('should call ocrEnginesSelector and pass the result as sources prop', () => {
+    it('should call processingEnginesSelector and pass the result as sources prop', () => {
       const { props } = mapStateToProps()
 
-      expect(ocrEnginesSelector).toHaveBeenCalled()
-      expect(props.engines).toEqual(ocrEnginesSelector.getSelectorMockValue())
+      expect(processingEnginesSelector).toHaveBeenCalled()
+      expect(props.engines).toEqual(processingEnginesSelector.getSelectorMockValue())
     })
   })
 
@@ -140,9 +140,9 @@ describe('Component: DocumentUpload', () => {
       defaultProps = {
         documentTypes: documentTypesSelector.getSelectorMockValue(),
         shouldExtractData: true,
-        engines: ocrEnginesSelector.getSelectorMockValue(),
+        engines: processingEnginesSelector.getSelectorMockValue(),
         refreshDocuments: jest.fn(),
-        fetchOCREngines: jest.fn(),
+        fetchProcessingEngines: jest.fn(),
         fetchDocumentTypes: jest.fn(),
         onClose: jest.fn(),
         isVisible: true,
@@ -153,8 +153,8 @@ describe('Component: DocumentUpload', () => {
       ENV.AUTH_TYPE = AuthType.NO_AUTH
     })
 
-    it('should call props.fetchOCREngines when component did mount', () => {
-      expect(defaultProps.fetchOCREngines).toHaveBeenCalled()
+    it('should call props.fetchProcessingEngines when component did mount', () => {
+      expect(defaultProps.fetchProcessingEngines).toHaveBeenCalled()
     })
 
     it('should call props.fetchDocumentTypes when component did mount', () => {

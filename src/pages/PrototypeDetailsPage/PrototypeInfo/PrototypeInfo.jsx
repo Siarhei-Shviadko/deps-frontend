@@ -6,13 +6,13 @@ import { Input } from '@/components/Input'
 import { LongText } from '@/components/LongText'
 import { CustomSelect } from '@/components/Select'
 import { PrototypeFieldsViewSwitch } from '@/containers/PrototypeFieldsViewSwitch'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { PrototypeViewType } from '@/enums/PrototypeViewType'
 import { Localization, localize } from '@/localization/i18n'
 import { Engine } from '@/models/Engine'
 import { Language } from '@/models/Language'
 import { prototypeShape } from '@/models/Prototype'
-import { ocrEnginesSelector } from '@/selectors/engines'
+import { processingEnginesSelector } from '@/selectors/engines'
 import { languagesSelector } from '@/selectors/languages'
 import {
   FieldsWrapper,
@@ -39,7 +39,7 @@ const PrototypeInfo = ({
   onValueChange,
   setFieldsViewType,
 }) => {
-  const engines = useSelector(ocrEnginesSelector)
+  const engines = useSelector(processingEnginesSelector)
   const languages = useSelector(languagesSelector)
   const selectedEngine = getNameByCode(engines, prototype.engine) || prototype.engine
   const selectedLanguage = getNameByCode(languages, prototype.language) || prototype.language
@@ -59,7 +59,7 @@ const PrototypeInfo = ({
       render: () => (
         <CustomSelect
           onChange={(val) => onFieldChange(val, FIELD_CODE.ENGINE)}
-          options={Engine.toAllEnginesOptions(engines, [KnownOCREngine.TESSERACT])}
+          options={Engine.toAllEnginesOptions(engines, [KnownProcessingEngines.TESSERACT])}
           placeholder={localize(Localization.SELECT_ENGINE)}
           value={selectedEngine}
         />

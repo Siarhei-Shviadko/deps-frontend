@@ -2,7 +2,7 @@
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchOCREngines } from '@/actions/engines'
+import { fetchProcessingEngines } from '@/actions/engines'
 import { ButtonType } from '@/components/Button'
 import { Dropdown } from '@/components/Dropdown'
 import { AngleDownIcon } from '@/components/Icons/AngleDownIcon'
@@ -16,7 +16,7 @@ import { localize, Localization } from '@/localization/i18n'
 import { Document } from '@/models/Document'
 import { DocumentLayoutInfo } from '@/models/DocumentParsingInfo'
 import { Engine } from '@/models/Engine'
-import { ocrEnginesSelector } from '@/selectors/engines'
+import { processingEnginesSelector } from '@/selectors/engines'
 import { areEnginesFetchingSelector } from '@/selectors/requests'
 import { ENV } from '@/utils/env'
 import { useLayoutEditAction } from './hooks'
@@ -52,12 +52,12 @@ export const LayoutSelect = ({
   const { handleEditAction } = useLayoutEditAction(rawParsingInfoData)
 
   const areEnginesFetching = useSelector(areEnginesFetchingSelector)
-  const engines = useSelector(ocrEnginesSelector)
+  const engines = useSelector(processingEnginesSelector)
 
   const dispatch = useDispatch()
 
   useEffect(() => {
-    !engines.length && dispatch(fetchOCREngines())
+    !engines.length && dispatch(fetchProcessingEngines())
   }, [dispatch, engines])
 
   const selectOption = (value) => {

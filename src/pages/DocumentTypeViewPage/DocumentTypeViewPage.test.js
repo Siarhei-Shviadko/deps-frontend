@@ -6,7 +6,7 @@ import { changeActiveTab } from '@/actions/documentTypePage'
 import { DocumentTypeExtras } from '@/enums/DocumentTypeExtras'
 import { ExtractionType } from '@/enums/ExtractionType'
 import { KnownLanguage } from '@/enums/KnownLanguage'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { StatusCode } from '@/enums/StatusCode'
 import { Localization, localize } from '@/localization/i18n'
 import { ExtendedDocumentType } from '@/models/ExtendedDocumentType'
@@ -54,7 +54,7 @@ const mockDocumentType = new ExtendedDocumentType({
   name: 'Doc Type 1',
   extractionType: ExtractionType.TEMPLATE,
   language: KnownLanguage,
-  engine: KnownOCREngine,
+  engine: KnownProcessingEngines,
 })
 
 const originalEnv = JSON.parse(JSON.stringify(mockEnv.ENV))

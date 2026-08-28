@@ -58,6 +58,7 @@ const LLMExtractorModal = ({
 
   const {
     getValues,
+    reset,
     formState: {
       isValid,
     },
@@ -70,12 +71,13 @@ const LLMExtractorModal = ({
   )
 
   const onSubmit = useCallback(async () => {
+    const values = getValues()
     const {
       extractorName,
       llmModel,
       contextAttachments,
       ...rest
-    } = getValues()
+    } = values
 
     const { provider, model } = LLMSettings.llmTypeToSettings(llmModel)
 
@@ -90,9 +92,11 @@ const LLMExtractorModal = ({
     }
 
     await onSave(data)
+    reset(values)
   }, [
     getValues,
     onSave,
+    reset,
   ])
 
   const ModalFooter = useMemo(() => (

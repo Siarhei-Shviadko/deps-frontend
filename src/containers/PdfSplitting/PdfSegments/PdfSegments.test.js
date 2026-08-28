@@ -151,7 +151,7 @@ test('calls setSelectedGroup when click on reset button', async () => {
   expect(mockSetSelectedGroup).toHaveBeenCalledWith(null)
 })
 
-test('calls setSegments when remove segment', async () => {
+test('calls setSegments with merged pages into previous segment when remove last segment', async () => {
   jest.clearAllMocks()
 
   const props = {
@@ -175,6 +175,31 @@ test('calls setSegments when remove segment', async () => {
       {
         ...mockSegments[1].userPages[1],
         segmentId: mockSegments[0].id,
+      },
+    ],
+  }])
+})
+
+test('calls setSegments with merged pages into next segment when remove first segment', async () => {
+  jest.clearAllMocks()
+
+  const props = {
+    onCancel: jest.fn(),
+    onSave: jest.fn(),
+  }
+
+  render(<PdfSegments {...props} />)
+
+  const [deleteButton] = screen.getAllByRole('button')
+  await userEvent.click(deleteButton)
+
+  expect(mockSetSegments).nthCalledWith(1, [{
+    ...mockSegments[1],
+    userPages: [
+      ...mockSegments[1].userPages,
+      {
+        ...mockSegments[0].userPages[0],
+        segmentId: mockSegments[1].id,
       },
     ],
   }])

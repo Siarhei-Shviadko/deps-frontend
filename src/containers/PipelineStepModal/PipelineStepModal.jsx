@@ -7,7 +7,7 @@ import {
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { runPipelineFromStep } from '@/actions/documentReviewPage'
-import { fetchOCREngines } from '@/actions/engines'
+import { fetchProcessingEngines } from '@/actions/engines'
 import { CustomSelect } from '@/components/Select'
 import {
   ALLOW_TO_START_PIPELINE_DOCUMENT_STATES,
@@ -17,14 +17,14 @@ import {
 import { ExtractionLLMSelect } from '@/containers/ExtractionLLMSelect'
 import { ParsingFeaturesSwitch } from '@/containers/ParsingFeaturesSwitch'
 import { DocumentState } from '@/enums/DocumentState'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
 import { KnownParsingFeature } from '@/enums/KnownParsingFeature'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { RESOURCE_PIPELINE_STEP, PipelineStep } from '@/enums/PipelineStep'
 import { localize, Localization } from '@/localization/i18n'
 import { documentErrorShape } from '@/models/Document'
 import { Engine } from '@/models/Engine'
 import { LLMSettings } from '@/models/LLMProvider'
-import { ocrEnginesSelector } from '@/selectors/engines'
+import { processingEnginesSelector } from '@/selectors/engines'
 import { areEnginesFetchingSelector } from '@/selectors/requests'
 import { ENV } from '@/utils/env'
 import { notifySuccess, notifyWarning } from '@/utils/notification'
@@ -58,12 +58,12 @@ export const PipelineStepModal = ({
   disabled = false,
   modalTitle,
 }) => {
-  const engines = useSelector(ocrEnginesSelector)
+  const engines = useSelector(processingEnginesSelector)
   const areEnginesFetching = useSelector(areEnginesFetchingSelector)
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(fetchOCREngines())
+    dispatch(fetchProcessingEngines())
   }, [dispatch])
 
   const [isLoading, setIsLoading] = useState(false)
@@ -218,10 +218,10 @@ PipelineStepModal.propTypes = {
   step: PropTypes.oneOf(Object.values(PipelineStep)).isRequired,
   documentId: PropTypes.string.isRequired,
   documentState: PropTypes.oneOf(Object.values(DocumentState)),
-  documentEngine: PropTypes.oneOf(Object.values(KnownOCREngine)),
+  documentEngine: PropTypes.oneOf(Object.values(KnownProcessingEngines)),
   documentLLMType: PropTypes.string,
   error: documentErrorShape,
-  selectedEngine: PropTypes.oneOf(Object.values(KnownOCREngine)),
+  selectedEngine: PropTypes.oneOf(Object.values(KnownProcessingEngines)),
   renderTrigger: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
   modalTitle: PropTypes.string,

@@ -4,7 +4,7 @@ import { mockEnv } from '@/mocks/mockEnv'
 import { render, screen } from '@testing-library/react'
 import { TableSelectFilter } from '@/components/Table/TableSelectFilter'
 import { TableSortDirection } from '@/components/Table/TableSorter'
-import { KnownOCREngine, RESOURCE_OCR_ENGINE } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines, RESOURCE_PROCESSING_ENGINE } from '@/enums/KnownProcessingEngines'
 import { Localization, localize } from '@/localization/i18n'
 import { ColumnCode } from '../../ColumnCode'
 import { generateFileEngineColumn } from '../generateFileEngineColumn'
@@ -69,10 +69,10 @@ test('shows the filterIcon component correctly', () => {
 test('shows the batch engine correctly in the render function', () => {
   const column = generateFileEngineColumn(filterConfig)
 
-  const name = KnownOCREngine.TESSERACT
+  const name = KnownProcessingEngines.TESSERACT
   const renderResult = column.render(name)
 
   render(renderResult)
 
-  expect(screen.getByTestId('engine-title')).toHaveTextContent(RESOURCE_OCR_ENGINE[name])
+  expect(screen.getByTestId('engine-title')).toHaveTextContent(RESOURCE_PROCESSING_ENGINE[name])
 })

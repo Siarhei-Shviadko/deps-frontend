@@ -229,6 +229,14 @@ exports[`Component: DocumentUpload ConnectedComponent should render ConnectedCom
                 "text": "AWS Textract",
                 "value": "AWS_TEXTRACT",
               },
+              SelectOption {
+                "text": "Azure Document Intelligence",
+                "value": "AZURE_FORM_RECOGNIZER",
+              },
+              SelectOption {
+                "text": "LlamaIndex",
+                "value": "llamaindex",
+              },
             ]
           }
           onDocumentsChange={[Function]}

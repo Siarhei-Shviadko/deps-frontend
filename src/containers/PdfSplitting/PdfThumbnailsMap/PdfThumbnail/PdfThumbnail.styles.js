@@ -77,9 +77,7 @@ export const Thumbnail = styled(ReactPdfThumbnail)`
     outline: 1px solid ${(props) => props.theme.color.grayscale1};
   }
 
-  & canvas {
-    height: 15rem !important;
-  }
+
 `
 
 export const ThumbnailContainer = styled.div`

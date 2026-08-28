@@ -20,7 +20,7 @@ import { documentTypeShape, UNKNOWN_DOCUMENT_TYPE } from '@/models/DocumentType'
 import { Engine, engineShape } from '@/models/Engine'
 import { languageShape } from '@/models/Language'
 import { documentSelector, documentTypeSelector } from '@/selectors/documentReviewPage'
-import { ocrEnginesSelector } from '@/selectors/engines'
+import { processingEnginesSelector } from '@/selectors/engines'
 import { languagesSelector } from '@/selectors/languages'
 import {
   isDocumentErrorGettingSelector,
@@ -246,7 +246,7 @@ const mapStateToProps = (state) => ({
   documentType: documentTypeSelector(state),
   languages: languagesSelector(state),
   languagesFetching: areLanguagesFetchingSelector(state),
-  engines: ocrEnginesSelector(state),
+  engines: processingEnginesSelector(state),
 })
 
 const mapDispatchToProps = {

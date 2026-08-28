@@ -6,7 +6,7 @@ import {
   useDispatch,
   useSelector,
 } from 'react-redux'
-import { fetchOCREngines } from '@/actions/engines'
+import { fetchProcessingEngines } from '@/actions/engines'
 import {
   Form,
   FormItem,
@@ -22,7 +22,7 @@ import { AuthType } from '@/enums/AuthType'
 import { KnownParsingFeature } from '@/enums/KnownParsingFeature'
 import { Localization, localize } from '@/localization/i18n'
 import { Engine } from '@/models/Engine'
-import { ocrEnginesSelector } from '@/selectors/engines'
+import { processingEnginesSelector } from '@/selectors/engines'
 import { areEnginesFetchingSelector } from '@/selectors/requests'
 import { ENV } from '@/utils/env'
 import { FormFieldCodes } from './constants'
@@ -36,7 +36,7 @@ export const DEFAULT_FORM_SETTINGS = {
 }
 
 const DocumentUploadSettingsForm = () => {
-  const engines = useSelector(ocrEnginesSelector)
+  const engines = useSelector(processingEnginesSelector)
   const areEnginesFetching = useSelector(areEnginesFetchingSelector)
 
   const selectedEngine = useWatch({ name: FormFieldCodes.ENGINE })
@@ -45,7 +45,7 @@ const DocumentUploadSettingsForm = () => {
 
   useEffect(() => {
     batch(() => {
-      dispatch(fetchOCREngines)
+      dispatch(fetchProcessingEngines)
     })
   }, [dispatch])
 

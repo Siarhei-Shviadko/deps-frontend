@@ -2,10 +2,10 @@
 import { mockEnv } from '@/mocks/mockEnv'
 import { mockReactHookForm } from '@/mocks/mockReactHookForm'
 import { screen } from '@testing-library/react'
-import { fetchOCREngines } from '@/actions/engines'
+import { fetchProcessingEngines } from '@/actions/engines'
 import { FIELD_FORM_CODE } from '@/containers/UploadFilesDrawer/constants'
 import { Localization, localize } from '@/localization/i18n'
-import { ocrEnginesSelector } from '@/selectors/engines'
+import { processingEnginesSelector } from '@/selectors/engines'
 import { render } from '@/utils/rendererRTL'
 import { FileSettingsForm } from './FileSettingsForm'
 
@@ -31,7 +31,7 @@ jest.mock('react-redux', () => ({
 }))
 
 jest.mock('@/actions/engines', () => ({
-  fetchOCREngines: jest.fn(),
+  fetchProcessingEngines: jest.fn(),
 }))
 
 const mockDispatch = jest.fn()
@@ -64,10 +64,10 @@ test('renders labels select field when form is rendered', () => {
   expect(labelsField).toHaveTextContent(localize(Localization.LABELS))
 })
 
-test('calls fetchOCREngines when form is rendered if engines are empty', () => {
-  ocrEnginesSelector.mockReturnValueOnce([])
+test('calls fetchProcessingEngines when form is rendered if engines are empty', () => {
+  processingEnginesSelector.mockReturnValueOnce([])
 
   render(<FileSettingsForm />)
 
-  expect(mockDispatch).toHaveBeenCalledWith(fetchOCREngines())
+  expect(mockDispatch).toHaveBeenCalledWith(fetchProcessingEngines())
 })

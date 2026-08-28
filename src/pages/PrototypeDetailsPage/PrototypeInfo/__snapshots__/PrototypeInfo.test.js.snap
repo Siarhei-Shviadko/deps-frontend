@@ -13,6 +13,14 @@ Object {
       "text": "AWS Textract",
       "value": "AWS_TEXTRACT",
     },
+    SelectOption {
+      "text": "Azure Document Intelligence",
+      "value": "AZURE_FORM_RECOGNIZER",
+    },
+    SelectOption {
+      "text": "LlamaIndex",
+      "value": "llamaindex",
+    },
   ],
   "placeholder": "Select Engine",
   "value": "Tesseract",

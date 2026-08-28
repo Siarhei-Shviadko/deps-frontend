@@ -1,13 +1,22 @@
+import katex from 'katex'
 import MarkdownIt from 'markdown-it'
 import taskLists from 'markdown-it-task-lists'
+import texmath from 'markdown-it-texmath'
 import sanitizeHtml from 'sanitize-html'
 
 const markdownIt = new MarkdownIt({
   html: true,
   linkify: true,
-  breaks: false,
+  breaks: true,
 }).use(taskLists, {
   label: true,
+}).use(texmath, {
+  engine: katex,
+  delimiters: 'dollars',
+  katexOptions: {
+    output: 'html',
+    throwOnError: false,
+  },
 })
 
 const SANITIZE_OPTIONS = {
@@ -23,6 +32,7 @@ const SANITIZE_OPTIONS = {
     input: ['type', 'checked', 'disabled'],
     th: ['align', 'colspan', 'rowspan'],
     td: ['align', 'colspan', 'rowspan'],
+    span: ['class', 'style', 'aria-hidden'],
   },
   allowedSchemesByTag: {
     img: ['http', 'https', 'data'],

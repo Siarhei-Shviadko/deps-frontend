@@ -15,7 +15,7 @@ import { setUi } from '@/actions/navigation'
 import { createRequestAction } from '@/actions/requests'
 import { documentsApi } from '@/api/documentsApi'
 import { UiKeys } from '@/constants/navigation'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { Document } from '@/models/Document'
 import { UNKNOWN_DOCUMENT_TYPE } from '@/models/DocumentType'
 import { HighlightedField } from '@/models/HighlightedField'
@@ -400,7 +400,7 @@ export const extractAreaWithAlgorithm = createRequestAction(
     const document = documentSelector(state)
     const documentType = documentTypeSelector(state)
     language ??= document.language || documentType.language
-    engine ??= document.engine || documentType.engine || KnownOCREngine.TESSERACT
+    engine ??= document.engine || documentType.engine || KnownProcessingEngines.TESSERACT
 
     return extractDataAreaWithAlgorithm({
       language,
@@ -423,7 +423,7 @@ export const extractArea = createRequestAction(
     const document = documentSelector(state)
     const documentType = documentTypeSelector(state)
     language ??= document.language || documentType.language
-    engine ??= document.engine || documentType.engine || KnownOCREngine.TESSERACT
+    engine ??= document.engine || documentType.engine || KnownProcessingEngines.TESSERACT
 
     return documentsApi.extractDataArea(
       area,
@@ -467,7 +467,7 @@ export const detectTables = createRequestAction(
     const docTypeEngine = docType.engine === UNKNOWN_DOCUMENT_TYPE.engine ? null : docType.engine
 
     language ??= (documentSelector(state).language || documentTypeSelector(state).language)
-    ocrEngine ??= (documentSelector(state).engine || docTypeEngine || KnownOCREngine.TESSERACT)
+    ocrEngine ??= (documentSelector(state).engine || docTypeEngine || KnownProcessingEngines.TESSERACT)
 
     return documentsApi.detectTables(
       blobFile,

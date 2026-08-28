@@ -8,7 +8,7 @@ import { Spin } from '@/components/Spin'
 import { AddTemplateVersionButton } from '@/containers/AddTemplateVersionButton'
 import { PageNavigationHeader } from '@/containers/PageNavigationHeader'
 import { documentTypeStateSelector } from '@/selectors/documentType'
-import { ocrEnginesSelector } from '@/selectors/engines'
+import { processingEnginesSelector } from '@/selectors/engines'
 import { languagesSelector } from '@/selectors/languages'
 import { isDocumentTypeFetchingSelector } from '@/selectors/requests'
 import { navigationMap } from '@/utils/navigationMap'
@@ -24,7 +24,7 @@ const TemplateNavHeader = ({ getTemplateVersions }) => {
   const { id } = useParams()
 
   const isTemplateFetching = useSelector(isDocumentTypeFetchingSelector)
-  const engines = useSelector(ocrEnginesSelector)
+  const engines = useSelector(processingEnginesSelector)
   const languages = useSelector(languagesSelector)
 
   const currentTemplate = useSelector(documentTypeStateSelector)

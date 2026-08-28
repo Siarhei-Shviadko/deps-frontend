@@ -5,7 +5,7 @@ import { shallow } from 'enzyme'
 import { Input } from '@/components/Input'
 import { CustomSelect } from '@/components/Select'
 import { KnownLanguage } from '@/enums/KnownLanguage'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { PrototypeViewType } from '@/enums/PrototypeViewType'
 import { Prototype } from '@/models/Prototype'
 import { PrototypeInfo } from './PrototypeInfo'
@@ -18,7 +18,7 @@ jest.mock('@/selectors/engines')
 const mockPrototype = new Prototype({
   id: 'testId',
   name: 'testName',
-  engine: KnownOCREngine.TESSERACT,
+  engine: KnownProcessingEngines.TESSERACT,
   language: KnownLanguage.ENGLISH,
   createdAt: '2023-12-22T07:25:56.466801',
   description: '',

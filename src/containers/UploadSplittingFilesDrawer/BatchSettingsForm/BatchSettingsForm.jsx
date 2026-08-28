@@ -2,7 +2,7 @@
 import { useCallback, useEffect } from 'react'
 import { useFormContext, useWatch } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchOCREngines } from '@/actions/engines'
+import { fetchProcessingEngines } from '@/actions/engines'
 import {
   FormFieldType,
   PatternValidator,
@@ -19,7 +19,7 @@ import { ComponentSize } from '@/enums/ComponentSize'
 import { FieldType } from '@/enums/FieldType'
 import { Localization, localize } from '@/localization/i18n'
 import { Engine } from '@/models/Engine'
-import { ocrEnginesSelector } from '@/selectors/engines'
+import { processingEnginesSelector } from '@/selectors/engines'
 import { areEnginesFetchingSelector } from '@/selectors/requests'
 import { ENV } from '@/utils/env'
 import { BatchTypeSwitcher } from '../BatchTypeSwitcher'
@@ -27,7 +27,7 @@ import { Hints } from '../Hints'
 import { StyledForm, StyledFormItem } from './BatchSettingsForm.styles'
 
 export const BatchSettingsForm = () => {
-  const engines = useSelector(ocrEnginesSelector)
+  const engines = useSelector(processingEnginesSelector)
   const areEnginesFetching = useSelector(areEnginesFetchingSelector)
 
   const selectedEngine = useWatch({ name: FIELD_FORM_CODE.ENGINE })
@@ -53,7 +53,7 @@ export const BatchSettingsForm = () => {
   }, [setValue])
 
   useEffect(() => {
-    !engines.length && dispatch(fetchOCREngines())
+    !engines.length && dispatch(fetchProcessingEngines())
   }, [dispatch, engines?.length])
 
   const fields = [

@@ -5,10 +5,10 @@ import { render } from '@testing-library/react'
 import { act } from 'react-dom/test-utils'
 import { useSelector } from 'react-redux'
 import { runPipelineFromStep } from '@/actions/documentReviewPage'
-import { fetchOCREngines } from '@/actions/engines'
+import { fetchProcessingEngines } from '@/actions/engines'
 import { ModalFormButton } from '@/components/ModalFormButton'
 import { DocumentState } from '@/enums/DocumentState'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { PipelineStep } from '@/enums/PipelineStep'
 import { localize, Localization } from '@/localization/i18n'
 import { PipelineStepModal } from './PipelineStepModal'
@@ -33,26 +33,26 @@ beforeEach(() => {
   jest.clearAllMocks()
 })
 
-test('renders with correct props and fetches OCR engines', () => {
+test('renders with correct props and fetches processing engines', () => {
   const mockProps = {
     step: PipelineStep.EXTRACTION,
     documentId: 'doc123',
     documentState: DocumentState.IN_REVIEW,
-    documentEngine: KnownOCREngine.TESSERACT,
+    documentEngine: KnownProcessingEngines.TESSERACT,
     documentLLMType: 'gpt-3',
     error: null,
     renderTrigger: jest.fn(() => <div data-testid="trigger">Run Pipeline</div>),
   }
 
   useSelector.mockImplementation(() => [{
-    id: KnownOCREngine.TESSERACT,
+    id: KnownProcessingEngines.TESSERACT,
     name: 'Engine 1',
   }])
 
   render(<PipelineStepModal {...mockProps} />)
 
   expect(mockDispatch).toHaveBeenCalled()
-  expect(fetchOCREngines).toHaveBeenCalled()
+  expect(fetchProcessingEngines).toHaveBeenCalled()
 })
 
 test('renders ModalFormButton with correct props', () => {
@@ -60,14 +60,14 @@ test('renders ModalFormButton with correct props', () => {
     step: PipelineStep.PARSING,
     documentId: 'doc123',
     documentState: DocumentState.IN_REVIEW,
-    documentEngine: KnownOCREngine.TESSERACT,
+    documentEngine: KnownProcessingEngines.TESSERACT,
     documentLLMType: 'gpt-3',
     error: null,
     renderTrigger: jest.fn(() => <div data-testid="trigger">Run Pipeline</div>),
   }
 
   useSelector.mockImplementation(() => [{
-    id: KnownOCREngine.TESSERACT,
+    id: KnownProcessingEngines.TESSERACT,
     name: 'Tesseract',
   }])
 
@@ -111,14 +111,14 @@ test('dispatches runPipelineFromStep when onOk is called', async () => {
     step: PipelineStep.EXTRACTION,
     documentId: 'doc123',
     documentState: DocumentState.IN_REVIEW,
-    documentEngine: KnownOCREngine.TESSERACT,
+    documentEngine: KnownProcessingEngines.TESSERACT,
     documentLLMType: 'gpt-3',
     error: null,
     renderTrigger: jest.fn(() => <div data-testid="trigger">Run Pipeline</div>),
   }
 
   useSelector.mockImplementation(() => [{
-    id: KnownOCREngine.TESSERACT,
+    id: KnownProcessingEngines.TESSERACT,
     name: 'Tesseract',
   }])
 
@@ -127,7 +127,7 @@ test('dispatches runPipelineFromStep when onOk is called', async () => {
   const onOk = ModalFormButton.mock.calls[0][0].onOk
 
   const mockSettings = {
-    engine: KnownOCREngine.TESSERACT,
+    engine: KnownProcessingEngines.TESSERACT,
     parsingFeatures: ['text'],
   }
 
@@ -143,14 +143,14 @@ test('calls notifySuccess with correct message when pipeline runs successfully',
     step: PipelineStep.EXTRACTION,
     documentId: 'doc123',
     documentState: DocumentState.IN_REVIEW,
-    documentEngine: KnownOCREngine.TESSERACT,
+    documentEngine: KnownProcessingEngines.TESSERACT,
     documentLLMType: 'gpt-3',
     error: null,
     renderTrigger: jest.fn(() => <div data-testid="trigger">Run Pipeline</div>),
   }
 
   useSelector.mockImplementation(() => [{
-    id: KnownOCREngine.TESSERACT,
+    id: KnownProcessingEngines.TESSERACT,
     name: 'Tesseract',
   }])
 
@@ -159,7 +159,7 @@ test('calls notifySuccess with correct message when pipeline runs successfully',
   const onOk = ModalFormButton.mock.calls[0][0].onOk
 
   const mockSettings = {
-    engine: KnownOCREngine.TESSERACT,
+    engine: KnownProcessingEngines.TESSERACT,
     parsingFeatures: ['text'],
   }
 
@@ -177,14 +177,14 @@ test('calls notifySuccess with correct message for extraction step', async () =>
     step: PipelineStep.EXTRACTION,
     documentId: 'doc123',
     documentState: DocumentState.IN_REVIEW,
-    documentEngine: KnownOCREngine.TESSERACT,
+    documentEngine: KnownProcessingEngines.TESSERACT,
     documentLLMType: 'gpt-3',
     error: null,
     renderTrigger: jest.fn(() => <div data-testid="trigger">Run Pipeline</div>),
   }
 
   useSelector.mockImplementation(() => [{
-    id: KnownOCREngine.TESSERACT,
+    id: KnownProcessingEngines.TESSERACT,
     name: 'Engine 1',
   }])
 
@@ -193,7 +193,7 @@ test('calls notifySuccess with correct message for extraction step', async () =>
   const onOk = ModalFormButton.mock.calls[0][0].onOk
 
   const mockSettings = {
-    engine: KnownOCREngine.TESSERACT,
+    engine: KnownProcessingEngines.TESSERACT,
   }
 
   await act(async () => await onOk(mockSettings))
@@ -208,7 +208,7 @@ test('renders with custom modal title when provided', () => {
     step: PipelineStep.EXTRACTION,
     documentId: 'doc123',
     documentState: DocumentState.IN_REVIEW,
-    documentEngine: KnownOCREngine.TESSERACT,
+    documentEngine: KnownProcessingEngines.TESSERACT,
     documentLLMType: 'gpt-3',
     error: null,
     renderTrigger: jest.fn(() => <div data-testid="trigger">Run Pipeline</div>),
@@ -216,7 +216,7 @@ test('renders with custom modal title when provided', () => {
   }
 
   useSelector.mockImplementation(() => [{
-    id: KnownOCREngine.TESSERACT,
+    id: KnownProcessingEngines.TESSERACT,
     name: 'Engine 1',
   }])
 
@@ -235,7 +235,7 @@ test('renders with disabled state when disabled prop is true', () => {
     step: PipelineStep.EXTRACTION,
     documentId: 'doc123',
     documentState: DocumentState.IN_REVIEW,
-    documentEngine: KnownOCREngine.TESSERACT,
+    documentEngine: KnownProcessingEngines.TESSERACT,
     documentLLMType: 'gpt-3',
     error: null,
     renderTrigger: jest.fn(() => <div data-testid="trigger">Run Pipeline</div>),
@@ -243,7 +243,7 @@ test('renders with disabled state when disabled prop is true', () => {
   }
 
   useSelector.mockImplementation(() => [{
-    id: KnownOCREngine.TESSERACT,
+    id: KnownProcessingEngines.TESSERACT,
     name: 'Engine 1',
   }])
 
@@ -262,14 +262,14 @@ test('renders with disabled state when document state is not allowed', () => {
     step: PipelineStep.EXTRACTION,
     documentId: 'doc123',
     documentState: DocumentState.COMPLETED,
-    documentEngine: KnownOCREngine.TESSERACT,
+    documentEngine: KnownProcessingEngines.TESSERACT,
     documentLLMType: 'gpt-3',
     error: null,
     renderTrigger: jest.fn(() => <div data-testid="trigger">Run Pipeline</div>),
   }
 
   useSelector.mockImplementation(() => [{
-    id: KnownOCREngine.TESSERACT,
+    id: KnownProcessingEngines.TESSERACT,
     name: 'Engine 1',
   }])
 
@@ -288,14 +288,14 @@ test('renders with disabled state when extraction step is forbidden for document
     step: PipelineStep.EXTRACTION,
     documentId: 'doc123',
     documentState: DocumentState.COMPLETED,
-    documentEngine: KnownOCREngine.TESSERACT,
+    documentEngine: KnownProcessingEngines.TESSERACT,
     documentLLMType: 'gpt-3',
     error: null,
     renderTrigger: jest.fn(() => <div data-testid="trigger">Run Pipeline</div>),
   }
 
   useSelector.mockImplementation(() => [{
-    id: KnownOCREngine.TESSERACT,
+    id: KnownProcessingEngines.TESSERACT,
     name: 'Engine 1',
   }])
 
@@ -314,7 +314,7 @@ test('renders with disabled state when step is forbidden for error state', () =>
     step: PipelineStep.EXTRACTION,
     documentId: 'doc123',
     documentState: DocumentState.FAILED,
-    documentEngine: KnownOCREngine.TESSERACT,
+    documentEngine: KnownProcessingEngines.TESSERACT,
     documentLLMType: 'gpt-3',
     error: {
       inState: 'someErrorState',
@@ -324,7 +324,7 @@ test('renders with disabled state when step is forbidden for error state', () =>
   }
 
   useSelector.mockImplementation(() => [{
-    id: KnownOCREngine.TESSERACT,
+    id: KnownProcessingEngines.TESSERACT,
     name: 'Engine 1',
   }])
 
@@ -343,14 +343,14 @@ test('sets LLM type initial value to null when documentLLMType is invalid', () =
     step: PipelineStep.EXTRACTION,
     documentId: 'doc123',
     documentState: DocumentState.IN_REVIEW,
-    documentEngine: KnownOCREngine.TESSERACT,
+    documentEngine: KnownProcessingEngines.TESSERACT,
     documentLLMType: 'invalid-llm-type',
     error: null,
     renderTrigger: jest.fn(() => <div data-testid="trigger">Run Pipeline</div>),
   }
 
   useSelector.mockImplementation(() => [{
-    id: KnownOCREngine.TESSERACT,
+    id: KnownProcessingEngines.TESSERACT,
     name: 'Engine 1',
   }])
 
@@ -366,14 +366,14 @@ test('sets LLM type initial value to null when documentLLMType is null', () => {
     step: PipelineStep.EXTRACTION,
     documentId: 'doc123',
     documentState: DocumentState.IN_REVIEW,
-    documentEngine: KnownOCREngine.TESSERACT,
+    documentEngine: KnownProcessingEngines.TESSERACT,
     documentLLMType: null,
     error: null,
     renderTrigger: jest.fn(() => <div data-testid="trigger">Run Pipeline</div>),
   }
 
   useSelector.mockImplementation(() => [{
-    id: KnownOCREngine.TESSERACT,
+    id: KnownProcessingEngines.TESSERACT,
     name: 'Engine 1',
   }])
 
@@ -390,7 +390,7 @@ test('disables step when disabled prop is true', () => {
     step: PipelineStep.EXTRACTION,
     documentId: 'doc123',
     documentState: DocumentState.IN_REVIEW,
-    documentEngine: KnownOCREngine.TESSERACT,
+    documentEngine: KnownProcessingEngines.TESSERACT,
     documentLLMType: 'gpt-3',
     error: null,
     renderTrigger: mockRenderTrigger,
@@ -398,7 +398,7 @@ test('disables step when disabled prop is true', () => {
   }
 
   useSelector.mockImplementation(() => [{
-    id: KnownOCREngine.TESSERACT,
+    id: KnownProcessingEngines.TESSERACT,
     name: 'Engine 1',
   }])
 
@@ -418,14 +418,14 @@ test('disables step when document state is not allowed to start pipeline', () =>
     step: PipelineStep.EXTRACTION,
     documentId: 'doc123',
     documentState: DocumentState.NEW,
-    documentEngine: KnownOCREngine.TESSERACT,
+    documentEngine: KnownProcessingEngines.TESSERACT,
     documentLLMType: 'gpt-3',
     error: null,
     renderTrigger: mockRenderTrigger,
   }
 
   useSelector.mockImplementation(() => [{
-    id: KnownOCREngine.TESSERACT,
+    id: KnownProcessingEngines.TESSERACT,
     name: 'Engine 1',
   }])
 
@@ -445,14 +445,14 @@ test('enables step when document state is allowed to start pipeline', () => {
     step: PipelineStep.EXTRACTION,
     documentId: 'doc123',
     documentState: DocumentState.IN_REVIEW,
-    documentEngine: KnownOCREngine.TESSERACT,
+    documentEngine: KnownProcessingEngines.TESSERACT,
     documentLLMType: 'gpt-3',
     error: null,
     renderTrigger: mockRenderTrigger,
   }
 
   useSelector.mockImplementation(() => [{
-    id: KnownOCREngine.TESSERACT,
+    id: KnownProcessingEngines.TESSERACT,
     name: 'Engine 1',
   }])
 
@@ -472,14 +472,14 @@ test('disables extraction step when document state is forbidden for extraction',
     step: PipelineStep.EXTRACTION,
     documentId: 'doc123',
     documentState: DocumentState.NEW,
-    documentEngine: KnownOCREngine.TESSERACT,
+    documentEngine: KnownProcessingEngines.TESSERACT,
     documentLLMType: 'gpt-3',
     error: null,
     renderTrigger: mockRenderTrigger,
   }
 
   useSelector.mockImplementation(() => [{
-    id: KnownOCREngine.TESSERACT,
+    id: KnownProcessingEngines.TESSERACT,
     name: 'Engine 1',
   }])
 
@@ -499,14 +499,14 @@ test('enables extraction step when document state is allowed for extraction', ()
     step: PipelineStep.EXTRACTION,
     documentId: 'doc123',
     documentState: DocumentState.IN_REVIEW,
-    documentEngine: KnownOCREngine.TESSERACT,
+    documentEngine: KnownProcessingEngines.TESSERACT,
     documentLLMType: 'gpt-3',
     error: null,
     renderTrigger: mockRenderTrigger,
   }
 
   useSelector.mockImplementation(() => [{
-    id: KnownOCREngine.TESSERACT,
+    id: KnownProcessingEngines.TESSERACT,
     name: 'Engine 1',
   }])
 
@@ -526,7 +526,7 @@ test('disables step when document is in failed state and step is not allowed for
     step: PipelineStep.EXTRACTION,
     documentId: 'doc123',
     documentState: DocumentState.FAILED,
-    documentEngine: KnownOCREngine.TESSERACT,
+    documentEngine: KnownProcessingEngines.TESSERACT,
     documentLLMType: 'gpt-3',
     error: {
       inState: DocumentState.DATA_EXTRACTION,
@@ -536,7 +536,7 @@ test('disables step when document is in failed state and step is not allowed for
   }
 
   useSelector.mockImplementation(() => [{
-    id: KnownOCREngine.TESSERACT,
+    id: KnownProcessingEngines.TESSERACT,
     name: 'Engine 1',
   }])
 
@@ -556,7 +556,7 @@ test('enables step when document is in failed state and step is allowed for erro
     step: PipelineStep.PARSING,
     documentId: 'doc123',
     documentState: DocumentState.FAILED,
-    documentEngine: KnownOCREngine.TESSERACT,
+    documentEngine: KnownProcessingEngines.TESSERACT,
     documentLLMType: 'gpt-3',
     error: {
       inState: DocumentState.DATA_EXTRACTION,
@@ -566,7 +566,7 @@ test('enables step when document is in failed state and step is allowed for erro
   }
 
   useSelector.mockImplementation(() => [{
-    id: KnownOCREngine.TESSERACT,
+    id: KnownProcessingEngines.TESSERACT,
     name: 'Engine 1',
   }])
 
@@ -586,14 +586,14 @@ test('enables step when document is in failed state but has no error', () => {
     step: PipelineStep.PARSING,
     documentId: 'doc123',
     documentState: DocumentState.FAILED,
-    documentEngine: KnownOCREngine.TESSERACT,
+    documentEngine: KnownProcessingEngines.TESSERACT,
     documentLLMType: 'gpt-3',
     error: null,
     renderTrigger: mockRenderTrigger,
   }
 
   useSelector.mockImplementation(() => [{
-    id: KnownOCREngine.TESSERACT,
+    id: KnownProcessingEngines.TESSERACT,
     name: 'Engine 1',
   }])
 
@@ -613,7 +613,7 @@ test('enables step when document is not in failed state even with error', () => 
     step: PipelineStep.EXTRACTION,
     documentId: 'doc123',
     documentState: DocumentState.IN_REVIEW,
-    documentEngine: KnownOCREngine.TESSERACT,
+    documentEngine: KnownProcessingEngines.TESSERACT,
     documentLLMType: 'gpt-3',
     error: {
       inState: DocumentState.DATA_EXTRACTION,
@@ -623,7 +623,7 @@ test('enables step when document is not in failed state even with error', () => 
   }
 
   useSelector.mockImplementation(() => [{
-    id: KnownOCREngine.TESSERACT,
+    id: KnownProcessingEngines.TESSERACT,
     name: 'Engine 1',
   }])
 
@@ -643,7 +643,7 @@ test('enables parsing step when document failed in identification state', () => 
     step: PipelineStep.PARSING,
     documentId: 'doc123',
     documentState: DocumentState.FAILED,
-    documentEngine: KnownOCREngine.TESSERACT,
+    documentEngine: KnownProcessingEngines.TESSERACT,
     documentLLMType: 'gpt-3',
     error: {
       inState: DocumentState.IDENTIFICATION,
@@ -653,7 +653,7 @@ test('enables parsing step when document failed in identification state', () => 
   }
 
   useSelector.mockImplementation(() => [{
-    id: KnownOCREngine.TESSERACT,
+    id: KnownProcessingEngines.TESSERACT,
     name: 'Engine 1',
   }])
 
@@ -673,7 +673,7 @@ test('disables extraction step when document failed in identification state', ()
     step: PipelineStep.EXTRACTION,
     documentId: 'doc123',
     documentState: DocumentState.FAILED,
-    documentEngine: KnownOCREngine.TESSERACT,
+    documentEngine: KnownProcessingEngines.TESSERACT,
     documentLLMType: 'gpt-3',
     error: {
       inState: DocumentState.IDENTIFICATION,
@@ -683,7 +683,7 @@ test('disables extraction step when document failed in identification state', ()
   }
 
   useSelector.mockImplementation(() => [{
-    id: KnownOCREngine.TESSERACT,
+    id: KnownProcessingEngines.TESSERACT,
     name: 'Engine 1',
   }])
 
@@ -703,7 +703,7 @@ test('disables step when error state is not in allowed restart steps mapping', (
     step: PipelineStep.EXTRACTION,
     documentId: 'doc123',
     documentState: DocumentState.FAILED,
-    documentEngine: KnownOCREngine.TESSERACT,
+    documentEngine: KnownProcessingEngines.TESSERACT,
     documentLLMType: 'gpt-3',
     error: {
       inState: DocumentState.PARSING,
@@ -713,7 +713,7 @@ test('disables step when error state is not in allowed restart steps mapping', (
   }
 
   useSelector.mockImplementation(() => [{
-    id: KnownOCREngine.TESSERACT,
+    id: KnownProcessingEngines.TESSERACT,
     name: 'Engine 1',
   }])
 
@@ -732,15 +732,15 @@ test('renders with selectedEngine prop and uses it as initial value for engine f
     step: PipelineStep.PARSING,
     documentId: 'doc123',
     documentState: DocumentState.IN_REVIEW,
-    documentEngine: KnownOCREngine.TESSERACT,
+    documentEngine: KnownProcessingEngines.TESSERACT,
     documentLLMType: 'gpt-3',
     error: null,
-    selectedEngine: KnownOCREngine.GCP_VISION,
+    selectedEngine: KnownProcessingEngines.GCP_VISION,
     renderTrigger: jest.fn(() => <div data-testid="trigger">Run Pipeline</div>),
   }
 
   useSelector.mockImplementation(() => [{
-    id: KnownOCREngine.GCP_VISION,
+    id: KnownProcessingEngines.GCP_VISION,
     name: 'GCP Vision',
   }])
 
@@ -748,7 +748,7 @@ test('renders with selectedEngine prop and uses it as initial value for engine f
 
   const fields = ModalFormButton.mock.calls[0][0].fields
 
-  expect(fields.engine.initialValue).toBe(KnownOCREngine.GCP_VISION)
+  expect(fields.engine.initialValue).toBe(KnownProcessingEngines.GCP_VISION)
 })
 
 test('renders with PARSING step and includes parsing features field', () => {
@@ -756,14 +756,14 @@ test('renders with PARSING step and includes parsing features field', () => {
     step: PipelineStep.PARSING,
     documentId: 'doc123',
     documentState: DocumentState.IN_REVIEW,
-    documentEngine: KnownOCREngine.TESSERACT,
+    documentEngine: KnownProcessingEngines.TESSERACT,
     documentLLMType: 'gpt-3',
     error: null,
     renderTrigger: jest.fn(() => <div data-testid="trigger">Run Pipeline</div>),
   }
 
   useSelector.mockImplementation(() => [{
-    id: KnownOCREngine.TESSERACT,
+    id: KnownProcessingEngines.TESSERACT,
     name: 'Engine 1',
   }])
 
@@ -780,14 +780,14 @@ test('renders with PARSING step and correct modal title', () => {
     step: PipelineStep.PARSING,
     documentId: 'doc123',
     documentState: DocumentState.IN_REVIEW,
-    documentEngine: KnownOCREngine.TESSERACT,
+    documentEngine: KnownProcessingEngines.TESSERACT,
     documentLLMType: 'gpt-3',
     error: null,
     renderTrigger: jest.fn(() => <div data-testid="trigger">Run Pipeline</div>),
   }
 
   useSelector.mockImplementation(() => [{
-    id: KnownOCREngine.TESSERACT,
+    id: KnownProcessingEngines.TESSERACT,
     name: 'Engine 1',
   }])
 
@@ -806,14 +806,14 @@ test('calls notifySuccess with correct message for parsing step', async () => {
     step: PipelineStep.PARSING,
     documentId: 'doc123',
     documentState: DocumentState.IN_REVIEW,
-    documentEngine: KnownOCREngine.TESSERACT,
+    documentEngine: KnownProcessingEngines.TESSERACT,
     documentLLMType: 'gpt-3',
     error: null,
     renderTrigger: jest.fn(() => <div data-testid="trigger">Run Pipeline</div>),
   }
 
   useSelector.mockImplementation(() => [{
-    id: KnownOCREngine.TESSERACT,
+    id: KnownProcessingEngines.TESSERACT,
     name: 'Engine 1',
   }])
 
@@ -822,7 +822,7 @@ test('calls notifySuccess with correct message for parsing step', async () => {
   const onOk = ModalFormButton.mock.calls[0][0].onOk
 
   const mockSettings = {
-    engine: KnownOCREngine.TESSERACT,
+    engine: KnownProcessingEngines.TESSERACT,
     parsingFeatures: ['text'],
   }
 
@@ -838,14 +838,14 @@ test('uses selectedEngine as initial value when provided, otherwise uses documen
     step: PipelineStep.PARSING,
     documentId: 'doc123',
     documentState: DocumentState.IN_REVIEW,
-    documentEngine: KnownOCREngine.TESSERACT,
+    documentEngine: KnownProcessingEngines.TESSERACT,
     documentLLMType: 'gpt-3',
     error: null,
     renderTrigger: jest.fn(() => <div data-testid="trigger">Run Pipeline</div>),
   }
 
   useSelector.mockImplementation(() => [{
-    id: KnownOCREngine.TESSERACT,
+    id: KnownProcessingEngines.TESSERACT,
     name: 'Tesseract',
   }])
 
@@ -853,23 +853,23 @@ test('uses selectedEngine as initial value when provided, otherwise uses documen
 
   const fields = ModalFormButton.mock.calls[0][0].fields
 
-  expect(fields.engine.initialValue).toBe(KnownOCREngine.TESSERACT)
+  expect(fields.engine.initialValue).toBe(KnownProcessingEngines.TESSERACT)
 })
 
-test('handles selectedEngine prop with KnownOCREngine values', () => {
+test('handles selectedEngine prop with KnownProcessingEngines values', () => {
   const mockProps = {
     step: PipelineStep.PARSING,
     documentId: 'doc123',
     documentState: DocumentState.IN_REVIEW,
-    documentEngine: KnownOCREngine.TESSERACT,
+    documentEngine: KnownProcessingEngines.TESSERACT,
     documentLLMType: 'gpt-3',
     error: null,
-    selectedEngine: KnownOCREngine.GCP_VISION,
+    selectedEngine: KnownProcessingEngines.GCP_VISION,
     renderTrigger: jest.fn(() => <div data-testid="trigger">Run Pipeline</div>),
   }
 
   useSelector.mockImplementation(() => [{
-    id: KnownOCREngine.GCP_VISION,
+    id: KnownProcessingEngines.GCP_VISION,
     name: 'GCP Vision',
   }])
 
@@ -877,5 +877,5 @@ test('handles selectedEngine prop with KnownOCREngine values', () => {
 
   const fields = ModalFormButton.mock.calls[0][0].fields
 
-  expect(fields.engine.initialValue).toBe(KnownOCREngine.GCP_VISION)
+  expect(fields.engine.initialValue).toBe(KnownProcessingEngines.GCP_VISION)
 })

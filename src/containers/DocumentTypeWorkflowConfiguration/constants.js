@@ -1,6 +1,6 @@
 
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
 import { KnownParsingFeature } from '@/enums/KnownParsingFeature'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { ReviewPolicy } from '@/enums/ReviewPolicy'
 
 export const WORKFLOW_FORM_FIELD_CODES = {
@@ -13,7 +13,7 @@ export const WORKFLOW_FORM_FIELD_CODES = {
 }
 
 export const DEFAULT_FORM_VALUES = {
-  [WORKFLOW_FORM_FIELD_CODES.ENGINE]: KnownOCREngine.TESSERACT,
+  [WORKFLOW_FORM_FIELD_CODES.ENGINE]: KnownProcessingEngines.TESSERACT,
   [WORKFLOW_FORM_FIELD_CODES.PARSING_FEATURES]: [KnownParsingFeature.TEXT],
   [WORKFLOW_FORM_FIELD_CODES.NEEDS_EXTRACTION]: true,
   [WORKFLOW_FORM_FIELD_CODES.NEEDS_REVIEW]: ReviewPolicy.ALWAYS_REVIEW,

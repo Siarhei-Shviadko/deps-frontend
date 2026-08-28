@@ -84,11 +84,19 @@ exports[`Container: DocumentLabelingTool connected Component should render corre
           "engines": Array [
             Engine {
               "code": "GCP_VISION",
-              "name": "AI Vision",
+              "name": "GCP Document AI",
             },
             Engine {
               "code": "AWS_TEXTRACT",
               "name": "AWS Textract",
+            },
+            Engine {
+              "code": "AZURE_FORM_RECOGNIZER",
+              "name": "Azure Document Intelligence",
+            },
+            Engine {
+              "code": "llamaindex",
+              "name": "LlamaIndex",
             },
           ],
           "languages": Array [
@@ -246,11 +254,19 @@ exports[`Container: DocumentLabelingTool connected Component should render spinn
           "engines": Array [
             Engine {
               "code": "GCP_VISION",
-              "name": "AI Vision",
+              "name": "GCP Document AI",
             },
             Engine {
               "code": "AWS_TEXTRACT",
               "name": "AWS Textract",
+            },
+            Engine {
+              "code": "AZURE_FORM_RECOGNIZER",
+              "name": "Azure Document Intelligence",
+            },
+            Engine {
+              "code": "llamaindex",
+              "name": "LlamaIndex",
             },
           ],
           "languages": Array [

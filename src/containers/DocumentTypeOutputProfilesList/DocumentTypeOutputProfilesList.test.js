@@ -3,7 +3,7 @@ import { mockEnv } from '@/mocks/mockEnv'
 import { screen, waitFor } from '@testing-library/react'
 import { ExtractionType } from '@/enums/ExtractionType'
 import { FILE_EXTENSION_TO_DOWNLOAD_FORMAT, FileExtension } from '@/enums/FileExtension'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { Localization, localize } from '@/localization/i18n'
 import { ExtendedDocumentType } from '@/models/ExtendedDocumentType'
 import { ExtractedDataSchema, OutputProfile, ExportingType } from '@/models/OutputProfile'
@@ -45,7 +45,7 @@ const mockProfiles = [
 const mockDocumentType = new ExtendedDocumentType({
   code: 'DocType1',
   name: 'Doc Type 1',
-  engine: KnownOCREngine.TESSERACT,
+  engine: KnownProcessingEngines.TESSERACT,
   extractionType: ExtractionType.TEMPLATE,
   profiles: mockProfiles,
 })

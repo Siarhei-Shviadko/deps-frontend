@@ -1,20 +1,20 @@
 
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchOCREngines } from '@/actions/engines'
+import { fetchProcessingEngines } from '@/actions/engines'
 import { CustomSelect } from '@/components/Select'
 import { Engine } from '@/models/Engine'
-import { ocrEnginesSelector } from '@/selectors/engines'
+import { processingEnginesSelector } from '@/selectors/engines'
 import { areEnginesFetchingSelector } from '@/selectors/requests'
 
 export const EngineSelect = (props) => {
   const areEnginesFetching = useSelector(areEnginesFetchingSelector)
-  const engines = useSelector(ocrEnginesSelector)
+  const engines = useSelector(processingEnginesSelector)
 
   const dispatch = useDispatch()
 
   useEffect(() => {
-    !engines.length && dispatch(fetchOCREngines())
+    !engines.length && dispatch(fetchProcessingEngines())
   }, [dispatch, engines])
 
   return (

@@ -6,8 +6,8 @@ import userEvent from '@testing-library/user-event'
 import { FIELD_FORM_CODE } from '@/containers/ManageBatch/constants'
 import { PickedFile as MockPickedFile } from '@/containers/ManageBatch/PickedFile'
 import { useUploadBatchFiles } from '@/containers/ManageBatch/useUploadBatchFiles'
-import { KnownOCREngine as MockKnownOCREngine } from '@/enums/KnownOCREngine'
 import { KnownParsingFeature as MockKnownParsingFeature } from '@/enums/KnownParsingFeature'
+import { KnownProcessingEngines as MockKnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { render } from '@/utils/rendererRTL'
 import { FileCard } from './FileCard'
 
@@ -21,7 +21,7 @@ jest.mock('react-hook-form', () => ({
     setValue: mockSetFormValue,
     getValues: jest.fn(() => ({
       documentType: 'pdf',
-      engine: MockKnownOCREngine.TESSERACT,
+      engine: MockKnownProcessingEngines.TESSERACT,
       llmType: 'llm1',
       parsingFeatures: [MockKnownParsingFeature.TEXT],
       files: [
@@ -32,7 +32,7 @@ jest.mock('react-hook-form', () => ({
           },
           {
             documentType: 'pdf',
-            engine: MockKnownOCREngine.TESSERACT,
+            engine: MockKnownProcessingEngines.TESSERACT,
             llmType: 'llm1',
             parsingFeatures: [MockKnownParsingFeature.TEXT],
           },
@@ -48,7 +48,7 @@ jest.mock('react-hook-form', () => ({
       },
       {
         documentType: 'pdf',
-        engine: MockKnownOCREngine.TESSERACT,
+        engine: MockKnownProcessingEngines.TESSERACT,
         llmType: 'llm1',
         parsingFeatures: [MockKnownParsingFeature.TEXT],
       },
@@ -79,7 +79,7 @@ beforeEach(() => {
       },
       {
         documentType: 'pdf',
-        engine: MockKnownOCREngine.TESSERACT,
+        engine: MockKnownProcessingEngines.TESSERACT,
         llmType: 'llm1',
         parsingFeatures: [MockKnownParsingFeature.TEXT],
       },

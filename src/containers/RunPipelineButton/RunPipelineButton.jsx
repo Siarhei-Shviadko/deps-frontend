@@ -4,7 +4,7 @@ import { useCallback } from 'react'
 import { Button } from '@/components/Button'
 import { PipelineStepModal } from '@/containers/PipelineStepModal'
 import { DocumentState } from '@/enums/DocumentState'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { RESOURCE_PIPELINE_STEP, PipelineStep } from '@/enums/PipelineStep'
 import { documentErrorShape } from '@/models/Document'
 import { StyledMenuItem } from './RunPipelineButton.styles'
@@ -49,7 +49,7 @@ const RunPipelineButton = ({
 }
 
 RunPipelineButton.propTypes = {
-  documentEngine: PropTypes.oneOf(Object.values(KnownOCREngine)),
+  documentEngine: PropTypes.oneOf(Object.values(KnownProcessingEngines)),
   documentId: PropTypes.string.isRequired,
   documentLLMType: PropTypes.string,
   documentState: PropTypes.oneOf(Object.values(DocumentState)),

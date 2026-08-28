@@ -23,7 +23,7 @@ import { Engine } from '@/models/Engine'
 import { Language } from '@/models/Language'
 import { Pagination } from '@/models/Pagination'
 import { DefaultPaginationConfig } from '@/models/PaginationConfig'
-import { ocrEnginesSelector } from '@/selectors/engines'
+import { processingEnginesSelector } from '@/selectors/engines'
 import { languagesSelector } from '@/selectors/languages'
 import { filterSelector } from '@/selectors/navigation'
 import { navigationMap } from '@/utils/navigationMap'
@@ -87,7 +87,7 @@ const DocumentTypesListView = ({
 
   const filters = useSelector(filterSelector)
   const languages = useSelector(languagesSelector)
-  const engines = useSelector(ocrEnginesSelector)
+  const engines = useSelector(processingEnginesSelector)
 
   const filterConfig = useMemo(() => ({
     ...DEFAULT_FILTER_CONFIG,

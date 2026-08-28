@@ -2,8 +2,8 @@
 import PropTypes from 'prop-types'
 import { Switch } from '@/components/Switch'
 import { ComponentSize } from '@/enums/ComponentSize'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
 import { KnownParsingFeature } from '@/enums/KnownParsingFeature'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { Localization, localize } from '@/localization/i18n'
 import { ParsingFeature } from '@/models/ParsingFeature'
 import { FeatureItem, ParsingFeaturesContainer } from './ParsingFeaturesSwitch.styles'
@@ -32,7 +32,7 @@ export const ParsingFeaturesSwitch = ({
 
   const isFeatureDisabled = (featureCode) => (
     featureCode === KnownParsingFeature.TABLES &&
-    engineCode === KnownOCREngine.TESSERACT
+    engineCode === KnownProcessingEngines.TESSERACT
   )
 
   return (
@@ -72,5 +72,5 @@ ParsingFeaturesSwitch.propTypes = {
     PropTypes.oneOf(Object.values(KnownParsingFeature)),
   ).isRequired,
   columnView: PropTypes.bool,
-  engineCode: PropTypes.oneOf(Object.values(KnownOCREngine)),
+  engineCode: PropTypes.oneOf(Object.values(KnownProcessingEngines)),
 }

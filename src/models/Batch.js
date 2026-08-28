@@ -2,8 +2,8 @@
 import PropTypes from 'prop-types'
 import { BatchFileStatus } from '@/enums/BatchFileStatus'
 import { BatchStatus } from '@/enums/BatchStatus'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
 import { KnownParsingFeature } from '@/enums/KnownParsingFeature'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 
 export class BatchFile {
   constructor ({
@@ -42,7 +42,7 @@ export const batchFileShape = PropTypes.shape({
   documentId: PropTypes.string,
   documentTypeId: PropTypes.string,
   engine: PropTypes.oneOf(
-    Object.values(KnownOCREngine),
+    Object.values(KnownProcessingEngines),
   ),
   error: PropTypes.shape({
     message: PropTypes.string.isRequired,

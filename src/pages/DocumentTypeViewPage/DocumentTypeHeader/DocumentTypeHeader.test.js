@@ -5,7 +5,7 @@ import { screen } from '@testing-library/react'
 import { EXPORTABLE_EXTRACTION_TYPES } from '@/constants/documentType'
 import { ExtractionType, RESOURCE_EXTRACTION_TYPE } from '@/enums/ExtractionType'
 import { KnownLanguage } from '@/enums/KnownLanguage'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { Localization, localize } from '@/localization/i18n'
 import { DocumentType } from '@/models/DocumentType'
 import { render } from '@/utils/rendererRTL'
@@ -14,7 +14,7 @@ import { DocumentTypeHeader } from './DocumentTypeHeader'
 const mockTemplate = new DocumentType(
   'TestTemplate',
   'Test Template',
-  KnownOCREngine.TESSERACT,
+  KnownProcessingEngines.TESSERACT,
   KnownLanguage.ENGLISH,
   ExtractionType.TEMPLATE,
 )
@@ -93,7 +93,7 @@ test.each(Object.values(ExtractionType))(
     const mockDocumentType = new DocumentType(
       'TestTemplate',
       'Test Template',
-      KnownOCREngine.TESSERACT,
+      KnownProcessingEngines.TESSERACT,
       KnownLanguage.ENGLISH,
       type,
     )
@@ -115,7 +115,7 @@ test.each(EDITABLE_EXTRACTION_TYPES)(
     const mockDocumentType = new DocumentType(
       'TestTemplate',
       'Test Template',
-      KnownOCREngine.TESSERACT,
+      KnownProcessingEngines.TESSERACT,
       KnownLanguage.ENGLISH,
       type,
     )
@@ -176,7 +176,7 @@ test.each(DELETABLE_EXTRACTION_TYPES)(
     const mockDocumentType = new DocumentType(
       'TestTemplate',
       'Test Template',
-      KnownOCREngine.TESSERACT,
+      KnownProcessingEngines.TESSERACT,
       KnownLanguage.ENGLISH,
       extractionType,
     )
@@ -196,7 +196,7 @@ test.each(READ_ONLY_EXTRACTION_TYPES)(
     const mockDocumentType = new DocumentType(
       'TestTemplate',
       'Test Template',
-      KnownOCREngine.TESSERACT,
+      KnownProcessingEngines.TESSERACT,
       KnownLanguage.ENGLISH,
       type,
     )
@@ -218,7 +218,7 @@ test.each(EXPORTABLE_EXTRACTION_TYPES)(
     const mockDocumentType = new DocumentType(
       'Test',
       'Test DocType',
-      KnownOCREngine.TESSERACT,
+      KnownProcessingEngines.TESSERACT,
       KnownLanguage.ENGLISH,
       extractionType,
     )
@@ -238,7 +238,7 @@ test.each(NON_EXPORTABLE_EXTRACTION_TYPES)(
     const mockDocumentType = new DocumentType(
       'Test',
       'Test DocType',
-      KnownOCREngine.TESSERACT,
+      KnownProcessingEngines.TESSERACT,
       KnownLanguage.ENGLISH,
       type,
     )

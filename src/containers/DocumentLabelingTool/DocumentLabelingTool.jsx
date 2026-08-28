@@ -13,7 +13,7 @@ import {
 } from '@/actions/documentReviewPage'
 import { fetchDocumentData } from '@/actions/documents'
 import { fetchDocumentType } from '@/actions/documentType'
-import { fetchOCREngines } from '@/actions/engines'
+import { fetchProcessingEngines } from '@/actions/engines'
 import { fetchAvailableLanguages } from '@/actions/languages'
 import { documentsApi } from '@/api/documentsApi'
 import { LabelingTool, Panel, Tool, Feature, Mode } from '@/components/LabelingTool'
@@ -22,7 +22,7 @@ import { UiKeys } from '@/constants/navigation'
 import { LocationChange } from '@/containers/LocationChange'
 import { DocumentTypeExtras } from '@/enums/DocumentTypeExtras'
 import { FieldType } from '@/enums/FieldType'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { KnownTableEngine } from '@/enums/KnownTableEngine'
 import { localize, Localization } from '@/localization/i18n'
 import { Document, documentShape } from '@/models/Document'
@@ -34,7 +34,7 @@ import {
   documentSelector,
 } from '@/selectors/documentReviewPage'
 import { documentTypeStateSelector } from '@/selectors/documentType'
-import { ocrEnginesSelector } from '@/selectors/engines'
+import { processingEnginesSelector } from '@/selectors/engines'
 import { languagesSelector } from '@/selectors/languages'
 import { uiSelector } from '@/selectors/navigation'
 import { FileCache } from '@/services/FileCache'
@@ -119,7 +119,7 @@ class DocumentLabelingTool extends PureComponent {
     languages: PropTypes.arrayOf(languageShape),
     fetchDocumentType: PropTypes.func.isRequired,
     fetchDocumentData: PropTypes.func.isRequired,
-    fetchOCREngines: PropTypes.func.isRequired,
+    fetchProcessingEngines: PropTypes.func.isRequired,
     fetchAvailableLanguages: PropTypes.func.isRequired,
     documentId: PropTypes.string.isRequired,
     document: documentShape,
@@ -170,7 +170,7 @@ class DocumentLabelingTool extends PureComponent {
       this.props.documentType,
       this.props.document.processingDocuments,
       language || this.props.document.language || this.props.documentType.language,
-      this.props.document.engine || docTypeEngine || KnownOCREngine.TESSERACT,
+      this.props.document.engine || docTypeEngine || KnownProcessingEngines.TESSERACT,
       !notifyExtraction,
       this.props.document.unifiedData,
       this.props.document.extractedData,
@@ -562,13 +562,13 @@ class DocumentLabelingTool extends PureComponent {
   componentDidMount = async () => {
     const {
       documentId,
-      fetchOCREngines,
+      fetchProcessingEngines,
       fetchDocumentType,
       fetchDocumentData,
       fetchAvailableLanguages,
     } = this.props
 
-    await fetchOCREngines()
+    await fetchProcessingEngines()
     await fetchAvailableLanguages()
     const document = await fetchDocumentData(documentId, true)
     await fetchDocumentType(
@@ -601,7 +601,7 @@ class DocumentLabelingTool extends PureComponent {
 const mapStateToProps = (state) => ({
   document: documentSelector(state),
   documentType: documentTypeStateSelector(state),
-  engines: ocrEnginesSelector(state),
+  engines: processingEnginesSelector(state),
   languages: languagesSelector(state),
   initialPage: uiSelector(state)[UiKeys.ACTIVE_PAGE] || 1,
 })
@@ -612,7 +612,7 @@ const mapDispatchToProps = {
   detectTables,
   fetchDocumentData,
   fetchDocumentType,
-  fetchOCREngines,
+  fetchProcessingEngines,
   fetchAvailableLanguages,
   omrArea,
 }

@@ -7,7 +7,7 @@ import { fetchDocumentType } from '@/api/documentTypesApi'
 import { ContainerType } from '@/enums/ContainerType'
 import { DocumentState } from '@/enums/DocumentState'
 import { DocumentTypeExtras } from '@/enums/DocumentTypeExtras'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { Document, File } from '@/models/Document'
 import { DocumentType, UNKNOWN_DOCUMENT_TYPE } from '@/models/DocumentType'
 import { PreviewEntity } from '@/models/PreviewEntity'
@@ -28,7 +28,7 @@ const mockDocumentId = 'mockId'
 const mockDocumentType = new DocumentType(
   mockDocumentTypeCode,
   'Test',
-  KnownOCREngine.TESSERACT,
+  KnownProcessingEngines.TESSERACT,
 )
 
 const mockDocument = new Document({

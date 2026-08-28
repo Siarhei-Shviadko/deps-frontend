@@ -2,13 +2,13 @@
 import { mockEnv } from '@/mocks/mockEnv'
 import { documentsApi } from '@/api/documentsApi'
 import { KnownLanguage } from '@/enums/KnownLanguage'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { getPage2Text } from '../OCRGrid/tests/conftest'
 import { getOCRTextLines, getHash } from './getOCRTextLines'
 import { OCRGridCache } from './OCRGridCache'
 
 const page2text = getPage2Text()
-const engine = KnownOCREngine.TESSERACT
+const engine = KnownProcessingEngines.TESSERACT
 const language = KnownLanguage.ENGLISH
 const blobName = 'test.png'
 const page = '1'

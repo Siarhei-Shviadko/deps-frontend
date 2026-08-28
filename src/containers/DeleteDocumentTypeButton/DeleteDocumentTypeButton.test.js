@@ -9,7 +9,7 @@ import userEvent from '@testing-library/user-event'
 import { Modal } from '@/components/Modal'
 import { ExtractionType } from '@/enums/ExtractionType'
 import { KnownLanguage } from '@/enums/KnownLanguage'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { Localization, localize } from '@/localization/i18n'
 import { DocumentType } from '@/models/DocumentType'
 import { render } from '@/utils/rendererRTL'
@@ -36,7 +36,7 @@ const MockContent = (onClick) => (
 const mockDocumentType = new DocumentType(
   'TestPrototype',
   'Test Prototype',
-  KnownOCREngine.TESSERACT,
+  KnownProcessingEngines.TESSERACT,
   KnownLanguage.ENGLISH,
   ExtractionType.PROTOTYPE,
 )

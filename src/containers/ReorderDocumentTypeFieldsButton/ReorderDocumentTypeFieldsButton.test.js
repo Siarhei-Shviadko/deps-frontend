@@ -9,7 +9,7 @@ import { updateExtraFields } from '@/api/enrichmentApi'
 import { DocumentTypeExtras } from '@/enums/DocumentTypeExtras'
 import { ExtractionType } from '@/enums/ExtractionType'
 import { FieldType } from '@/enums/FieldType'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { Localization, localize } from '@/localization/i18n'
 import { DocumentTypeExtraField } from '@/models/DocumentTypeExtraField'
 import { DocumentTypeField } from '@/models/DocumentTypeField'
@@ -67,7 +67,7 @@ const mockFields = [
 const mockDocumentType = new ExtendedDocumentType({
   code: 'code',
   name: 'name',
-  engine: KnownOCREngine.TESSERACT,
+  engine: KnownProcessingEngines.TESSERACT,
   extractionType: ExtractionType.TEMPLATE,
   fields: [mockExtractionField],
   llmExtractors: [],

@@ -3,8 +3,8 @@ import { mockComponent } from '@/mocks/mockComponent'
 import { mockEnv } from '@/mocks/mockEnv'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { KnownOCREngine, RESOURCE_OCR_ENGINE } from '@/enums/KnownOCREngine'
 import { KnownParsingFeature, RESOURCE_PARSING_FEATURE } from '@/enums/KnownParsingFeature'
+import { KnownProcessingEngines, RESOURCE_PROCESSING_ENGINE } from '@/enums/KnownProcessingEngines'
 import { render } from '@/utils/rendererRTL'
 import { BatchSettings } from '../viewModels'
 import { BatchInfo } from '.'
@@ -24,7 +24,7 @@ const mockBatchSettings = new BatchSettings({
     id: 'group-id',
     name: 'group-name',
   },
-  engine: KnownOCREngine.TESSERACT,
+  engine: KnownProcessingEngines.TESSERACT,
   llmType: 'basic',
   parsingFeatures: [KnownParsingFeature.TABLES],
 })
@@ -44,6 +44,6 @@ test('renders batch info correctly if all settings are provided', async () => {
 
   expect(batchGroup).toHaveTextContent(mockBatchSettings.group.name)
   expect(batchLLMType).toHaveTextContent('DocumentLLMType')
-  expect(batchEngine).toHaveTextContent(RESOURCE_OCR_ENGINE[mockBatchSettings.engine])
+  expect(batchEngine).toHaveTextContent(RESOURCE_PROCESSING_ENGINE[mockBatchSettings.engine])
   expect(batchParsingFeatures).toHaveTextContent(`${RESOURCE_PARSING_FEATURE[mockBatchSettings.parsingFeatures[0]]}`)
 })

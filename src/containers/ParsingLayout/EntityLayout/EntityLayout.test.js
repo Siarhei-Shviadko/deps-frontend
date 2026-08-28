@@ -3,13 +3,16 @@ import { mockEnv } from '@/mocks/mockEnv'
 import { mockReactRedux } from '@/mocks/mockReactRedux'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { setHighlightedField } from '@/actions/documentReviewPage'
+import { setUi } from '@/actions/navigation'
+import { UiKeys } from '@/constants/navigation'
 import { DOCUMENT_LAYOUT_PARSING_TYPE } from '@/enums/DocumentLayoutType'
 import { KnownParsingFeature } from '@/enums/KnownParsingFeature'
 import { render } from '@/utils/rendererRTL'
 import { EntityLayout } from './EntityLayout'
 
 const mockDispatch = jest.fn()
+const mockSetHighlightedFieldAction = { type: 'SET_HIGHLIGHTED_FIELD' }
+const mockSetHighlightedField = jest.fn(() => mockSetHighlightedFieldAction)
 
 var MockParagraphLayout
 var MockTableLayout
@@ -19,6 +22,12 @@ jest.mock('@/utils/env', () => mockEnv)
 jest.mock('react-redux', () => ({
   ...mockReactRedux,
   useDispatch: () => mockDispatch,
+}))
+
+jest.mock('@/containers/ParsingLayout/hooks/useReviewActions', () => ({
+  useReviewActions: () => ({
+    setHighlightedField: mockSetHighlightedField,
+  }),
 }))
 
 jest.mock('@/components/NoData', () => mockShallowComponent('NoData'))
@@ -259,7 +268,7 @@ test('renders LayoutPagination with total pages when feature is active', () => {
   expect(screen.getByTestId('pagination-total')).toHaveTextContent('5')
 })
 
-test('updates batchIndex and dispatches actions when page changes', async () => {
+test('updates batchIndex and dispatches setUi and setHighlightedField when page changes', async () => {
   const mockData = createMockDocumentLayoutData([KnownParsingFeature.TEXT])
 
   render(<EntityLayout rawParsingInfoData={mockData} />)
@@ -271,8 +280,12 @@ test('updates batchIndex and dispatches actions when page changes', async () => 
       batchIndex: 1,
     }),
   )
-  expect(mockDispatch).toHaveBeenCalledWith(expect.any(Function))
-  expect(mockDispatch).toHaveBeenCalledWith(setHighlightedField(null))
+  expect(mockSetHighlightedField).toHaveBeenNthCalledWith(1, null)
+  expect(mockDispatch).toHaveBeenNthCalledWith(1, setUi({
+    [UiKeys.ACTIVE_PAGE]: 2,
+    [UiKeys.ACTIVE_SOURCE_ID]: null,
+  }))
+  expect(mockDispatch).toHaveBeenNthCalledWith(2, mockSetHighlightedFieldAction)
 })
 
 test('renders no data when no features are available', () => {

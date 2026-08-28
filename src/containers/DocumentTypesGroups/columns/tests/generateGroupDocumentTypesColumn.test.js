@@ -6,7 +6,7 @@ import { DocumentTypesGroupsFilterKey } from '@/constants/navigation'
 import { generateGroupDocumentTypesColumn } from '@/containers/DocumentTypesGroups/columns'
 import { ExtractionType } from '@/enums/ExtractionType'
 import { KnownLanguage } from '@/enums/KnownLanguage'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { Localization, localize } from '@/localization/i18n'
 import { DocumentType } from '@/models/DocumentType'
 import { DocumentTypesGroupsColumn } from '../DocumentTypesGroupsColumn'
@@ -30,7 +30,7 @@ const mockDocTypeId = 'mockDocTypeId'
 const mockDocumentType = new DocumentType(
   mockDocTypeId,
   'Name',
-  KnownOCREngine.TESSERACT,
+  KnownProcessingEngines.TESSERACT,
   KnownLanguage.ENGLISH,
   ExtractionType.PROTOTYPE,
 )

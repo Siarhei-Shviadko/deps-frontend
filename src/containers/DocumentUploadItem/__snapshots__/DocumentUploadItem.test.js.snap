@@ -82,7 +82,7 @@ exports[`Component: DocumentUploadItem should render OverrideDocumentOption in c
     mockName.pdf
   </DocumentUploadItemstyles__DocumentTitle>
   <DocumentUploadItemstyles__OverrideDocumentOption>
-    Document OCR engine: mockOptionText
+    Document engine: mockOptionText
   </DocumentUploadItemstyles__OverrideDocumentOption>
 </React.Fragment>
 `;

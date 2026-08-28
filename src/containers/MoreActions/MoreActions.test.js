@@ -20,7 +20,7 @@ import { DocumentState } from '@/enums/DocumentState'
 import { ExtractionType } from '@/enums/ExtractionType'
 import { FieldType } from '@/enums/FieldType'
 import { KnownLanguage } from '@/enums/KnownLanguage'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { localize, Localization } from '@/localization/i18n'
 import { DocumentType, UNKNOWN_DOCUMENT_TYPE } from '@/models/DocumentType'
 import { DocumentTypeField } from '@/models/DocumentTypeField'
@@ -56,7 +56,7 @@ jest.mock('@/containers/ManageLabelsModalButton', () => mockComponent('ManageLab
 jest.mock('@/containers/DocumentPromptCalibrationStudio', () => mockComponent('StudioTriggerButton'))
 jest.mock('@/containers/AgenticChatModalButton', () => mockComponent('AgenticChatModalButton'))
 
-const documentType = new DocumentType('DirectionalSurvey', 'Directional Survey', KnownOCREngine.TESSERACT)
+const documentType = new DocumentType('DirectionalSurvey', 'Directional Survey', KnownProcessingEngines.TESSERACT)
 
 const { ConnectedComponent, mapStateToProps } = MoreActions
 

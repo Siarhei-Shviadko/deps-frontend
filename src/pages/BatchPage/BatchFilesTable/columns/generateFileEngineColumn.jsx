@@ -2,7 +2,7 @@
 import { enumToOptions } from '@/components/Select'
 import { TableFilterIndicator } from '@/components/Table/TableFilterIndicator'
 import { TableSelectFilter } from '@/components/Table/TableSelectFilter'
-import { KnownOCREngine, RESOURCE_OCR_ENGINE } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines, RESOURCE_PROCESSING_ENGINE } from '@/enums/KnownProcessingEngines'
 import { Localization, localize } from '@/localization/i18n'
 import { stringsSorter } from '@/utils/string'
 import { ColumnCode } from '../ColumnCode'
@@ -10,7 +10,7 @@ import { ColumnCode } from '../ColumnCode'
 export const generateFileEngineColumn = (filterConfig) => {
   const filteredValue = filterConfig[ColumnCode.ENGINE]
   const sortOrder = filterConfig.sortField === ColumnCode.ENGINE ? filterConfig.sortDirect : ''
-  const options = enumToOptions(KnownOCREngine, RESOURCE_OCR_ENGINE)
+  const options = enumToOptions(KnownProcessingEngines, RESOURCE_PROCESSING_ENGINE)
 
   return ({
     dataIndex: ColumnCode.ENGINE,
@@ -33,10 +33,10 @@ export const generateFileEngineColumn = (filterConfig) => {
     key: ColumnCode.ENGINE,
     render: (engineCode) => engineCode && (
       <span data-testid="engine-title">
-        {RESOURCE_OCR_ENGINE[engineCode]}
+        {RESOURCE_PROCESSING_ENGINE[engineCode]}
       </span>
     ),
-    sorter: (a, b) => stringsSorter(RESOURCE_OCR_ENGINE[a[ColumnCode.ENGINE]], RESOURCE_OCR_ENGINE[b[ColumnCode.ENGINE]]),
+    sorter: (a, b) => stringsSorter(RESOURCE_PROCESSING_ENGINE[a[ColumnCode.ENGINE]], RESOURCE_PROCESSING_ENGINE[b[ColumnCode.ENGINE]]),
     sortOrder,
     title: localize(Localization.ENGINE_UPPERCASE),
   })

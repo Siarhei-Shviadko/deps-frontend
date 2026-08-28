@@ -1,8 +1,8 @@
 import { mockEnv } from '@/mocks/mockEnv'
 import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
 import { KnownParsingFeature } from '@/enums/KnownParsingFeature'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { Localization, localize } from '@/localization/i18n'
 import { render } from '@/utils/rendererRTL'
 import { ParsingFeaturesSwitch } from './ParsingFeaturesSwitch'
@@ -64,7 +64,7 @@ test('renders key value pairs feature before text feature', () => {
 test('renders tables switch as disabled when engineCode is TESSERACT', () => {
   const props = {
     ...defaultProps,
-    engineCode: KnownOCREngine.TESSERACT,
+    engineCode: KnownProcessingEngines.TESSERACT,
   }
 
   render(<ParsingFeaturesSwitch {...props} />)
@@ -79,7 +79,7 @@ test('renders tables switch as unchecked when engineCode is TESSERACT and tables
   const props = {
     ...defaultProps,
     value: [KnownParsingFeature.TEXT, KnownParsingFeature.TABLES],
-    engineCode: KnownOCREngine.TESSERACT,
+    engineCode: KnownProcessingEngines.TESSERACT,
   }
 
   render(<ParsingFeaturesSwitch {...props} />)
@@ -94,7 +94,7 @@ test('does not call onChange when clicking disabled tables feature with TESSERAC
   const user = userEvent.setup()
   const props = {
     ...defaultProps,
-    engineCode: KnownOCREngine.TESSERACT,
+    engineCode: KnownProcessingEngines.TESSERACT,
   }
 
   render(<ParsingFeaturesSwitch {...props} />)
@@ -108,7 +108,7 @@ test('does not call onChange when clicking disabled tables feature with TESSERAC
 test('renders tables switch as enabled when engineCode is not TESSERACT', () => {
   const props = {
     ...defaultProps,
-    engineCode: KnownOCREngine.AWS_TEXTRACT,
+    engineCode: KnownProcessingEngines.AWS_TEXTRACT,
   }
 
   render(<ParsingFeaturesSwitch {...props} />)

@@ -17,7 +17,7 @@ import { DOCUMENT_PROMPT_CALIBRATION_STUDIO_QUERY_KEY, UiKeys } from '@/constant
 import { DocumentState } from '@/enums/DocumentState'
 import { DocumentTypeExtras } from '@/enums/DocumentTypeExtras'
 import { ExtractionType } from '@/enums/ExtractionType'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { useQueryParams } from '@/hooks/useQueryParams'
 import { Localization, localize } from '@/localization/i18n'
 import { Document } from '@/models/Document'
@@ -349,7 +349,7 @@ test('calls extractData and getDocumentState when needsReExtraction is true', as
     id: 'mock-document-id',
     state: DocumentState.IN_REVIEW,
     extractedData: [],
-    engine: KnownOCREngine.TESSERACT,
+    engine: KnownProcessingEngines.TESSERACT,
   })
 
   documentSelector.mockReturnValue(mockDocument)
@@ -368,7 +368,7 @@ test('calls extractData and getDocumentState when needsReExtraction is true', as
 
   expect(extractData).toHaveBeenCalledWith(
     ['mock-document-id'],
-    KnownOCREngine.TESSERACT,
+    KnownProcessingEngines.TESSERACT,
   )
 
   expect(getDocumentState).toHaveBeenCalledWith('mock-document-id')
@@ -505,7 +505,7 @@ test('uses default engine when document engine is not set', async () => {
 
   expect(extractData).toHaveBeenCalledWith(
     ['mock-document-id'],
-    KnownOCREngine.TESSERACT,
+    KnownProcessingEngines.TESSERACT,
   )
 })
 

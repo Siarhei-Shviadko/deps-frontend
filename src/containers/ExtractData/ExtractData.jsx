@@ -3,16 +3,16 @@ import PropTypes from 'prop-types'
 import { Component } from 'react'
 import { connect } from 'react-redux'
 import { extractData } from '@/actions/documents'
-import { fetchOCREngines } from '@/actions/engines'
+import { fetchProcessingEngines } from '@/actions/engines'
 import { Button } from '@/components/Button'
 import { ModalFormButton } from '@/components/ModalFormButton'
 import { CustomSelect } from '@/components/Select'
 import { ComponentSize } from '@/enums/ComponentSize'
 import { DocumentState } from '@/enums/DocumentState'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { localize, Localization } from '@/localization/i18n'
 import { Engine, engineShape } from '@/models/Engine'
-import { ocrEnginesSelector } from '@/selectors/engines'
+import { processingEnginesSelector } from '@/selectors/engines'
 import { areEnginesFetchingSelector } from '@/selectors/requests'
 import { notifySuccess, notifyWarning } from '@/utils/notification'
 import { ModalTitle, ExclamationCircleOutlinedIcon } from './ExtractData.styles'
@@ -20,18 +20,18 @@ import { ModalTitle, ExclamationCircleOutlinedIcon } from './ExtractData.styles'
 class ExtractData extends Component {
   static propTypes = {
     disabled: PropTypes.bool,
-    initialEngine: PropTypes.oneOf(Object.values(KnownOCREngine)),
+    initialEngine: PropTypes.oneOf(Object.values(KnownProcessingEngines)),
     documentState: PropTypes.oneOf(Object.values(DocumentState)),
     children: PropTypes.string.isRequired,
     extractData: PropTypes.func.isRequired,
     engines: PropTypes.arrayOf(engineShape).isRequired,
-    fetchOCREngines: PropTypes.func.isRequired,
+    fetchProcessingEngines: PropTypes.func.isRequired,
     enginesFetching: PropTypes.bool,
     documentIds: PropTypes.arrayOf(PropTypes.string).isRequired,
   }
 
   componentDidMount () {
-    this.props.fetchOCREngines()
+    this.props.fetchProcessingEngines()
   }
 
   getFields = () => ({
@@ -44,7 +44,7 @@ class ExtractData extends Component {
           placeholder={localize(Localization.ENGINE_PLACEHOLDER)}
         />
       ),
-      initialValue: this.props.initialEngine ?? KnownOCREngine.TESSERACT,
+      initialValue: this.props.initialEngine ?? KnownProcessingEngines.TESSERACT,
     },
   })
 
@@ -114,7 +114,7 @@ class ExtractData extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  engines: ocrEnginesSelector(state),
+  engines: processingEnginesSelector(state),
   enginesFetching: areEnginesFetchingSelector(state),
 })
 
@@ -122,7 +122,7 @@ const mergeProps = (stateProps, { dispatch }, ownProps) => ({
   ...stateProps,
   ...ownProps,
   extractData: (engineCode, ids) => dispatch(extractData(ids, engineCode)),
-  fetchOCREngines: () => dispatch(fetchOCREngines()),
+  fetchProcessingEngines: () => dispatch(fetchProcessingEngines()),
 })
 
 const ConnectedComponent = connect(mapStateToProps, null, mergeProps)(ExtractData)

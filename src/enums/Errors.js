@@ -170,6 +170,7 @@ const ErrorCode = {
   errorDuringClassification: 'error_during_classification',
   errorDuringSplitting: 'error_during_splitting',
   overlappingRegions: 'overlapping_regions',
+  unsupportedParsingType: 'unsupported_parsing_type',
 }
 
 const RESOURCE_ERROR_TO_DISPLAY = {
@@ -230,7 +231,7 @@ const RESOURCE_ERROR_TO_DISPLAY = {
   [ErrorCode.modelNotFound]: localize(Localization.MODEL_NOT_FOUND),
   [ErrorCode.notFoundError]: localize(Localization.NOT_FOUND_ERROR),
   [ErrorCode.notFoundException]: localize(Localization.NOT_FOUND_EXCEPTION),
-  [ErrorCode.ocrEngineNotFoundError]: localize(Localization.OCR_ENGINE_NOT_FOUND_ERROR),
+  [ErrorCode.unsupportedParsingType]: localize(Localization.UNSUPPORTED_PARSING_TYPE),
   [ErrorCode.ocrError]: localize(Localization.OCR_ERROR),
   [ErrorCode.pluginAlreadyExistsError]: localize(Localization.PLUGIN_ALREADY_EXISTS_ERROR),
   [ErrorCode.pluginNotFoundError]: localize(Localization.PLUGIN_NOT_FOUND_ERROR),

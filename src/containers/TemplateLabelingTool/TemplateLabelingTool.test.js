@@ -10,7 +10,7 @@ import { DocumentTypeExtras } from '@/enums/DocumentTypeExtras'
 import { RESOURCE_ERROR_TO_DISPLAY } from '@/enums/Errors'
 import { ExtractionType } from '@/enums/ExtractionType'
 import { FieldType } from '@/enums/FieldType'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { StatusCode } from '@/enums/StatusCode'
 import { DocumentTypeField } from '@/models/DocumentTypeField'
 import { ExtendedDocumentType } from '@/models/ExtendedDocumentType'
@@ -109,7 +109,7 @@ jest.mock('@/api/templatesApi', () => ({
 const mockDocumentType = new ExtendedDocumentType({
   code: 'MarketingContract',
   name: 'MarketingContract',
-  engine: KnownOCREngine.TESSERACT,
+  engine: KnownProcessingEngines.TESSERACT,
   extractionType: ExtractionType.TEMPLATE,
   fields: mockTemplateFields,
   llmExtractors: [],

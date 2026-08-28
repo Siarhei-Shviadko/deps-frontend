@@ -2,7 +2,7 @@
 import { mockEnv } from '@/mocks/mockEnv'
 import { documentsApi } from '@/api/documentsApi'
 import { KnownLanguage } from '@/enums/KnownLanguage'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { ENV } from '@/utils/env'
 import { mapMarkupToExtractedData } from './mapMarkupToExtractedData'
 import { mockDocumentType, mockDocumentType1 } from './mocks/validDocumentType'
@@ -24,7 +24,7 @@ const mockProcessingDocuments = {
 }
 
 const mockLanguage = KnownLanguage.CHINESE_SIMPLIFIED
-const mockEngine = KnownOCREngine.TESSERACT
+const mockEngine = KnownProcessingEngines.TESSERACT
 
 describe('Mapper: mapMarkupToExtractedData', () => {
   afterEach(() => {

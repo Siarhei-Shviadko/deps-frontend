@@ -3,9 +3,9 @@ import { mockReactHookForm } from '@/mocks/mockReactHookForm'
 import { mockReactRedux } from '@/mocks/mockReactRedux'
 import { screen } from '@testing-library/react'
 import { useFormContext } from 'react-hook-form'
-import { fetchOCREngines } from '@/actions/engines'
+import { fetchProcessingEngines } from '@/actions/engines'
 import { Localization, localize } from '@/localization/i18n'
-import { ocrEnginesSelector } from '@/selectors/engines'
+import { processingEnginesSelector } from '@/selectors/engines'
 import { ENV } from '@/utils/env'
 import { render } from '@/utils/rendererRTL'
 import { FIELD_CODE } from '../constants'
@@ -18,7 +18,7 @@ jest.mock('@/selectors/engines')
 jest.mock('@/selectors/requests')
 
 jest.mock('@/actions/engines', () => ({
-  fetchOCREngines: jest.fn(),
+  fetchProcessingEngines: jest.fn(),
 }))
 
 jest.mock('@/components/Form', () => ({
@@ -105,10 +105,10 @@ test('does not render llm type field when FEATURE_LLM_DATA_EXTRACTION is disable
   ENV.FEATURE_LLM_DATA_EXTRACTION = true
 })
 
-test('dispatches fetchOCREngines when engines list is empty', () => {
-  ocrEnginesSelector.mockReturnValueOnce([])
+test('dispatches fetchProcessingEngines when engines list is empty', () => {
+  processingEnginesSelector.mockReturnValueOnce([])
 
   render(<AutoFileSplittingForm />)
 
-  expect(mockDispatch).toHaveBeenCalledWith(fetchOCREngines())
+  expect(mockDispatch).toHaveBeenCalledWith(fetchProcessingEngines())
 })

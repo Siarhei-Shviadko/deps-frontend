@@ -6,7 +6,7 @@ import {
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchDocumentTypes } from '@/actions/documentTypes'
-import { fetchOCREngines } from '@/actions/engines'
+import { fetchProcessingEngines } from '@/actions/engines'
 import { fetchAvailableLanguages } from '@/actions/languages'
 import { setFilters, setPagination } from '@/actions/navigation'
 import { Content } from '@/components/Layout'
@@ -125,7 +125,7 @@ const DocumentTypesPage = () => {
 
   useEffect(() => {
     dispatch(fetchDocumentTypes())
-    dispatch(fetchOCREngines())
+    dispatch(fetchProcessingEngines())
     dispatch(fetchAvailableLanguages())
   }, [dispatch])
 

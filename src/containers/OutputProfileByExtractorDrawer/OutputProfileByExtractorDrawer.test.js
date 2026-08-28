@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event'
 import { ExtractionType } from '@/enums/ExtractionType'
 import { FileExtension, FILE_EXTENSION_TO_DOWNLOAD_FORMAT } from '@/enums/FileExtension'
 import { KnownLanguage } from '@/enums/KnownLanguage'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { Localization, localize } from '@/localization/i18n'
 import { DocumentType } from '@/models/DocumentType'
 import { ExtractedDataSchema, OutputProfile } from '@/models/OutputProfile'
@@ -24,7 +24,7 @@ ProfileHeader.mockImplementation(() => <div data-testid="profile-header" />)
 const mockDocumentType = new DocumentType(
   'DocType1',
   'Doc Type 1',
-  KnownOCREngine.TESSERACT,
+  KnownProcessingEngines.TESSERACT,
   KnownLanguage.ENGLISH,
   ExtractionType.TEMPLATE,
 )

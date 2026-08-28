@@ -4,10 +4,10 @@ import { mockReactHookForm } from '@/mocks/mockReactHookForm'
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useFormContext, useWatch } from 'react-hook-form'
-import { fetchOCREngines } from '@/actions/engines'
+import { fetchProcessingEngines } from '@/actions/engines'
 import { BATCH_TYPE, FIELD_FORM_CODE } from '@/containers/UploadSplittingFilesDrawer/constants'
 import { Localization, localize } from '@/localization/i18n'
-import { ocrEnginesSelector } from '@/selectors/engines'
+import { processingEnginesSelector } from '@/selectors/engines'
 import { ENV } from '@/utils/env'
 import { render } from '@/utils/rendererRTL'
 import { BatchSettingsForm } from './BatchSettingsForm'
@@ -62,7 +62,7 @@ jest.mock('react-redux', () => ({
 }))
 
 jest.mock('@/actions/engines', () => ({
-  fetchOCREngines: jest.fn(),
+  fetchProcessingEngines: jest.fn(),
 }))
 
 beforeEach(() => {
@@ -195,12 +195,12 @@ test('does not render batch name field when automatic splitting is enabled', () 
   expect(batchNameField).not.toBeInTheDocument()
 })
 
-test('calls fetchOCREngines when form is rendered if engines are empty', () => {
-  ocrEnginesSelector.mockReturnValueOnce([])
+test('calls fetchProcessingEngines when form is rendered if engines are empty', () => {
+  processingEnginesSelector.mockReturnValueOnce([])
 
   render(<BatchSettingsForm />)
 
-  expect(mockDispatch).toHaveBeenCalledWith(fetchOCREngines())
+  expect(mockDispatch).toHaveBeenCalledWith(fetchProcessingEngines())
 })
 
 test('sets multi batches type and clears group without splitter when automatic splitting is enabled', async () => {

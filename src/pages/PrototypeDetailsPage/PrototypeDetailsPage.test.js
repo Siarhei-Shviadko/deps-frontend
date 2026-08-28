@@ -11,7 +11,7 @@ import { useFetchPrototypeQuery } from '@/apiRTK/prototypesApi'
 import { Spin } from '@/components/Spin'
 import { FieldType } from '@/enums/FieldType'
 import { KnownLanguage } from '@/enums/KnownLanguage'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { MappingType } from '@/enums/MappingType'
 import { PrototypeViewType } from '@/enums/PrototypeViewType'
 import { StatusCode } from '@/enums/StatusCode'
@@ -36,7 +36,7 @@ const mockPrototypeData = new Prototype({
   createdAt: '12-12-2000',
   name: 'Prototype Name',
   language: KnownLanguage.ENGLISH,
-  engine: KnownOCREngine.TESSERACT,
+  engine: KnownProcessingEngines.TESSERACT,
   description: '',
   fields: [
     new PrototypeField({

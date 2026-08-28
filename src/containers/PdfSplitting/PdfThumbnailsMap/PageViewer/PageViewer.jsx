@@ -1,5 +1,10 @@
 
-import { useState, useCallback } from 'react'
+import {
+  useState,
+  useCallback,
+  useRef,
+  useEffect,
+} from 'react'
 import { Page } from 'react-pdf'
 import { AreaSelector } from '@/containers/AreaSelector'
 import { usePdfSegments } from '@/containers/PdfSplitting/hooks'
@@ -17,6 +22,8 @@ const SCALE_STEP = 0.1
 
 export const PageViewer = () => {
   const [scale, setScale] = useState(1)
+  const [containerWidth, setContainerWidth] = useState(0)
+  const pageWrapperRef = useRef(null)
 
   const {
     activeUserPage,
@@ -25,6 +32,18 @@ export const PageViewer = () => {
     setSegments,
     updateActiveUserPage,
   } = usePdfSegments()
+
+  useEffect(() => {
+    const el = pageWrapperRef.current
+    if (!el) return
+
+    const observer = new ResizeObserver(([entry]) => {
+      setContainerWidth(entry.contentRect.width)
+    })
+
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
 
   const handleCoordinatesChange = useCallback((coordinates) => {
     const updatedSegments = PdfSegment.setUserPageCoordinates(segments, activeUserPage, coordinates)
@@ -60,7 +79,10 @@ export const PageViewer = () => {
           userPage={activeUserPage}
         />
       </Header>
-      <PageWrapper onWheel={onWheelHandler}>
+      <PageWrapper
+        ref={pageWrapperRef}
+        onWheel={onWheelHandler}
+      >
         <AreaSelector.Container>
           <Page
             pageIndex={activeUserPage.page}
@@ -68,6 +90,7 @@ export const PageViewer = () => {
             renderForms={false}
             renderTextLayer={false}
             scale={scale}
+            width={containerWidth || undefined}
           />
           <AreaSelector.Overlay />
         </AreaSelector.Container>

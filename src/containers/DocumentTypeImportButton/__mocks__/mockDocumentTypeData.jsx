@@ -3,7 +3,7 @@ import { EXPORT_FIELDS } from '@/constants/documentType'
 import { ExtractionType } from '@/enums/ExtractionType'
 import { FieldType } from '@/enums/FieldType'
 import { KnownLanguage } from '@/enums/KnownLanguage'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { ValidationRuleSeverity } from '@/enums/ValidationRuleSeverity'
 import { CrossFieldValidator, IssueMessage } from '@/models/CrossFieldValidator'
 import { DocumentTypeField } from '@/models/DocumentTypeField'
@@ -139,7 +139,7 @@ const mockLLMExtractor2 = new LLMExtractor({
 const mockDocumentTypeData = {
   [EXPORT_FIELDS.NAME]: 'Document Type Name',
   [EXPORT_FIELDS.DESCRIPTION]: 'Document Type Description',
-  [EXPORT_FIELDS.ENGINE]: KnownOCREngine.TESSERACT,
+  [EXPORT_FIELDS.ENGINE]: KnownProcessingEngines.TESSERACT,
   [EXPORT_FIELDS.EXTRACTION_TYPE]: ExtractionType.PROTOTYPE,
   [EXPORT_FIELDS.LANGUAGE]: KnownLanguage.ENGLISH,
   [EXPORT_FIELDS.GEN_AI_FIELDS]: [

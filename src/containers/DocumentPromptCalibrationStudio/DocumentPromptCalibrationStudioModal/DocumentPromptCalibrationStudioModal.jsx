@@ -21,7 +21,7 @@ import { PromptCalibrationStudio } from '@/containers/PromptCalibrationStudio'
 import { useManageDocumentType } from '@/containers/PromptCalibrationStudio/hooks'
 import { DocumentTypeExtras } from '@/enums/DocumentTypeExtras'
 import { RESOURCE_ERROR_TO_DISPLAY } from '@/enums/Errors'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { useQueryParams } from '@/hooks/useQueryParams'
 import { localize, Localization } from '@/localization/i18n'
 import {
@@ -102,7 +102,7 @@ const DocumentPromptCalibrationStudioModal = () => {
   const reExtractData = useCallback(async () => {
     await dispatch(extractData(
       [document._id],
-      document.engine || KnownOCREngine.TESSERACT,
+      document.engine || KnownProcessingEngines.TESSERACT,
     ))
 
     await dispatch(getDocumentState(document._id))

@@ -1,7 +1,7 @@
 
 import PropTypes from 'prop-types'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
 import { KnownParsingFeature } from '@/enums/KnownParsingFeature'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 
 class FileSettings {
   constructor (engine, documentType, llmType, parsingFeatures = []) {
@@ -25,7 +25,7 @@ class PickedFile {
 }
 
 const fileSettingsShape = PropTypes.shape({
-  engine: PropTypes.oneOf(Object.values(KnownOCREngine)),
+  engine: PropTypes.oneOf(Object.values(KnownProcessingEngines)),
   documentType: PropTypes.string,
   llmType: PropTypes.string,
   parsingFeatures: PropTypes.arrayOf(

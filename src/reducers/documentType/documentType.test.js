@@ -7,7 +7,7 @@ import {
 import { ExtractionType } from '@/enums/ExtractionType'
 import { FieldType } from '@/enums/FieldType'
 import { KnownLanguage } from '@/enums/KnownLanguage'
-import { KnownOCREngine } from '@/enums/KnownOCREngine'
+import { KnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { DocumentTypeField } from '@/models/DocumentTypeField'
 import { DocumentTypeFieldMeta } from '@/models/DocumentTypeFieldMeta'
 import { ExtendedDocumentType } from '@/models/ExtendedDocumentType'
@@ -35,7 +35,7 @@ const field2 = new DocumentTypeField(
 const mockDocumentType = new ExtendedDocumentType({
   code: 'mockDocumentTypeCode',
   name: 'mockDocumentTypeName',
-  engine: KnownOCREngine.TESSERACT,
+  engine: KnownProcessingEngines.TESSERACT,
   language: KnownLanguage.ENGLISH,
   extractionType: ExtractionType.ML,
   fields: [

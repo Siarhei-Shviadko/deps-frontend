@@ -3,8 +3,8 @@ import { mockEnv } from '@/mocks/mockEnv'
 import { mockReactHookForm } from '@/mocks/mockReactHookForm'
 import { screen } from '@testing-library/react'
 import { PickedFile as MockPickedFile } from '@/containers/ManageBatch/PickedFile'
-import { KnownOCREngine as MockKnownOCREngine } from '@/enums/KnownOCREngine'
 import { KnownParsingFeature as MockKnownParsingFeature } from '@/enums/KnownParsingFeature'
+import { KnownProcessingEngines as MockKnownProcessingEngines } from '@/enums/KnownProcessingEngines'
 import { localize, Localization } from '@/localization/i18n'
 import { render } from '@/utils/rendererRTL'
 import { FileName } from './FileName'
@@ -15,7 +15,7 @@ jest.mock('react-hook-form', () => mockReactHookForm)
 let defaultProps
 
 const documentType = 'same-doc-type'
-const engine = MockKnownOCREngine.TESSERACT
+const engine = MockKnownProcessingEngines.TESSERACT
 const parsingFeatures = [MockKnownParsingFeature.TEXT]
 
 beforeEach(() => {
@@ -38,7 +38,7 @@ test('renders file name when no settings exist', () => {
 
 test('renders file name and disclaimer when bulk settings differ from file settings', () => {
   const bulkDocType = 'bulk-doc-type'
-  const bulkEngine = MockKnownOCREngine.GCP_VISION
+  const bulkEngine = MockKnownProcessingEngines.GCP_VISION
   const bulkParsingFeatures = [MockKnownParsingFeature.TEXT, MockKnownParsingFeature.TABLES]
 
   mockReactHookForm.useWatch
